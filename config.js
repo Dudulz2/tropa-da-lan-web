@@ -3,8 +3,8 @@
 // IMPORTANTE: use a Publishable Key (sb_publishable_...), nunca uma Secret Key.
 
 window.TROPA_CONFIG = {
-  SUPABASE_URL: "https://SEU-PROJETO.supabase.co",
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_COLE_SUA_CHAVE_AQUI",
+  SUPABASE_URL: "https://esbqgdbwduyktpquvkpt.supabase.co",
+  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_zq99xttbJ2oVhdyZdMKLVQ_fCVOGrX5",
 
   // STUN público usado para tentar conexão direta entre os navegadores.
   // Para melhorar a compatibilidade em redes restritas, adicione também um TURN.
