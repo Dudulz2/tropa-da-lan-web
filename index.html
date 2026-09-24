@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f1117" />
+  <meta name="description" content="Tropa da Lan — chat, voz, vídeo e compartilhamento de tela direto no navegador." />
+  <title>Tropa da Lan</title>
+  <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="setupBanner" class="setup-banner hidden">
+    <strong>Configuração pendente.</strong>
+    <span>Preencha <code>config.js</code> com o URL e a Publishable Key do Supabase.</span>
+  </div>
+
+  <div class="app-shell">
+    <aside class="servers-rail" aria-label="Servidores">
+      <button class="server-button active" title="Tropa da Lan" aria-label="Tropa da Lan">
+        <img src="./assets/logo.svg" alt="" />
+      </button>
+      <div class="rail-separator"></div>
+      <button class="server-button add" title="Adicionar servidor" aria-label="Adicionar servidor" disabled>+</button>
+    </aside>
+
+    <aside class="channels-panel">
+      <header class="server-header">
+        <div>
+          <span class="eyebrow">SERVIDOR</span>
+          <h1>Tropa da Lan</h1>
+        </div>
+        <span class="status-dot" id="backendStatus" title="Status do serviço"></span>
+      </header>
+
+      <nav class="channel-list" aria-label="Canais">
+        <p class="channel-category">CANAIS DE TEXTO</p>
+        <button class="channel-item active" data-room="geral"><span>#</span> geral</button>
+        <button class="channel-item" data-room="jogos"><span>#</span> jogos</button>
+        <button class="channel-item" data-room="off-topic"><span>#</span> off-topic</button>
+
+        <p class="channel-category voice-title">CANAIS DE VOZ</p>
+        <button class="channel-item voice-room active" data-voice-room="geral">
+          <span>🔊</span> Geral
+        </button>
+      </nav>
+
+      <section class="voice-controls" id="voiceControls">
+        <div class="voice-state">
+          <span class="voice-indicator" id="voiceIndicator"></span>
+          <div>
+            <strong id="voiceStateText">Voz desconectada</strong>
+            <small id="voiceRoomLabel">Canal: Geral</small>
+          </div>
+        </div>
+        <div class="control-row">
+          <button class="icon-button" id="joinVoiceBtn" title="Entrar na chamada">☎</button>
+          <button class="icon-button" id="muteBtn" title="Silenciar microfone" disabled>🎙</button>
+          <button class="icon-button" id="cameraBtn" title="Ligar câmera" disabled>📷</button>
+          <button class="icon-button" id="shareBtn" title="Compartilhar tela" disabled>🖥</button>
+          <button class="icon-button danger" id="leaveVoiceBtn" title="Sair da chamada" disabled>✕</button>
+        </div>
+      </section>
+
+      <footer class="profile-bar">
+        <div class="avatar" id="profileAvatar">TL</div>
+        <div class="profile-meta">
+          <strong id="profileName">Visitante</strong>
+          <small id="profileId">offline</small>
+        </div>
+        <button class="icon-button compact" id="editProfileBtn" title="Alterar nome">⚙</button>
+      </footer>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="channel-heading">
+          <span>#</span>
+          <strong id="activeRoomTitle">geral</strong>
+          <small id="activeRoomSubtitle">Conversa geral da Tropa</small>
+        </div>
+        <div class="topbar-actions">
+          <span class="connection-text" id="connectionText">Desconectado</span>
+          <button class="mobile-members" id="mobileMembersBtn" aria-label="Mostrar membros">👥</button>
+        </div>
+      </header>
+
+      <section class="content-area">
+        <div class="conversation-column">
+          <section class="media-stage hidden" id="mediaStage" aria-label="Chamada">
+            <div class="media-grid" id="mediaGrid"></div>
+          </section>
+
+          <section class="messages" id="messages" aria-live="polite">
+            <div class="welcome-card">
+              <div class="welcome-icon">#</div>
+              <h2 id="welcomeTitle">Bem-vindo a #geral</h2>
+              <p>Este é o começo deste canal no Tropa da Lan.</p>
+            </div>
+          </section>
+
+          <form class="composer" id="messageForm">
+            <button type="button" class="attach-button" title="Anexos ainda não disponíveis" disabled>+</button>
+            <input id="messageInput" type="text" maxlength="1000" autocomplete="off" placeholder="Conversar em #geral" disabled />
+            <button type="submit" class="send-button" disabled id="sendBtn">Enviar</button>
+          </form>
+        </div>
+
+        <aside class="members-panel" id="membersPanel">
+          <div class="members-header">
+            <span>ONLINE — <span id="onlineCount">0</span></span>
+          </div>
+          <div id="membersList" class="members-list"></div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="profileDialog" class="modal">
+    <form method="dialog" id="profileForm" class="modal-card">
+      <img src="./assets/logo.svg" class="modal-logo" alt="Logo Tropa da Lan" />
+      <p class="eyebrow">TROPA DA LAN</p>
+      <h2>Como você quer aparecer?</h2>
+      <p class="modal-copy">Escolha um nome. Ele ficará salvo apenas neste navegador.</p>
+      <label>
+        Nome de usuário
+        <input id="usernameInput" type="text" minlength="2" maxlength="24" placeholder="Ex.: DUDUXX" required />
+      </label>
+      <button id="saveProfileBtn" class="primary-button" value="default">Entrar</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
