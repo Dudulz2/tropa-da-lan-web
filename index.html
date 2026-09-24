@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f1117" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0d12" />
   <meta name="description" content="Tropa da Lan — chat, voz, vídeo e compartilhamento de tela direto no navegador." />
   <title>Tropa da Lan</title>
   <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
@@ -15,6 +15,8 @@
     <span>Preencha <code>config.js</code> com o URL e a Publishable Key do Supabase.</span>
   </div>
 
+  <button id="drawerBackdrop" class="drawer-backdrop hidden" aria-label="Fechar menus"></button>
+
   <div class="app-shell">
     <aside class="servers-rail" aria-label="Servidores">
       <button class="server-button active" title="Tropa da Lan" aria-label="Tropa da Lan">
@@ -24,13 +26,16 @@
       <button class="server-button add" title="Adicionar servidor" aria-label="Adicionar servidor" disabled>+</button>
     </aside>
 
-    <aside class="channels-panel">
+    <aside class="channels-panel" id="channelsPanel">
       <header class="server-header">
         <div>
           <span class="eyebrow">SERVIDOR</span>
           <h1>Tropa da Lan</h1>
         </div>
-        <span class="status-dot" id="backendStatus" title="Status do serviço"></span>
+        <div class="server-header-actions">
+          <span class="status-dot" id="backendStatus" title="Status do serviço"></span>
+          <button class="mobile-close" id="closeChannelsBtn" type="button" aria-label="Fechar canais">✕</button>
+        </div>
       </header>
 
       <nav class="channel-list" aria-label="Canais">
@@ -39,7 +44,7 @@
         <button class="channel-item" data-room="jogos"><span>#</span> jogos</button>
         <button class="channel-item" data-room="off-topic"><span>#</span> off-topic</button>
 
-        <p class="channel-category voice-title">CANAIS DE VOZ</p>
+        <p class="channel-category voice-title">CANAL DE VOZ</p>
         <button class="channel-item voice-room active" data-voice-room="geral">
           <span>🔊</span> Geral
         </button>
@@ -53,12 +58,12 @@
             <small id="voiceRoomLabel">Canal: Geral</small>
           </div>
         </div>
-        <div class="control-row">
-          <button class="icon-button" id="joinVoiceBtn" title="Entrar na chamada">☎</button>
-          <button class="icon-button" id="muteBtn" title="Silenciar microfone" disabled>🎙</button>
-          <button class="icon-button" id="cameraBtn" title="Ligar câmera" disabled>📷</button>
-          <button class="icon-button" id="shareBtn" title="Compartilhar tela" disabled>🖥</button>
-          <button class="icon-button danger" id="leaveVoiceBtn" title="Sair da chamada" disabled>✕</button>
+        <div class="control-row" aria-label="Controles da chamada">
+          <button class="icon-button" id="joinVoiceBtn" type="button" title="Entrar na chamada" aria-label="Entrar na chamada">☎</button>
+          <button class="icon-button" id="muteBtn" type="button" title="Silenciar microfone" aria-label="Silenciar microfone" disabled>🎙</button>
+          <button class="icon-button" id="cameraBtn" type="button" title="Ligar câmera" aria-label="Ligar câmera" disabled>📷</button>
+          <button class="icon-button" id="shareBtn" type="button" title="Compartilhar tela" aria-label="Compartilhar tela" disabled>🖥</button>
+          <button class="icon-button danger" id="leaveVoiceBtn" type="button" title="Sair da chamada" aria-label="Sair da chamada" disabled>✕</button>
         </div>
       </section>
 
@@ -68,26 +73,36 @@
           <strong id="profileName">Visitante</strong>
           <small id="profileId">offline</small>
         </div>
-        <button class="icon-button compact" id="editProfileBtn" title="Alterar nome">⚙</button>
+        <button class="icon-button compact" id="editProfileBtn" type="button" title="Alterar nome" aria-label="Alterar nome">⚙</button>
       </footer>
     </aside>
 
     <main class="main-panel">
       <header class="topbar">
-        <div class="channel-heading">
-          <span>#</span>
-          <strong id="activeRoomTitle">geral</strong>
-          <small id="activeRoomSubtitle">Conversa geral da Tropa</small>
+        <div class="topbar-left">
+          <button class="mobile-menu" id="mobileMenuBtn" type="button" aria-label="Abrir canais">☰</button>
+          <div class="channel-heading">
+            <span>#</span>
+            <strong id="activeRoomTitle">geral</strong>
+            <small id="activeRoomSubtitle">Conversa geral da Tropa</small>
+          </div>
         </div>
         <div class="topbar-actions">
           <span class="connection-text" id="connectionText">Desconectado</span>
-          <button class="mobile-members" id="mobileMembersBtn" aria-label="Mostrar membros">👥</button>
+          <button class="mobile-members" id="mobileMembersBtn" type="button" aria-label="Mostrar membros">👥</button>
         </div>
       </header>
 
       <section class="content-area">
         <div class="conversation-column">
           <section class="media-stage hidden" id="mediaStage" aria-label="Chamada">
+            <div class="media-stage-head">
+              <div>
+                <strong>Chamada • Geral</strong>
+                <small id="callStatusText">Conectando participantes…</small>
+              </div>
+              <span class="secure-badge">WebRTC</span>
+            </div>
             <div class="media-grid" id="mediaGrid"></div>
           </section>
 
