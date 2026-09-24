@@ -1,75 +1,165 @@
-# Tropa da Lan Web
+# Tropa da Lan Web — V4
 
-Versão web do protótipo Tropa da Lan para GitHub Pages + Supabase + WebRTC.
+Versão web com estrutura de comunidade inspirada em aplicativos modernos de chat por servidores, sem copiar marca, logo ou recursos proprietários de terceiros.
 
-## O que funciona
+## O que entrou nesta versão
 
-- Chat em tempo real por canais (`#geral`, `#jogos` e `#off-topic`)
-- Presença de usuários online
-- Canal de voz Geral
-- Microfone com mute/desmute
-- Câmera
-- Compartilhamento de tela quando o navegador oferece `getDisplayMedia`
-- Layout responsivo para PC e celular
-- Menu lateral em formato de gaveta no celular
-- Visualização dos participantes da chamada
-- Sinalização WebRTC usando Supabase Realtime
+- Login e cadastro com **nome de usuário + senha** usando Supabase Auth.
+- Perfil persistente com:
+  - foto/avatar;
+  - nome de exibição;
+  - status personalizado;
+  - bio.
+- Criação de **servidores**.
+- Ícone e descrição por servidor.
+- Convites por link: `?invite=CODIGO`.
+- Validade e limite de usos do convite.
+- Canais de **texto** e **voz** criados por servidor.
+- Chat em tempo real por canal.
+- Lista de membros online/offline.
+- Cargos com cor e permissões.
+- Atribuição de cargos aos membros.
+- Remoção de membros para quem tiver permissão.
+- Presença real nos canais de voz: os participantes aparecem abaixo do canal.
+- Chamada WebRTC com:
+  - microfone;
+  - mute;
+  - ensurdecer;
+  - câmera;
+  - compartilhamento de tela;
+  - lista visual de participantes;
+  - reconexão ICE.
+- Layout responsivo para desktop, tablet e celular.
+- RLS no Supabase para impedir que usuários comuns alterem servidores/canais/cargos sem permissão.
+- Buckets de Storage para avatares e ícones dos servidores.
 
-## Correções e robustez desta versão (V3)
+## Passo obrigatório antes de publicar a V4
 
-- Corrigido o layout que deformava o chat e o campo de mensagem
-- Corrigido o menu mobile que espremia a interface em uma coluna de 76 px
-- Câmera e controles de voz não são mais escondidos no celular
-- Chamada agora aguarda o canal Realtime ficar realmente inscrito antes de indicar conexão
-- Fila de ICE candidates para evitar erro quando chegam antes do SDP remoto
-- Negociação WebRTC mais resistente a ofertas simultâneas
-- Transceiver de vídeo criado desde o começo da chamada, permitindo alternar câmera/tela sem recriar a conexão
-- Tentativa automática de reinício de ICE quando a conexão falha
-- Compartilhamento de tela restaura a câmera ao terminar
-- Detecção de navegadores sem suporte a compartilhamento de tela
+Esta versão usa uma estrutura de banco diferente da V3.
 
-- Corrigida corrida ao trocar canais de texto rapidamente
-- Corrigido cancelamento da chamada enquanto ela ainda está conectando
-- Proteção contra cliques simultâneos em câmera e compartilhamento de tela
-- Corrigido caso em que a câmera encerrava durante uma transmissão e podia cortar a tela compartilhada
-- IDs de sessão agora são sempre novos por carregamento, evitando colisões entre abas duplicadas
-- Tratamento de microfone desconectado durante a chamada
-- Reconexão ICE com limite de tentativas e aviso quando a rede provavelmente exige TURN
-- Estado de mídia remoto preservado mesmo quando chega antes da criação do peer
-- Painel de membros corrigido em tablet/mobile para não ficar atrás do backdrop
-- Envio de mensagem protegido contra clique duplo e troca de canal durante a requisição
-- Presença Supabase com tratamento de falha e status visual
-- Limpeza mais segura de streams, peers e canais ao sair/fechar a página
+### 1. Supabase > SQL Editor
 
-## Publicação no GitHub Pages
+Abra o arquivo:
 
-Envie todos os arquivos desta pasta para a raiz do repositório. Depois, em `Settings > Pages`, use:
+`supabase_v4.sql`
 
-- Source: `Deploy from a branch`
-- Branch: `main`
-- Folder: `/(root)`
+Copie **todo** o conteúdo e execute no SQL Editor do seu projeto.
 
-O GitHub Pages usa HTTPS, necessário para microfone, câmera e compartilhamento de tela.
+O script:
 
-## Teste da chamada
+- cria as novas tabelas da V4;
+- cria RLS e políticas;
+- cria cargos/canais padrão quando um servidor é criado;
+- cria funções seguras de convite;
+- cria os buckets `avatars` e `server-icons`;
+- ativa Realtime nas tabelas usadas pela interface;
+- remove as políticas públicas do chat antigo da V3.
 
-1. Abra o site no computador em uma janela normal.
-2. Abra o mesmo link em outro computador/celular ou em outro navegador.
-3. Use nomes diferentes.
-4. Clique em entrar na chamada nos dois dispositivos.
-5. Permita o microfone.
-6. Teste mute/desmute.
-7. No computador, ligue a câmera.
-8. No computador, teste compartilhar a tela.
+Ele **não dá DROP na tabela antiga `messages`**. Os dados antigos continuam no banco, mas a V4 passa a usar `channel_messages`.
 
-## Importante sobre STUN e TURN
+### 2. Desativar confirmação de e-mail
 
-O projeto já usa STUN. Isso permite chamadas diretas em muitas redes, mas não em todas.
+A V4 foi feita para o usuário entrar somente com **usuário + senha**. Internamente, o aplicativo cria um identificador de e-mail técnico apenas para usar o mecanismo seguro de senha do Supabase Auth.
 
-Se duas pessoas estiverem em redes com NAT/firewall restritivo, uma conexão apenas com STUN pode não fechar. Para confiabilidade parecida com Discord/Meet, configure também um servidor TURN em `config.js`.
+No Supabase, abra a configuração do provedor **Email** em Authentication e desative **Confirm email**.
 
-O código já está preparado para receber TURN; basta adicionar `urls`, `username` e `credential` em `ICE_SERVERS`.
+Se essa opção ficar ligada, o cadastro cria um usuário sem uma sessão ativa e o Tropa da Lan exibirá um aviso.
 
-## Compartilhamento de tela no celular
+> Observação: esta solução é adequada para este projeto/hobby porque você pediu login somente por usuário. Ela não oferece recuperação de senha por e-mail. Para um produto público maior, use e-mail real ou outro provedor de autenticação.
 
-A disponibilidade depende do navegador/sistema. Em navegadores móveis que não expõem `getDisplayMedia`, o botão fica desativado. Para compartilhar a tela, a experiência mais confiável é usar Chrome ou Edge atualizados no computador.
+### 3. Configuração do projeto
+
+`config.js` já contém o Project URL e a Publishable Key usados nas versões anteriores.
+
+Nunca coloque no frontend:
+
+- Secret key;
+- `service_role`;
+- senha do banco de dados.
+
+## Publicar no GitHub Pages
+
+Substitua no seu repositório os arquivos da versão antiga pelos arquivos desta pasta:
+
+- `.nojekyll`
+- `index.html`
+- `styles.css`
+- `app.js`
+- `config.js`
+- `assets/logo.svg`
+- `README.md`
+
+O arquivo `supabase_v4.sql` pode ficar no repositório, mas ele não é executado pelo GitHub Pages. Ele deve ser executado manualmente no SQL Editor do Supabase.
+
+Depois faça o commit e aguarde o GitHub Pages concluir o deploy.
+
+Faça `Ctrl + F5` no PC para evitar cache da versão anterior.
+
+## Primeiro teste recomendado
+
+1. Abra o site em uma janela normal.
+2. Crie a conta `teste1` com uma senha de pelo menos 6 caracteres.
+3. Crie um servidor.
+4. Gere um link de convite.
+5. Abra o link em uma janela anônima/outro navegador.
+6. Crie a conta `teste2`.
+7. Aceite o convite.
+8. Teste mensagens no `#geral`.
+9. Entre com as duas contas no canal `🔊 Geral`.
+10. Confira se os dois nomes aparecem abaixo do canal de voz.
+11. Teste áudio, câmera e compartilhamento de tela.
+
+## TURN e chamadas em redes diferentes
+
+O arquivo `config.js` já possui servidores STUN. Isso permite conexão direta WebRTC em muitas redes.
+
+Para chamadas funcionarem de forma confiável em praticamente qualquer rede, ainda é recomendado adicionar um **servidor TURN** em `ICE_SERVERS`.
+
+Sem TURN, pode acontecer de:
+
+- chat funcionar normalmente;
+- os dois usuários aparecerem na call;
+- mas o áudio/vídeo não conseguir criar uma rota entre duas redes mais restritas.
+
+Isso é uma limitação de conectividade WebRTC/NAT, não do GitHub Pages.
+
+## Permissões de cargos disponíveis
+
+- Ver canais
+- Enviar mensagens
+- Conectar em voz
+- Falar
+- Criar convites
+- Gerenciar mensagens
+- Gerenciar canais
+- Gerenciar apelidos
+- Expulsar membros
+- Gerenciar cargos
+- Gerenciar servidor
+- Administrador
+
+O dono do servidor tem todas as permissões automaticamente.
+
+## Segurança
+
+- Senhas ficam no Supabase Auth; o frontend não grava senha em tabela própria.
+- A Publishable Key pode ficar no site porque o acesso aos dados é protegido por RLS.
+- Convites são gerados no banco por função segura.
+- Usuários não podem editar o `username` de login nesta versão; podem alterar o nome de exibição.
+- O dono não pode ser removido pela política de membros.
+- O cargo `@everyone` não pode ser apagado diretamente.
+
+## Limitações atuais
+
+Para ficar ainda mais completo no futuro, ainda podem entrar:
+
+- mensagens privadas/DM;
+- categorias de canais;
+- permissões específicas por canal;
+- reações e respostas a mensagens;
+- anexos de arquivos/imagens;
+- notificações;
+- bots;
+- recuperação de senha por e-mail;
+- moderação avançada e logs;
+- TURN próprio para maior confiabilidade das chamadas.
