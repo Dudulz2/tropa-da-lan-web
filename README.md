@@ -1,10 +1,10 @@
-# Tropa da Lan Web — V4
+# Tropa da Lan Web — V4.1
 
 Versão web com estrutura de comunidade inspirada em aplicativos modernos de chat por servidores, sem copiar marca, logo ou recursos proprietários de terceiros.
 
 ## O que entrou nesta versão
 
-- Login e cadastro com **nome de usuário + senha** usando Supabase Auth.
+- Login e cadastro com **e-mail + senha** usando Supabase Auth, mantendo um nome de usuário público separado.
 - Perfil persistente com:
   - foto/avatar;
   - nome de exibição;
@@ -57,15 +57,15 @@ O script:
 
 Ele **não dá DROP na tabela antiga `messages`**. Os dados antigos continuam no banco, mas a V4 passa a usar `channel_messages`.
 
-### 2. Desativar confirmação de e-mail
+### 2. Configurar autenticação por e-mail
 
-A V4 foi feita para o usuário entrar somente com **usuário + senha**. Internamente, o aplicativo cria um identificador de e-mail técnico apenas para usar o mecanismo seguro de senha do Supabase Auth.
+A V4.1 não usa mais e-mails falsos. O cadastro pede um **e-mail real**, um **nome de usuário público** e uma senha. Isso evita o erro de endereço de e-mail inválido do Supabase.
 
-No Supabase, abra a configuração do provedor **Email** em Authentication e desative **Confirm email**.
+Para testar rapidamente sem depender do envio de mensagens, abra o provedor **Email** em Authentication e deixe **Confirm email** desativado. Assim, a conta recebe uma sessão imediatamente após o cadastro.
 
-Se essa opção ficar ligada, o cadastro cria um usuário sem uma sessão ativa e o Tropa da Lan exibirá um aviso.
+Se você quiser exigir confirmação de endereço no futuro, ative **Confirm email** e configure um SMTP apropriado para entregar os e-mails aos usuários.
 
-> Observação: esta solução é adequada para este projeto/hobby porque você pediu login somente por usuário. Ela não oferece recuperação de senha por e-mail. Para um produto público maior, use e-mail real ou outro provedor de autenticação.
+O e-mail é usado somente para autenticação; no servidor e nas mensagens aparece o nome de usuário/perfil.
 
 ### 3. Configuração do projeto
 
@@ -145,7 +145,7 @@ O dono do servidor tem todas as permissões automaticamente.
 - Senhas ficam no Supabase Auth; o frontend não grava senha em tabela própria.
 - A Publishable Key pode ficar no site porque o acesso aos dados é protegido por RLS.
 - Convites são gerados no banco por função segura.
-- Usuários não podem editar o `username` de login nesta versão; podem alterar o nome de exibição.
+- Usuários não podem editar o `username` público nesta versão; podem alterar o nome de exibição.
 - O dono não pode ser removido pela política de membros.
 - O cargo `@everyone` não pode ser apagado diretamente.
 
@@ -160,6 +160,6 @@ Para ficar ainda mais completo no futuro, ainda podem entrar:
 - anexos de arquivos/imagens;
 - notificações;
 - bots;
-- recuperação de senha por e-mail;
+- recuperação de senha por e-mail (próxima melhoria);
 - moderação avançada e logs;
 - TURN próprio para maior confiabilidade das chamadas.

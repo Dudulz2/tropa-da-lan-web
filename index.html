@@ -7,6 +7,8 @@
   <meta name="description" content="Tropa da Lan — comunidades, chat, voz, vídeo e compartilhamento de tela no navegador." />
   <title>Tropa da Lan</title>
   <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -18,9 +20,9 @@
   <!-- AUTENTICAÇÃO -->
   <main id="authScreen" class="auth-screen hidden">
     <section class="auth-hero" aria-hidden="true">
-      <div class="auth-brand-mark"><img src="./assets/logo.svg" alt="" /></div>
+      <div class="auth-brand-lockup"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
       <div>
-        <span class="eyebrow">TROPA DA LAN</span>
+        <span class="eyebrow">COMUNIDADE • VOZ • JOGOS</span>
         <h1>Seu espaço para conversar, jogar e ficar em call.</h1>
         <p>Servidores, canais, cargos, chat e voz direto no navegador.</p>
       </div>
@@ -34,7 +36,7 @@
 
     <section class="auth-panel">
       <div class="auth-card">
-        <div class="auth-mobile-brand"><img src="./assets/logo.svg" alt="" /><strong>Tropa da Lan</strong></div>
+        <div class="auth-mobile-brand"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
         <div id="invitePreviewAuth" class="invite-preview compact hidden"></div>
 
         <div class="auth-tabs" role="tablist">
@@ -43,19 +45,22 @@
         </div>
 
         <form id="loginForm" class="auth-form">
-          <div class="auth-title"><h2>Bem-vindo de volta</h2><p>Entre com seu usuário e sua senha.</p></div>
-          <label>Nome de usuário
-            <input id="loginUsername" type="text" autocomplete="username" maxlength="20" placeholder="ex.: duduxx" required />
+          <div class="auth-title"><h2>Bem-vindo de volta</h2><p>Entre com seu e-mail e sua senha.</p></div>
+          <label>E-mail
+            <input id="loginEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" required />
           </label>
           <label>Senha
             <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Sua senha" required />
           </label>
           <button id="loginBtn" class="primary-button wide" type="submit">Entrar</button>
-          <p class="auth-hint">Seu usuário é o identificador da conta. O nome exibido pode ser alterado depois.</p>
+          <p class="auth-hint">O e-mail é usado apenas para autenticação. Dentro do app, as pessoas veem seu nome de usuário e seu perfil.</p>
         </form>
 
         <form id="registerForm" class="auth-form hidden">
-          <div class="auth-title"><h2>Crie sua conta</h2><p>Escolha um usuário único para entrar no Tropa da Lan.</p></div>
+          <div class="auth-title"><h2>Crie sua conta</h2><p>Use um e-mail válido, escolha seu usuário e crie uma senha.</p></div>
+          <label>E-mail
+            <input id="registerEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" required />
+          </label>
           <label>Nome de usuário
             <input id="registerUsername" type="text" autocomplete="username" minlength="3" maxlength="20" placeholder="3 a 20 caracteres" required />
             <small>Letras minúsculas, números, ponto, hífen e underline.</small>
@@ -67,7 +72,7 @@
             <input id="registerPassword2" type="password" autocomplete="new-password" minlength="6" maxlength="72" placeholder="Repita a senha" required />
           </label>
           <button id="registerBtn" class="primary-button wide" type="submit">Criar conta</button>
-          <p class="auth-hint">Para esta versão com login somente por usuário, a confirmação de e-mail precisa estar desativada no Supabase.</p>
+          <p class="auth-hint">Para testar sem configurar envio de e-mails, deixe <b>Confirm email</b> desativado no Supabase. Se ativar, será preciso confirmar o endereço antes do primeiro login.</p>
         </form>
       </div>
     </section>

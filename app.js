@@ -15,8 +15,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const ui = {
   setupBanner: $("#setupBanner"), authScreen: $("#authScreen"), appShell: $("#appShell"),
   loginTab: $("#loginTab"), registerTab: $("#registerTab"), loginForm: $("#loginForm"), registerForm: $("#registerForm"),
-  loginUsername: $("#loginUsername"), loginPassword: $("#loginPassword"), loginBtn: $("#loginBtn"),
-  registerUsername: $("#registerUsername"), registerPassword: $("#registerPassword"), registerPassword2: $("#registerPassword2"), registerBtn: $("#registerBtn"),
+  loginEmail: $("#loginEmail"), loginPassword: $("#loginPassword"), loginBtn: $("#loginBtn"),
+  registerEmail: $("#registerEmail"), registerUsername: $("#registerUsername"), registerPassword: $("#registerPassword"), registerPassword2: $("#registerPassword2"), registerBtn: $("#registerBtn"),
   invitePreviewAuth: $("#invitePreviewAuth"),
   serversRail: $("#serversRail"), serverButtons: $("#serverButtons"), createServerBtn: $("#createServerBtn"), joinServerBtn: $("#joinServerBtn"),
   emptyCreateServerBtn: $("#emptyCreateServerBtn"), emptyJoinServerBtn: $("#emptyJoinServerBtn"), homeServerBtn: $("#homeServerBtn"),
@@ -131,8 +131,13 @@ function validUsername(value) {
   return /^[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]$/.test(value) && !value.includes("..");
 }
 
-function usernameEmail(username) {
-  return `${normalizeUsername(username)}@tropadalan.invalid`;
+function normalizeEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function validEmail(value) {
+  const email = normalizeEmail(value);
+  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 }
 
 function makeEl(tag, className = "", text = "") {
@@ -281,7 +286,7 @@ function switchAuthTab(mode) {
   ui.registerTab.classList.toggle("active", !login);
   ui.loginForm.classList.toggle("hidden", !login);
   ui.registerForm.classList.toggle("hidden", login);
-  setTimeout(() => (login ? ui.loginUsername : ui.registerUsername).focus(), 30);
+  setTimeout(() => (login ? ui.loginEmail : ui.registerEmail).focus(), 30);
 }
 ui.loginTab.addEventListener("click", () => switchAuthTab("login"));
 ui.registerTab.addEventListener("click", () => switchAuthTab("register"));
@@ -325,24 +330,30 @@ async function handlePendingInviteAfterAuth() {
 ui.loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!state.supabase) return;
-  const username = normalizeUsername(ui.loginUsername.value);
-  if (!validUsername(username)) return toast("Digite um nome de usuário válido.");
+  const email = normalizeEmail(ui.loginEmail.value);
+  if (!validEmail(email)) return toast("Digite um e-mail válido.");
+  if (!ui.loginPassword.value) return toast("Digite sua senha.");
   setBusy(ui.loginBtn, true, "Entrando…");
   try {
-    const { error } = await state.supabase.auth.signInWithPassword({ email: usernameEmail(username), password: ui.loginPassword.value });
+    const { error } = await state.supabase.auth.signInWithPassword({ email, password: ui.loginPassword.value });
     if (error) throw error;
     ui.loginPassword.value = "";
   } catch (error) {
     console.error(error);
-    toast(error?.message?.toLowerCase().includes("invalid login") ? "Usuário ou senha incorretos." : `Não foi possível entrar: ${error.message || "erro desconhecido"}`, 5200);
+    const msg = String(error?.message || "");
+    if (/invalid login|invalid credentials/i.test(msg)) toast("E-mail ou senha incorretos.");
+    else if (/email.*confirm|not confirmed/i.test(msg)) toast("Confirme seu e-mail antes de entrar.", 5200);
+    else toast(`Não foi possível entrar: ${msg || "erro desconhecido"}`, 5200);
   } finally { setBusy(ui.loginBtn, false); }
 });
 
 ui.registerForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!state.supabase) return;
+  const email = normalizeEmail(ui.registerEmail.value);
   const username = normalizeUsername(ui.registerUsername.value);
   const password = ui.registerPassword.value;
+  if (!validEmail(email)) return toast("Digite um e-mail válido.");
   if (!validUsername(username)) return toast("Use 3–20 caracteres: letras minúsculas, números, ponto, hífen ou underline.", 5200);
   if (password.length < 6) return toast("A senha precisa ter pelo menos 6 caracteres.");
   if (password !== ui.registerPassword2.value) return toast("As duas senhas não são iguais.");
@@ -350,23 +361,26 @@ ui.registerForm.addEventListener("submit", async (event) => {
   setBusy(ui.registerBtn, true, "Criando…");
   try {
     const { data, error } = await state.supabase.auth.signUp({
-      email: usernameEmail(username),
+      email,
       password,
       options: { data: { username, display_name: username } }
     });
     if (error) throw error;
-    if (!data.session) {
-      toast("A conta foi criada, mas o Supabase está exigindo confirmação de e-mail. Desative 'Confirm email' em Authentication > Providers > Email e crie a conta novamente.", 9000);
-      await state.supabase.auth.signOut();
-      return;
-    }
     ui.registerPassword.value = "";
     ui.registerPassword2.value = "";
+    if (!data.session) {
+      toast("Conta criada. Confirme o e-mail recebido antes de entrar.", 7000);
+      switchAuthTab("login");
+      ui.loginEmail.value = email;
+      return;
+    }
     toast("Conta criada com sucesso!");
   } catch (error) {
     console.error(error);
     const msg = String(error?.message || "");
-    if (/already|registered|duplicate|unique/i.test(msg)) toast("Esse nome de usuário já está sendo usado.");
+    if (/already|registered/i.test(msg)) toast("Já existe uma conta com esse e-mail.");
+    else if (/database error saving new user/i.test(msg)) toast("Não foi possível criar o perfil. O nome de usuário pode já estar em uso. Tente outro.", 6500);
+    else if (/email.*invalid|invalid.*email/i.test(msg)) toast("O Supabase recusou esse e-mail. Confira o endereço e tente novamente.", 6500);
     else toast(`Não foi possível criar a conta: ${msg || "erro desconhecido"}`, 6000);
   } finally { setBusy(ui.registerBtn, false); }
 });
