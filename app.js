@@ -15,7 +15,7 @@ try {
 }
 
 const cfg = window.TROPA_CONFIG || {};
-const APP_VERSION = "7.3.1";
+const APP_VERSION = "7.3.2";
 const isConfigured = Boolean(
   cfg.SUPABASE_URL &&
   cfg.SUPABASE_PUBLISHABLE_KEY &&
@@ -1461,6 +1461,7 @@ async function setupServerPresence() {
     const presence = ch.presenceState();
     state.onlineUserIds = new Set(Object.keys(presence));
     renderMembers();
+    renderChannels();
   });
   await new Promise((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error("Timeout presence")), 10000);
@@ -1735,6 +1736,40 @@ function renderChannels() {
     addHeader({ label: "CALL", key: "voice:call", count: sortedVoice.length, actualCategory: "Geral", channelType: "voice" });
     if (!isCollapsed("voice:call")) for (const channel of sortedVoice) ui.channelList.appendChild(makeRow(channel));
   }
+
+  // V7.3.2 — ocupa o espaço ocioso da sidebar com informações úteis,
+  // mantendo o perfil no rodapé sem deixar a coluna parecer quebrada.
+  const overview = makeEl("section", "sidebar-overview");
+  const overviewTitle = makeEl("div", "sidebar-overview-title");
+  overviewTitle.append(makeEl("span", "", "ATIVIDADE"), makeEl("span", "sidebar-overview-dot", ""));
+
+  const voiceUsers = new Set();
+  for (const list of state.voicePresence.values()) {
+    for (const p of list || []) {
+      if (p?.user_id) voiceUsers.add(p.user_id);
+      else if (p?.voice_client_id) voiceUsers.add(p.voice_client_id);
+    }
+  }
+  const onlineCount = state.onlineUserIds?.size || 0;
+  const voiceCount = voiceUsers.size;
+  const statRow = makeEl("div", "sidebar-overview-stats");
+  const onlineStat = makeEl("div", "sidebar-overview-stat");
+  onlineStat.append(makeEl("span", "sidebar-stat-icon online", ""), makeEl("b", "", String(onlineCount)), makeEl("small", "", onlineCount === 1 ? "online" : "online"));
+  const voiceStat = makeEl("div", "sidebar-overview-stat");
+  voiceStat.append(makeEl("span", "sidebar-stat-icon voice", ""), makeEl("b", "", String(voiceCount)), makeEl("small", "", voiceCount === 1 ? "em call" : "em call"));
+  statRow.append(onlineStat, voiceStat);
+
+  const quick = makeEl("div", "sidebar-overview-actions");
+  const makeQuick = (label, title, handler) => {
+    const b = makeEl("button", "sidebar-overview-action", label); b.type = "button"; b.title = title; b.addEventListener("click", handler); return b;
+  };
+  quick.append(
+    makeQuick("◷ Eventos", "Abrir eventos do servidor", () => ui.quickEventsBtn?.click()),
+    makeQuick("♪ Sons", "Abrir soundboard", () => ui.soundboardBtn?.click()),
+    makeQuick("☺ Amigos", "Abrir amigos", () => ui.friendsBtn?.click())
+  );
+  overview.append(overviewTitle, statRow, quick);
+  ui.channelList.appendChild(overview);
 }
 // -----------------------------------------------------------------------------
 // Text chat — respostas, edição, anexos, reações, enquetes, busca e pins
@@ -3674,7 +3709,7 @@ async function boot() {
     return;
   }
   state.supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js?v=7.3.1").catch(() => {});
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js?v=7.3.2").catch(() => {});
   if (state.pendingInviteToken) previewInvite(state.pendingInviteToken).catch(() => {});
 
   startupStatus("Verificando sua sessão…");
