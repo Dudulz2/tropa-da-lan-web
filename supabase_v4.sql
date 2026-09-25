@@ -345,7 +345,7 @@ begin
   end if;
 
   loop
-    v_token := lower(encode(gen_random_bytes(9), 'hex'));
+    v_token := substr(replace(gen_random_uuid()::text, '-', ''), 1, 18);
     begin
       insert into public.invites(token, server_id, created_by, expires_at, max_uses)
       values (

@@ -533,6 +533,57 @@ $$;
 revoke all on function public.accept_invite(text) from public, anon;
 grant execute on function public.accept_invite(text) to authenticated;
 
+-- ---------- Correção de compatibilidade: criação de convites ----------
+-- Evita dependência de gen_random_bytes(), que pode estar fora do search_path
+-- em projetos Supabase onde pgcrypto está no schema extensions.
+create or replace function public.create_server_invite(
+  p_server_id uuid,
+  p_expires_hours integer default 168,
+  p_max_uses integer default null
+)
+returns text
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_token text;
+begin
+  if auth.uid() is null then raise exception 'Não autenticado'; end if;
+  if not public.has_server_permission(p_server_id, 'CREATE_INSTANT_INVITE', auth.uid()) then
+    raise exception 'Sem permissão para criar convites';
+  end if;
+  if p_expires_hours is not null and (p_expires_hours < 1 or p_expires_hours > 8760) then
+    raise exception 'Validade inválida';
+  end if;
+  if p_max_uses is not null and (p_max_uses < 1 or p_max_uses > 10000) then
+    raise exception 'Limite de usos inválido';
+  end if;
+
+  loop
+    -- gen_random_uuid() é nativa nas versões atuais do PostgreSQL e evita
+    -- o problema de resolução de schema do gen_random_bytes().
+    v_token := substr(replace(gen_random_uuid()::text, '-', ''), 1, 18);
+    begin
+      insert into public.invites(token, server_id, created_by, expires_at, max_uses)
+      values (
+        v_token,
+        p_server_id,
+        auth.uid(),
+        case when p_expires_hours is null then null else now() + make_interval(hours => p_expires_hours) end,
+        p_max_uses
+      );
+      exit;
+    exception when unique_violation then
+      -- colisão extremamente improvável; gera outro token
+    end;
+  end loop;
+  return v_token;
+end;
+$$;
+revoke all on function public.create_server_invite(uuid, integer, integer) from public, anon;
+grant execute on function public.create_server_invite(uuid, integer, integer) to authenticated;
+
 -- ---------- Storage ----------
 insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
 values ('profile-banners', 'profile-banners', true, 8388608, array['image/png','image/jpeg','image/webp','image/gif'])

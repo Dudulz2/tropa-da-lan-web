@@ -33,7 +33,7 @@ const ui = {
   membersPanel: $("#membersPanel"), membersList: $("#membersList"), membersSearchInput: $("#membersSearchInput"),
   voiceDock: $("#voiceDock"), voiceIndicator: $("#voiceIndicator"), voiceStateText: $("#voiceStateText"), voiceRoomLabel: $("#voiceRoomLabel"),
   leaveVoiceBtn: $("#leaveVoiceBtn"), muteBtn: $("#muteBtn"), deafenBtn: $("#deafenBtn"), cameraBtn: $("#cameraBtn"), shareBtn: $("#shareBtn"),
-  mediaStage: $("#mediaStage"), mediaStageTitle: $("#mediaStageTitle"), callStatusText: $("#callStatusText"), mediaGrid: $("#mediaGrid"), collapseMediaBtn: $("#collapseMediaBtn"),
+  mediaStage: $("#mediaStage"), mediaStageTitle: $("#mediaStageTitle"), callStatusText: $("#callStatusText"), mediaGrid: $("#mediaGrid"), expandMediaBtn: $("#expandMediaBtn"), collapseMediaBtn: $("#collapseMediaBtn"),
   profileDialog: $("#profileDialog"), profileForm: $("#profileForm"), profileAvatarPreview: $("#profileAvatarPreview"), avatarFileInput: $("#avatarFileInput"),
   displayNameInput: $("#displayNameInput"), profileUsernameInput: $("#profileUsernameInput"), customStatusInput: $("#customStatusInput"), bioInput: $("#bioInput"), saveProfileBtn: $("#saveProfileBtn"),
   serverDialog: $("#serverDialog"), serverForm: $("#serverForm"), serverNameInput: $("#serverNameInput"),
@@ -2288,7 +2288,7 @@ async function leaveVoice() {
   local?.getTracks().forEach((t) => { try { t.stop(); } catch (_) {} });
   if (camera && camera.readyState !== "ended") try { camera.stop(); } catch (_) {}
   if (screen && screen.readyState !== "ended") try { screen.stop(); } catch (_) {}
-  ui.mediaGrid.replaceChildren(); ui.mediaStage.classList.add("hidden"); ui.mediaStage.classList.remove("collapsed");
+  ui.mediaGrid.replaceChildren(); ui.mediaStage.classList.add("hidden"); ui.mediaStage.classList.remove("collapsed", "expanded"); if (ui.expandMediaBtn) { ui.expandMediaBtn.textContent = "⛶"; ui.expandMediaBtn.title = "Expandir chamada"; }
   updateVoiceDock("idle"); renderChannels(); renderMembers();
 }
 
@@ -2320,6 +2320,7 @@ ui.deafenBtn.addEventListener("click", async () => {
 });
 ui.cameraBtn.addEventListener("click", toggleCamera);
 ui.shareBtn.addEventListener("click", toggleScreenShare);
+ui.expandMediaBtn?.addEventListener("click", () => toggleMediaExpanded());
 ui.collapseMediaBtn.addEventListener("click", () => { ui.mediaStage.classList.toggle("collapsed"); ui.collapseMediaBtn.textContent = ui.mediaStage.classList.contains("collapsed") ? "□" : "—"; });
 
 function ensureLocalCard() {
@@ -2328,7 +2329,11 @@ function ensureLocalCard() {
   if (!card) {
     card = makeEl("div", "media-card audio-only"); card.id = "media-local";
     const video = document.createElement("video"); video.autoplay = true; video.muted = true; video.playsInline = true;
-    card.append(video, makeEl("span", "media-label"), makeEl("span", "media-connection ok", "você")); ui.mediaGrid.prepend(card);
+    const controls = makeEl("div", "media-local-controls");
+    const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir vídeo";
+    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.(); });
+    controls.appendChild(expandBtn);
+    card.append(video, makeEl("span", "media-label"), makeEl("span", "media-connection ok", "você"), controls); ui.mediaGrid.prepend(card);
   }
   card.dataset.initials = initials(state.profile?.display_name || state.profile?.username || "TL");
   const video = card.querySelector("video"), label = card.querySelector(".media-label"); const track = currentVideoTrack();
@@ -2336,6 +2341,16 @@ function ensureLocalCard() {
   card.classList.toggle("audio-only", !track); card.classList.toggle("screen", Boolean(state.screenTrack));
   label.textContent = `${state.profile?.display_name || "Você"} (você)${state.screenTrack ? " • tela" : ""}`;
   ui.mediaStageTitle.textContent = `🔊 ${state.voiceJoinedChannelName || "Canal de voz"}`; ui.mediaStage.classList.remove("hidden"); updateCallStatus();
+}
+
+
+function toggleMediaExpanded(force = null) {
+  const shouldExpand = force === null ? !ui.mediaStage.classList.contains("expanded") : Boolean(force);
+  ui.mediaStage.classList.toggle("expanded", shouldExpand);
+  if (ui.expandMediaBtn) {
+    ui.expandMediaBtn.textContent = shouldExpand ? "🗗" : "⛶";
+    ui.expandMediaBtn.title = shouldExpand ? "Voltar ao tamanho normal" : "Expandir chamada";
+  }
 }
 
 function peerPresence(peerId) {
@@ -2349,6 +2364,9 @@ function makeRemoteCard(peerId) {
     card = makeEl("div", "media-card audio-only"); card.id = `media-${peerId}`;
     const video = document.createElement("video"); video.autoplay = true; video.playsInline = true; video.muted = state.deafen;
     const controls = makeEl("div", "media-local-controls");
+    const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir vídeo";
+    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.(); });
+    controls.appendChild(expandBtn);
     const volumeLabel = makeEl("label", "media-volume"); volumeLabel.title = "Volume individual";
     volumeLabel.append(makeEl("span", "", "VOL"));
     const volume = document.createElement("input"); volume.type = "range"; volume.min = "0"; volume.max = "1"; volume.step = "0.05"; volume.value = "1";
@@ -2531,7 +2549,7 @@ async function toggleCamera() {
 async function stopScreenShare(stopTrack = true, expected = null) {
   const old = state.screenTrack; if (!old || (expected && old !== expected)) return; state.screenTrack = null; old.onended = null;
   if (state.voiceJoinedChannelId) await replaceVideoForPeers(state.cameraTrack || null); if (stopTrack && old.readyState !== "ended") try { old.stop(); } catch (_) {}
-  if (state.voiceJoinedChannelId) { ensureLocalCard(); await retrackVoicePresence(); }
+  if (state.voiceJoinedChannelId) { ensureLocalCard(); if (![...state.peers.values()].some((peer) => peer.remoteMedia?.screen)) toggleMediaExpanded(false); await retrackVoicePresence(); }
 }
 async function toggleScreenShare() {
   if (!state.voiceJoinedChannelId || state.screenBusy || state.cameraBusy) return;
@@ -2544,7 +2562,7 @@ async function toggleScreenShare() {
     if (!state.voiceJoinedChannelId || session !== state.voiceSession) { stream.getTracks().forEach((t) => t.stop()); return; }
     state.screenTrack = track; if ("contentHint" in track) track.contentHint = "detail";
     track.onended = () => { if (state.screenTrack !== track) return; state.screenBusy = true; stopScreenShare(false, track).catch(console.warn).finally(() => { if (session === state.voiceSession) { state.screenBusy = false; updateVoiceDock(state.voiceJoinedChannelId ? "joined" : "idle"); } }); };
-    await replaceVideoForPeers(track); ensureLocalCard(); await retrackVoicePresence();
+    await replaceVideoForPeers(track); ensureLocalCard(); toggleMediaExpanded(true); await retrackVoicePresence();
   } catch (error) { if (!["NotAllowedError", "AbortError"].includes(error?.name)) { console.error(error); toast("Não foi possível iniciar o compartilhamento de tela."); } }
   finally { if (session === state.voiceSession) { state.screenBusy = false; updateVoiceDock(state.voiceJoinedChannelId ? "joined" : "idle"); } }
 }

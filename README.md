@@ -150,3 +150,7 @@ Veja `ROADMAP_SERVICOS_EXTERNOS.md`.
 ## Auditoria
 
 Leia `AUDITORIA_V6.md` para ver os testes executados e as limitações conhecidas.
+
+
+## V6.0.2 — correção Supabase
+Foi corrigida a RPC `create_server_invite`, removendo a dependência de `gen_random_bytes()` que podia falhar em projetos onde `pgcrypto` está em outro schema. Para projetos V6 já instalados, execute apenas `FIX_GEN_RANDOM_BYTES.sql`.

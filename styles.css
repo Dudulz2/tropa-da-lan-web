@@ -1520,3 +1520,165 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 .text-button:hover { color: #c3e7ff; text-decoration: underline; }
 .account-tools { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; border-top: 1px solid rgba(110,130,166,.10); }
 .account-tools .secondary-button { flex: 1 1 190px; }
+
+/* ===== V6.0.3 UI FIXES ===== */
+.media-stage-actions .tiny-icon,
+.topbar-icon,
+.profile-bar .tiny-icon,
+.voice-dock .tiny-icon,
+.voice-dock .dock-action {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.topbar-icon,
+.profile-bar .tiny-icon,
+.voice-dock .tiny-icon,
+.voice-dock .dock-action,
+.media-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-stage {
+  max-height: 62dvh;
+}
+
+.media-stage.expanded {
+  position: fixed;
+  z-index: 240;
+  inset: 16px;
+  margin: 0;
+  max-height: none;
+  min-height: 0;
+  grid-template-rows: 54px minmax(0,1fr);
+  border-radius: 22px;
+  box-shadow: 0 32px 90px rgba(0,0,0,.55);
+}
+
+.media-stage.expanded .media-grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-auto-rows: minmax(220px, 1fr);
+}
+
+.media-stage.expanded .media-card.screen,
+.media-card.screen {
+  grid-column: 1 / -1;
+}
+
+.media-card.screen {
+  min-height: min(44dvh, 520px);
+}
+
+.media-stage.expanded .media-card.screen {
+  min-height: min(72dvh, 860px);
+}
+
+.media-card video {
+  object-position: center center;
+}
+
+.media-card.screen video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #04070e;
+}
+
+.media-expand-btn {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  background: rgba(18, 26, 42, .92);
+  border: 1px solid rgba(111, 129, 159, .14);
+  color: #dce8ff;
+}
+
+.media-expand-btn:hover {
+  background: rgba(34, 49, 73, .95);
+}
+
+.media-local-controls {
+  gap: 8px;
+}
+
+.media-volume {
+  gap: 8px;
+  font-size: 9px;
+}
+
+.media-volume input {
+  width: 92px;
+}
+
+.secure-badge {
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .media-stage.expanded {
+    inset: 0;
+    border-radius: 0;
+  }
+
+  .media-stage,
+  .media-stage.expanded {
+    max-height: 68dvh;
+  }
+
+  .media-card.screen,
+  .media-stage.expanded .media-card.screen {
+    min-height: min(42dvh, 440px);
+  }
+
+  .app-shell,
+  .servers-rail,
+  .channels-panel,
+  .main-panel,
+  .members-panel,
+  .voice-dock,
+  .media-local-controls,
+  .topbar,
+  .topbar-search,
+  .members-search,
+  .modal-card,
+  .settings-shell,
+  .drawer-backdrop,
+  .modal::backdrop {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .drawer-backdrop,
+  .modal::backdrop {
+    background: rgba(3, 6, 12, .74) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .media-stage-head {
+    padding: 10px 10px;
+  }
+
+  .media-stage-actions {
+    gap: 6px;
+  }
+
+  .media-stage .secure-badge {
+    font-size: 10px;
+  }
+
+  .media-grid,
+  .media-stage.expanded .media-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: minmax(190px, 1fr);
+  }
+
+  .media-card.screen,
+  .media-stage.expanded .media-card.screen {
+    min-height: min(38dvh, 320px);
+  }
+}
