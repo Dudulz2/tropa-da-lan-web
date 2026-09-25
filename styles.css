@@ -3411,3 +3411,197 @@ dialog.modal::backdrop { background:rgba(2,5,12,.62); backdrop-filter:blur(5px);
   .discord-control-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .discord-hidden-utility { display: none !important; }
 }
+
+
+/* ========================================================================== */
+/* V7.3.1 — SIDEBAR COLOR FIX + CAMERA / SCREEN SHARE WORKSPACE              */
+/* ========================================================================== */
+:root {
+  --tropa-rail: #070c16;
+  --tropa-sidebar: #0b1220;
+  --tropa-sidebar-2: #0d1626;
+  --tropa-sidebar-hover: #142238;
+  --tropa-sidebar-active: #1a2c49;
+  --tropa-media: #080f1c;
+  --tropa-media-card: #050a12;
+}
+
+/* Mantém a mesma linguagem azul-marinho do restante do app. */
+.servers-rail { background: var(--tropa-rail) !important; border-right: 1px solid rgba(90,150,235,.10) !important; }
+.channels-panel { background: var(--tropa-sidebar) !important; border-right: 1px solid rgba(90,150,235,.12) !important; overflow: hidden !important; }
+.channel-list { background: transparent !important; }
+.discord-server-header { background: var(--tropa-sidebar) !important; box-shadow: 0 1px 0 rgba(90,150,235,.10) !important; }
+.voice-dock,
+.discord-profile-bar.profile-bar { background: #09111d !important; border-top: 1px solid rgba(90,150,235,.10) !important; }
+.profile-presence-dot { border-color: #09111d !important; }
+.channel-button:hover,
+.voice-member-mini:hover,
+.profile-identity:hover,
+.discord-control-icon:hover { background: var(--tropa-sidebar-hover) !important; }
+.channel-button.active,
+.discord-control-icon.active { background: var(--tropa-sidebar-active) !important; }
+.server-home-button,
+.server-button,
+.server-action-button { background: #101a2b !important; }
+.server-home-button:hover,
+.server-button:hover,
+.server-button.active,
+.server-action-button:hover { background: #246bdf !important; }
+.rail-separator { background: rgba(110,160,235,.16) !important; }
+
+@media (min-width: 851px) {
+  .app-shell { grid-template-columns: 68px 248px minmax(0, 1fr) !important; }
+  .servers-rail { padding: 10px 8px !important; }
+  .server-home-button,
+  .server-button,
+  .server-action-button,
+  .server-home-button img,
+  .server-button img,
+  .server-button .server-fallback {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  .channels-panel { grid-template-rows: 48px minmax(0,1fr) auto 52px !important; }
+  .discord-profile-bar.profile-bar { width: 100% !important; min-width: 0 !important; box-sizing: border-box !important; }
+  .channel-list { min-width: 0 !important; overflow-x: hidden !important; }
+}
+
+/* A mídia agora ocupa uma área real do layout; nunca fica por cima do chat. */
+.media-stage {
+  grid-template-rows: 48px minmax(0, 1fr) !important;
+  min-height: 250px;
+  max-height: 58dvh !important;
+  background: var(--tropa-media) !important;
+  border-bottom: 1px solid rgba(90,150,235,.12) !important;
+  overflow: hidden !important;
+}
+.media-stage.expanded {
+  position: relative !important;
+  z-index: 2 !important;
+  inset: auto !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-height: min(620px, 68dvh) !important;
+  max-height: 70dvh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.media-stage.collapsed { min-height: 48px !important; max-height: 48px !important; }
+.media-stage.collapsed .media-stage-body { display: none !important; }
+.media-stage-body {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  background: linear-gradient(180deg, rgba(13,22,38,.88), rgba(6,11,20,.98));
+}
+.media-section {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(92,151,235,.12);
+  border-radius: 14px;
+  background: rgba(10,17,30,.78);
+}
+.media-section-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #dfeaff;
+  padding: 0 2px;
+}
+.media-section-title > span { color: #5ba6ff; font-size: 14px; }
+.media-section-title strong { font-size: 12px; }
+.media-section-title small { margin-left: auto; color: #778aa9; font-size: 10px; }
+.media-section .media-grid {
+  padding: 0 !important;
+  overflow: visible !important;
+  gap: 10px !important;
+}
+.media-grid-screen {
+  grid-template-columns: 1fr !important;
+  grid-auto-rows: auto !important;
+}
+.media-grid-screen .media-card.screen {
+  grid-column: auto !important;
+  width: 100%;
+  min-height: min(48dvh, 560px) !important;
+  aspect-ratio: 16 / 9;
+}
+.media-grid-camera {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)) !important;
+  grid-auto-rows: auto !important;
+}
+.media-grid-camera .media-card {
+  min-height: 170px !important;
+  aspect-ratio: 16 / 9;
+}
+.media-grid-camera .media-card:only-child {
+  width: min(100%, 560px);
+  justify-self: start;
+}
+.media-card {
+  background: var(--tropa-media-card) !important;
+  border-color: rgba(96,156,240,.14) !important;
+}
+.local-camera-card video { transform: scaleX(-1); }
+.local-camera-card.audio-only video { transform: none; }
+.local-screen-card video { object-fit: contain !important; transform: none !important; }
+
+/* Ao abrir uma transmissão/vídeo em fullscreen, a própria câmera continua visível. */
+.media-card:fullscreen { background: #03070d !important; border-radius: 0 !important; }
+.media-card:fullscreen > video { object-fit: contain !important; }
+.fullscreen-self-view {
+  position: absolute;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  z-index: 50;
+  width: clamp(150px, 20vw, 260px);
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 2px solid rgba(91,166,255,.78);
+  background: #060b14;
+  box-shadow: 0 16px 50px rgba(0,0,0,.5);
+}
+.fullscreen-self-view video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.fullscreen-self-label {
+  position: absolute;
+  left: 8px;
+  bottom: 7px;
+  padding: 4px 7px;
+  border-radius: 7px;
+  background: rgba(0,0,0,.65);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+@media (max-width: 850px) {
+  .channels-panel { background: var(--tropa-sidebar) !important; }
+  .media-stage,
+  .media-stage.expanded { min-height: 230px !important; max-height: 56dvh !important; }
+  .media-stage-body { padding: 7px; gap: 7px; }
+  .media-section { padding: 8px; border-radius: 12px; }
+  .media-grid-camera { grid-template-columns: 1fr 1fr !important; }
+  .media-grid-camera .media-card { min-height: 145px !important; }
+  .media-grid-screen .media-card.screen { min-height: min(38dvh, 390px) !important; }
+  .fullscreen-self-view { width: min(38vw, 190px); right: 10px; bottom: 10px; border-radius: 11px; }
+}
+@media (max-width: 560px) {
+  .media-stage,
+  .media-stage.expanded { max-height: 52dvh !important; min-height: 210px !important; }
+  .media-grid-camera { grid-template-columns: 1fr !important; }
+  .media-grid-camera .media-card { min-height: 180px !important; }
+  .media-grid-screen .media-card.screen { min-height: 240px !important; aspect-ratio: 16 / 10; }
+  .media-section-title small { display: none; }
+  .fullscreen-self-view { width: min(42vw, 168px); }
+}

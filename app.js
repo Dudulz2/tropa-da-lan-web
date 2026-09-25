@@ -15,7 +15,7 @@ try {
 }
 
 const cfg = window.TROPA_CONFIG || {};
-const APP_VERSION = "7.3.0";
+const APP_VERSION = "7.3.1";
 const isConfigured = Boolean(
   cfg.SUPABASE_URL &&
   cfg.SUPABASE_PUBLISHABLE_KEY &&
@@ -71,7 +71,7 @@ const ui = {
   membersPanel: $("#membersPanel"), membersList: $("#membersList"), membersSearchInput: $("#membersSearchInput"),
   voiceDock: $("#voiceDock"), voiceIndicator: $("#voiceIndicator"), voiceStateText: $("#voiceStateText"), voiceRoomLabel: $("#voiceRoomLabel"),
   leaveVoiceBtn: $("#leaveVoiceBtn"), muteBtn: $("#muteBtn"), deafenBtn: $("#deafenBtn"), cameraBtn: $("#cameraBtn"), shareBtn: $("#shareBtn"), soundboardBtn: $("#soundboardBtn"), voiceReconnectBtn: $("#voiceReconnectBtn"), voiceDiagnosticsBtn: $("#voiceDiagnosticsBtn"), voiceMicSelect: $("#voiceMicSelect"), voiceOutputSelect: $("#voiceOutputSelect"),
-  mediaStage: $("#mediaStage"), mediaStageTitle: $("#mediaStageTitle"), callStatusText: $("#callStatusText"), mediaGrid: $("#mediaGrid"), expandMediaBtn: $("#expandMediaBtn"), collapseMediaBtn: $("#collapseMediaBtn"),
+  mediaStage: $("#mediaStage"), mediaStageTitle: $("#mediaStageTitle"), callStatusText: $("#callStatusText"), mediaGrid: $("#mediaGrid"), screenMediaSection: $("#screenMediaSection"), screenMediaGrid: $("#screenMediaGrid"), cameraMediaSection: $("#cameraMediaSection"), expandMediaBtn: $("#expandMediaBtn"), collapseMediaBtn: $("#collapseMediaBtn"),
   profileDialog: $("#profileDialog"), profileForm: $("#profileForm"), profileAvatarPreview: $("#profileAvatarPreview"), avatarFileInput: $("#avatarFileInput"),
   displayNameInput: $("#displayNameInput"), profileUsernameInput: $("#profileUsernameInput"), customStatusInput: $("#customStatusInput"), bioInput: $("#bioInput"), saveProfileBtn: $("#saveProfileBtn"),
   serverDialog: $("#serverDialog"), serverForm: $("#serverForm"), serverNameInput: $("#serverNameInput"), serverTemplateInput: $("#serverTemplateInput"),
@@ -3088,7 +3088,7 @@ async function leaveVoice() {
   if (camera && camera.readyState !== "ended") try { camera.stop(); } catch (_) {}
   if (screen && screen.readyState !== "ended") try { screen.stop(); } catch (_) {}
   if (screenAudio && screenAudio.readyState !== "ended") try { screenAudio.stop(); } catch (_) {}
-  ui.mediaGrid.replaceChildren(); ui.mediaStage.classList.add("hidden"); ui.mediaStage.classList.remove("collapsed", "expanded"); if (ui.expandMediaBtn) { ui.expandMediaBtn.textContent = "⛶"; ui.expandMediaBtn.title = "Expandir chamada"; }
+  ui.mediaGrid.replaceChildren(); ui.screenMediaGrid?.replaceChildren(); removeFullscreenSelfView(); refreshMediaSections(); ui.mediaStage.classList.add("hidden"); ui.mediaStage.classList.remove("collapsed", "expanded", "has-screen-share"); if (ui.expandMediaBtn) { ui.expandMediaBtn.textContent = "⛶"; ui.expandMediaBtn.title = "Ampliar área de mídia"; }
   updateVoiceDock("idle"); renderChannels(); renderMembers();
 }
 
@@ -3123,69 +3123,119 @@ ui.muteBtn.addEventListener("click", async () => {
 });
 ui.deafenBtn.addEventListener("click", async () => {
   if (!state.voiceJoinedChannelId) return; state.deafen = !state.deafen;
-  for (const audio of ui.mediaGrid.querySelectorAll('audio.remote-audio')) audio.muted = state.deafen;
+  for (const audio of ui.mediaStage.querySelectorAll('audio.remote-audio')) audio.muted = state.deafen;
   updateVoiceDock("joined"); await retrackVoicePresence();
 });
 ui.cameraBtn.addEventListener("click", toggleCamera);
 ui.shareBtn.addEventListener("click", toggleScreenShare);
 ui.expandMediaBtn?.addEventListener("click", () => toggleMediaExpanded());
 ui.collapseMediaBtn.addEventListener("click", () => { ui.mediaStage.classList.toggle("collapsed"); ui.collapseMediaBtn.textContent = ui.mediaStage.classList.contains("collapsed") ? "□" : "—"; });
+
+function refreshMediaSections() {
+  const screenCount = ui.screenMediaGrid?.querySelectorAll(".media-card").length || 0;
+  const cameraCount = ui.mediaGrid?.querySelectorAll(".media-card").length || 0;
+  ui.screenMediaSection?.classList.toggle("hidden", screenCount === 0);
+  ui.cameraMediaSection?.classList.toggle("hidden", cameraCount === 0);
+  ui.mediaStage?.classList.toggle("has-screen-share", screenCount > 0);
+}
+function placeMediaCard(card, screen = false) {
+  const target = screen ? ui.screenMediaGrid : ui.mediaGrid;
+  if (target && card.parentElement !== target) target.appendChild(card);
+  refreshMediaSections();
+}
+function removeFullscreenSelfView(card = null) {
+  (card || document).querySelectorAll?.(".fullscreen-self-view").forEach((el) => {
+    const video = el.querySelector("video");
+    if (video) video.srcObject = null;
+    el.remove();
+  });
+}
+function addFullscreenSelfView(card) {
+  removeFullscreenSelfView(card);
+  if (!card || card.id === "media-local" || !state.cameraTrack || state.cameraTrack.readyState !== "live") return;
+  const pip = makeEl("div", "fullscreen-self-view");
+  const video = document.createElement("video"); video.autoplay = true; video.muted = true; video.playsInline = true;
+  video.srcObject = new MediaStream([state.cameraTrack]);
+  const label = makeEl("span", "fullscreen-self-label", "Você");
+  pip.append(video, label); card.appendChild(pip); video.play().catch(() => {});
+}
+async function toggleCardFullscreen(card) {
+  if (!card) return;
+  if (document.fullscreenElement) { await document.exitFullscreen?.(); return; }
+  addFullscreenSelfView(card);
+  try { await card.requestFullscreen?.(); }
+  catch (error) { removeFullscreenSelfView(card); console.warn("Fullscreen indisponível", error); }
+}
+document.addEventListener("fullscreenchange", () => {
+  if (!document.fullscreenElement) removeFullscreenSelfView();
+  else if (document.fullscreenElement.classList?.contains("media-card")) addFullscreenSelfView(document.fullscreenElement);
+});
+
+function ensureLocalScreenCard() {
+  let card = document.getElementById("media-local-screen");
+  if (!state.screenTrack) {
+    if (card) { card.querySelector("video")?.replaceChildren?.(); card.remove(); }
+    refreshMediaSections(); return;
+  }
+  if (!card) {
+    card = makeEl("div", "media-card screen local-screen-card"); card.id = "media-local-screen";
+    const video = document.createElement("video"); video.autoplay = true; video.muted = true; video.playsInline = true;
+    const controls = makeEl("div", "media-local-controls");
+    const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir transmissão";
+    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); toggleCardFullscreen(card); });
+    controls.appendChild(expandBtn);
+    card.append(video, makeEl("span", "media-label", "Sua transmissão"), makeEl("span", "media-connection ok", "ao vivo"), controls);
+    card.addEventListener("dblclick", () => toggleCardFullscreen(card));
+  }
+  const video = card.querySelector("video");
+  const preview = new MediaStream([state.screenTrack]);
+  if (video.srcObject?.getVideoTracks?.()[0] !== state.screenTrack) video.srcObject = preview;
+  video.play().catch(() => {});
+  placeMediaCard(card, true);
+}
 function ensureLocalCard() {
   if (!state.voiceJoinedChannelId) return;
   let card = document.getElementById("media-local");
   if (!card) {
-    card = makeEl("div", "media-card audio-only"); card.id = "media-local";
+    card = makeEl("div", "media-card audio-only local-camera-card"); card.id = "media-local";
     const video = document.createElement("video"); video.autoplay = true; video.muted = true; video.playsInline = true;
-    const screenPlaceholder = makeEl("div", "local-screen-placeholder hidden");
-    screenPlaceholder.innerHTML = `<span class="local-screen-icon">▣</span><strong>Você está compartilhando a tela</strong><small>A prévia local foi ocultada para evitar o efeito espelho.</small>`;
     const mediaAvatar = makeEl("span", "media-avatar avatar");
     const controls = makeEl("div", "media-local-controls");
-    const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir vídeo";
-    expandBtn.addEventListener("click", (event) => {
-      event.stopPropagation();
-      if (state.screenTrack) return toast("A prévia da sua própria tela fica oculta para evitar o efeito espelho. Outros participantes continuam vendo normalmente.", 4200);
-      if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.();
-    });
+    const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir câmera";
+    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); toggleCardFullscreen(card); });
     controls.appendChild(expandBtn);
-    card.append(video, mediaAvatar, screenPlaceholder, makeEl("span", "media-label"), makeEl("span", "media-connection ok", "você"), controls); ui.mediaGrid.prepend(card);
+    card.append(video, mediaAvatar, makeEl("span", "media-label"), makeEl("span", "media-connection ok", "você"), controls);
+    card.addEventListener("dblclick", () => toggleCardFullscreen(card));
   }
+  placeMediaCard(card, false);
   card.dataset.initials = initials(state.profile?.display_name || state.profile?.username || "TL");
   setAvatar(card.querySelector(".media-avatar"), state.profile || { display_name: "Você" });
   const video = card.querySelector("video"), label = card.querySelector(".media-label");
-  const placeholder = card.querySelector(".local-screen-placeholder");
-  const expandBtn = card.querySelector(".media-expand-btn");
-  const screenSharing = Boolean(state.screenTrack);
-  const track = currentVideoTrack();
-
-  if (screenSharing) {
-    if (video.srcObject) video.srcObject = null;
-    video.removeAttribute("src");
-    placeholder?.classList.remove("hidden");
+  const cameraTrack = state.cameraTrack?.readyState === "live" ? state.cameraTrack : null;
+  if (cameraTrack) {
+    const preview = new MediaStream([cameraTrack]);
+    if (video.srcObject?.getVideoTracks?.()[0] !== cameraTrack) video.srcObject = preview;
     card.classList.remove("audio-only");
-    card.classList.add("screen", "local-screen-suppressed");
-    if (expandBtn) { expandBtn.disabled = true; expandBtn.title = "Prévia local ocultada durante o compartilhamento"; }
+    video.play().catch(() => {});
   } else {
-    placeholder?.classList.add("hidden");
-    card.classList.remove("screen", "local-screen-suppressed");
-    if (expandBtn) { expandBtn.disabled = false; expandBtn.title = "Expandir vídeo"; }
-    const preview = new MediaStream();
-    if (track) preview.addTrack(track);
-    const audio = micTrack(); if (audio) preview.addTrack(audio);
-    video.srcObject = preview;
-    card.classList.toggle("audio-only", !track);
+    video.srcObject = null;
+    card.classList.add("audio-only");
   }
-
-  label.textContent = `${state.profile?.display_name || "Você"} (você)${screenSharing ? " • transmitindo tela" : ""}`;
-  ui.mediaStageTitle.textContent = `🔊 ${state.voiceJoinedChannelName || "Canal de voz"}`; ui.mediaStage.classList.remove("hidden"); updateCallStatus();
+  card.classList.remove("screen", "local-screen-suppressed");
+  label.textContent = `${state.profile?.display_name || "Você"} (você)${state.screenTrack ? " • transmitindo tela" : cameraTrack ? " • câmera" : ""}`;
+  ensureLocalScreenCard();
+  ui.mediaStageTitle.textContent = `🔊 ${state.voiceJoinedChannelName || "Canal de voz"}`;
+  ui.mediaStage.classList.remove("hidden");
+  refreshMediaSections();
+  updateCallStatus();
 }
-
 
 function toggleMediaExpanded(force = null) {
   const shouldExpand = force === null ? !ui.mediaStage.classList.contains("expanded") : Boolean(force);
   ui.mediaStage.classList.toggle("expanded", shouldExpand);
   if (ui.expandMediaBtn) {
     ui.expandMediaBtn.textContent = shouldExpand ? "🗗" : "⛶";
-    ui.expandMediaBtn.title = shouldExpand ? "Voltar ao tamanho normal" : "Expandir chamada";
+    ui.expandMediaBtn.title = shouldExpand ? "Reduzir área de mídia" : "Ampliar área de mídia";
   }
 }
 
@@ -3203,7 +3253,7 @@ function makeRemoteCard(peerId) {
     const mediaAvatar = makeEl("span", "media-avatar avatar");
     const controls = makeEl("div", "media-local-controls");
     const expandBtn = makeEl("button", "tiny-icon media-expand-btn", "⛶"); expandBtn.type = "button"; expandBtn.title = "Expandir vídeo";
-    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.(); });
+    expandBtn.addEventListener("click", (event) => { event.stopPropagation(); toggleCardFullscreen(card); });
     controls.appendChild(expandBtn);
     const volumeLabel = makeEl("label", "media-volume"); volumeLabel.title = "Volume individual";
     volumeLabel.append(makeEl("span", "", "VOL"));
@@ -3211,7 +3261,7 @@ function makeRemoteCard(peerId) {
     volume.addEventListener("input", () => { remoteAudio.volume = Number(volume.value); });
     volumeLabel.appendChild(volume); controls.appendChild(volumeLabel);
     card.append(video, remoteAudio, mediaAvatar, makeEl("span", "media-label"), makeEl("span", "media-connection", "conectando"), controls);
-    card.addEventListener("dblclick", () => { if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.(); });
+    card.addEventListener("dblclick", () => toggleCardFullscreen(card));
     card.addEventListener("click", () => { video.play().catch(() => {}); remoteAudio.play().catch(() => {}); }); ui.mediaGrid.appendChild(card);
   }
   const p = peerPresence(peerId); const name = p?.display_name || p?.username || state.peerNames.get(peerId) || "Usuário"; card.dataset.initials = initials(name);
@@ -3220,8 +3270,10 @@ function makeRemoteCard(peerId) {
   const remoteAudio = card.querySelector("audio.remote-audio"); if (remoteAudio && remoteAudio.srcObject !== peer.remoteStream) remoteAudio.srcObject = peer.remoteStream; if (remoteAudio) remoteAudio.muted = state.deafen;
   applyAudioOutputToElement(remoteAudio).catch(() => {});
   const liveVideo = peer.remoteStream.getVideoTracks().some((t) => t.readyState === "live" && !t.muted);
-  card.classList.toggle("audio-only", !liveVideo); card.classList.toggle("screen", Boolean(peer.remoteMedia?.screen));
-  card.querySelector(".media-label").textContent = `${name}${peer.remoteMedia?.screen ? " • tela" : ""}${peer.remoteMedia?.muted ? " • mudo" : ""}`;
+  const remoteScreen = Boolean(peer.remoteMedia?.screen);
+  card.classList.toggle("audio-only", !liveVideo); card.classList.toggle("screen", remoteScreen);
+  placeMediaCard(card, remoteScreen);
+  card.querySelector(".media-label").textContent = `${name}${remoteScreen ? " • tela" : ""}${peer.remoteMedia?.muted ? " • mudo" : ""}`;
   video.play().catch(() => {});
   remoteAudio?.play().catch((error) => {
     if (error?.name === "NotAllowedError") {
@@ -3251,7 +3303,7 @@ function startSpeakingMeter(peerId, stream, card) {
   } catch (_) {}
 }
 
-function removeRemoteCard(peerId) { state.audioMeters.get(peerId)?.stop?.(); state.audioMeters.delete(peerId); document.getElementById(`media-${peerId}`)?.remove(); updateCallStatus(); }
+function removeRemoteCard(peerId) { state.audioMeters.get(peerId)?.stop?.(); state.audioMeters.delete(peerId); document.getElementById(`media-${peerId}`)?.remove(); refreshMediaSections(); updateCallStatus(); }
 function updatePeerCardStatus(peerId) {
   const peer = state.peers.get(peerId), card = document.getElementById(`media-${peerId}`); if (!peer || !card) return;
   const badge = card.querySelector(".media-connection"); const map = { new: "preparando", connecting: "conectando", connected: "conectado", disconnected: "reconectando", failed: "falha", closed: "desconectado" };
@@ -3460,8 +3512,9 @@ async function stopScreenShare(stopTrack = true, expected = null) {
   if (state.voiceJoinedChannelId) await replaceVideoForPeers(state.cameraTrack || null);
   if (stopTrack && old.readyState !== "ended") try { old.stop(); } catch (_) {}
   if (oldScreenAudio && oldScreenAudio.readyState !== "ended") try { oldScreenAudio.stop(); } catch (_) {}
+  ensureLocalScreenCard();
   if (state.voiceJoinedChannelId) { ensureLocalCard(); if (![...state.peers.values()].some((peer) => peer.remoteMedia?.screen)) toggleMediaExpanded(false); await retrackVoicePresence(); }
-  updateStreamActualInfo();
+  refreshMediaSections(); updateStreamActualInfo();
 }
 function getScreenShareVideoConstraints() {
   const quality = state.preferences.screen_quality || "1080p";
@@ -3573,7 +3626,7 @@ async function toggleScreenShare() {
       await startScreenAudioMix(capturedAudio, { announce: false });
     }
     track.onended = () => { if (state.screenTrack !== track) return; state.screenBusy = true; stopScreenShare(false, track).catch(console.warn).finally(() => { if (session === state.voiceSession) { state.screenBusy = false; updateVoiceDock(state.voiceJoinedChannelId ? "joined" : "idle"); } }); };
-    await replaceVideoForPeers(track); ensureLocalCard(); toggleMediaExpanded(true); await applyScreenShareSettings({ silent: true }); await retrackVoicePresence();
+    await replaceVideoForPeers(track); ensureLocalCard(); ensureLocalScreenCard(); toggleMediaExpanded(true); refreshMediaSections(); await applyScreenShareSettings({ silent: true }); await retrackVoicePresence();
     const audioMsg = capturedAudio ? " • áudio da tela ativo" : " • sem áudio da tela (marque Compartilhar áudio na janela do navegador)";
     toast(`Compartilhamento iniciado em ${state.preferences.screen_quality || "1080p"} • ${state.preferences.screen_fps || 30} FPS${audioMsg}.`, capturedAudio ? 3600 : 6200);
   } catch (error) { if (!["NotAllowedError", "AbortError"].includes(error?.name)) { console.error(error); toast("Não foi possível iniciar o compartilhamento de tela."); } }
@@ -3621,7 +3674,7 @@ async function boot() {
     return;
   }
   state.supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js?v=7.3.0").catch(() => {});
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js?v=7.3.1").catch(() => {});
   if (state.pendingInviteToken) previewInvite(state.pendingInviteToken).catch(() => {});
 
   startupStatus("Verificando sua sessão…");
