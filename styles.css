@@ -2098,3 +2098,20 @@ body.dragging-file .composer { box-shadow: 0 0 0 2px rgba(var(--brand-rgb),.55),
   .media-quality-select{display:none}.diagnostics-summary{grid-template-columns:1fr}.diag-peer{grid-template-columns:1fr 1fr}.diag-peer strong{grid-column:1/-1}
   .voice-pro-controls{padding-bottom:72px}
 }
+
+
+/* ===== V7.0.2 STARTUP RECOVERY ===== */
+.startup-gate {
+  position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center;
+  background: radial-gradient(circle at 18% 16%, rgba(20,72,160,.20), transparent 34%), radial-gradient(circle at 82% 86%, rgba(0,132,190,.14), transparent 28%), #050912;
+  padding: 24px;
+}
+.startup-gate.hidden { display: none !important; }
+.startup-card {
+  width: min(390px, 92vw); padding: 28px; border-radius: 24px; text-align: center; display: grid; justify-items: center; gap: 12px;
+  background: rgba(10,16,29,.94); border: 1px solid rgba(109,140,193,.16); box-shadow: 0 30px 80px rgba(0,0,0,.38);
+}
+.startup-card img { width: 72px; height: 72px; }
+.startup-card strong { font-size: 18px; }
+.startup-card span { color: var(--muted, #9aa8bf); line-height: 1.45; }
+.startup-card .secondary-button { margin-top: 4px; }

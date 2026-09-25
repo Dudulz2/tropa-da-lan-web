@@ -1,4 +1,4 @@
-const CACHE = "tropa-v7-shell-1";
+const CACHE = "tropa-v7-shell-2";
 const SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./v7.js", "./config.js", "./logo.svg", "./logo-wordmark.svg", "./icon-192.png", "./icon-512.png", "./manifest.webmanifest"];
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));

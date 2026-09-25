@@ -1,6 +1,7 @@
 // Tropa da Lan V7 — melhorias de UX, diagnóstico, PTT, PWA e atalhos.
-const rt = window.TROPA_RUNTIME || await new Promise((resolve) => {
-  window.addEventListener("tropa-runtime-ready", (event) => resolve(event.detail), { once: true });
+const rt = window.TROPA_RUNTIME || await new Promise((resolve, reject) => {
+  const timer = setTimeout(() => reject(new Error("TROPA_RUNTIME não iniciou em 8 segundos.")), 8000);
+  window.addEventListener("tropa-runtime-ready", (event) => { clearTimeout(timer); resolve(event.detail); }, { once: true });
 });
 
 const { state, ui, toast, openDialog, closeDialog, makeEl } = rt;

@@ -1,7 +1,21 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+let createClient;
+try {
+  ({ createClient } = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"));
+} catch (primaryError) {
+  console.warn("Falha ao carregar Supabase pelo CDN principal; tentando fallback.", primaryError);
+  try {
+    ({ createClient } = await import("https://esm.sh/@supabase/supabase-js@2"));
+  } catch (fallbackError) {
+    const gateText = document.getElementById("startupGateText");
+    const gateBtn = document.getElementById("startupReloadBtn");
+    if (gateText) gateText.textContent = "Não foi possível carregar a biblioteca de conexão. Verifique a internet e recarregue.";
+    gateBtn?.classList.remove("hidden");
+    throw fallbackError;
+  }
+}
 
 const cfg = window.TROPA_CONFIG || {};
-const APP_VERSION = "7.0.1";
+const APP_VERSION = "7.0.2";
 const isConfigured = Boolean(
   cfg.SUPABASE_URL &&
   cfg.SUPABASE_PUBLISHABLE_KEY &&
@@ -12,6 +26,16 @@ const isConfigured = Boolean(
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function finishStartupGate() {
+  window.__TROPA_BOOT_OK = true;
+  if (window.__TROPA_BOOT_TIMER) clearTimeout(window.__TROPA_BOOT_TIMER);
+  document.getElementById("startupGate")?.classList.add("hidden");
+}
+function startupStatus(message) {
+  const el = document.getElementById("startupGateText");
+  if (el) el.textContent = message;
+}
 
 const ui = {
   setupBanner: $("#setupBanner"), authScreen: $("#authScreen"), appShell: $("#appShell"),
@@ -3176,17 +3200,32 @@ async function onSignedIn(user) {
 }
 
 async function boot() {
+  startupStatus("Preparando o aplicativo…");
   state.pendingInviteToken = inviteTokenFrom(new URL(location.href).searchParams.get("invite") || "");
   if (!isConfigured) {
     ui.setupBanner.classList.remove("hidden"); ui.authScreen.classList.remove("hidden");
+    finishStartupGate();
     return;
   }
   state.supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js").catch(() => {});
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js?v=7.0.2").catch(() => {});
   if (state.pendingInviteToken) previewInvite(state.pendingInviteToken).catch(() => {});
 
-  const { data: { session } } = await state.supabase.auth.getSession();
+  startupStatus("Verificando sua sessão…");
+  let session = null;
+  try {
+    const sessionResult = await Promise.race([
+      state.supabase.auth.getSession(),
+      new Promise((resolve) => setTimeout(() => resolve({ data: { session: null }, timedOut: true }), 4500))
+    ]);
+    session = sessionResult?.data?.session || null;
+    if (sessionResult?.timedOut) console.warn("getSession demorou demais; exibindo login e aguardando auth state.");
+  } catch (error) {
+    console.warn("Não foi possível recuperar a sessão imediatamente.", error);
+  }
+
   if (session?.user) await onSignedIn(session.user); else showAuth();
+  finishStartupGate();
 
   state.supabase.auth.onAuthStateChange((event, sessionNow) => {
     setTimeout(async () => {
@@ -3218,4 +3257,12 @@ window.addEventListener("beforeunload", () => {
   for (const peer of state.peers.values()) try { peer.pc.close(); } catch (_) {}
 });
 
-boot().catch((error) => { console.error(error); ui.setupBanner.classList.remove("hidden"); toast("Falha ao iniciar o aplicativo.", 6000); });
+boot().catch((error) => {
+  console.error(error);
+  ui.setupBanner?.classList.remove("hidden");
+  ui.authScreen?.classList.remove("hidden");
+  const gateText = document.getElementById("startupGateText");
+  if (gateText) gateText.textContent = "Falha ao iniciar o aplicativo. Recarregue a página.";
+  document.getElementById("startupReloadBtn")?.classList.remove("hidden");
+  toast?.("Falha ao iniciar o aplicativo.", 6000);
+});
