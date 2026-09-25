@@ -1,181 +1,152 @@
-# Tropa da Lan Web — V4.2.1
+# Tropa da Lan Web — V6 Ultimate
 
-Versão web com estrutura de comunidade inspirada em aplicativos modernos de chat por servidores, sem copiar marca, logo ou recursos proprietários de terceiros.
+A V6 é uma atualização grande do Tropa da Lan, mantendo a arquitetura simples de publicar no **GitHub Pages** e usando **Supabase** para autenticação, banco, storage e Realtime, além de **WebRTC** para voz, câmera e compartilhamento de tela.
 
-## O que entrou nesta versão
+## Principais recursos da V6
 
-### Melhorias visuais V5
-- visual mais profissional e refinado;
-- botões refeitos com acabamento premium;
-- formulários, modais e painéis com estilo mais moderno;
-- hierarquia visual, espaçamento e sombras melhorados;
-- aparência mais consistente em desktop, tablet e celular.
+### Conta e perfil
+- cadastro e login com e-mail + senha;
+- recuperação e alteração de senha por e-mail;
+- nome de usuário público separado do e-mail;
+- avatar, banner, bio, status personalizado;
+- presença: online, ausente, não perturbe e invisível;
+- exportação básica dos próprios dados;
+- opção para encerrar sessões em todos os dispositivos.
 
+### Personalização
+- temas Neon, Midnight e OLED;
+- cor de destaque personalizada;
+- densidade confortável ou compacta;
+- opção para reduzir animações;
+- sons ativáveis/desativáveis;
+- notificações do navegador;
+- microfone e câmera preferidos salvos por usuário;
+- teste visual de microfone.
 
-- Login e cadastro com **e-mail + senha** usando Supabase Auth, mantendo um nome de usuário público separado.
-- Perfil persistente com:
-  - foto/avatar;
-  - nome de exibição;
-  - status personalizado;
-  - bio.
-- Criação de **servidores**.
-- Ícone e descrição por servidor.
-- Convites por link: `?invite=CODIGO`.
-- Validade e limite de usos do convite.
-- Canais de **texto** e **voz** criados por servidor.
-- Chat em tempo real por canal.
-- Lista de membros online/offline.
-- Cargos com cor e permissões.
-- Atribuição de cargos aos membros.
-- Remoção de membros para quem tiver permissão.
-- Presença real nos canais de voz: os participantes aparecem abaixo do canal.
-- Chamada WebRTC com:
-  - microfone;
-  - mute;
-  - ensurdecer;
-  - câmera;
-  - compartilhamento de tela;
-  - lista visual de participantes;
-  - reconexão ICE.
-- Layout responsivo para desktop, tablet e celular.
-- RLS no Supabase para impedir que usuários comuns alterem servidores/canais/cargos sem permissão.
-- Buckets de Storage para avatares e ícones dos servidores.
+### Servidores e canais
+- criação de servidores;
+- ícone, nome e descrição;
+- convites por link;
+- canais de texto e voz;
+- criar, renomear, reorganizar e excluir canais conforme permissões;
+- apelido por servidor;
+- cargos, cores e permissões;
+- lista de membros e presença;
+- eventos do servidor com confirmação de presença;
+- moderação com ban/desban e log de auditoria básico.
 
-## Passo obrigatório antes de publicar a V4
+### Chat
+- mensagens em tempo real;
+- responder mensagens;
+- editar e excluir mensagens;
+- reações rápidas;
+- fixar/desafixar mensagens;
+- painel de mensagens fixadas;
+- anexos de até 25 MB;
+- imagens e arquivos com preview/link;
+- enquetes com votação;
+- indicador de digitação;
+- pesquisa no canal;
+- menções visuais, links clicáveis e código inline;
+- notificações e som opcional.
 
-Esta versão usa uma estrutura de banco diferente da V3.
+### Social
+- pedidos de amizade;
+- aceitar/recusar solicitações;
+- lista de amigos;
+- mensagens privadas entre amigos;
+- anexos em DMs;
+- atualização em tempo real de DMs e amizades.
 
-### 1. Supabase > SQL Editor
+### Voz e mídia
+- canais de voz por servidor;
+- microfone, mute e ensurdecer;
+- câmera;
+- compartilhamento de tela;
+- membros visíveis na call e sob o canal de voz;
+- indicador visual de quem está falando;
+- volume individual por participante;
+- tela cheia por participante com duplo clique;
+- seleção de microfone/câmera;
+- reconexão WebRTC e tratamento de estados ICE.
 
-Abra o arquivo:
+### Web / PWA
+- layout responsivo para desktop, tablet e celular;
+- manifest para instalação como aplicativo web;
+- service worker para cache do shell da interface;
+- atalhos de teclado, incluindo Ctrl/Cmd+K para busca e atalhos de voz;
+- visual profissional com temas e microinterações.
 
-`supabase_v4.sql`
+## Atualização do seu projeto atual
 
-Copie **todo** o conteúdo e execute no SQL Editor do seu projeto.
+Se você **já executou o `supabase_v4.sql` anteriormente**, não execute o arquivo base de novo. Faça somente:
 
-O script:
+1. Abra o Supabase.
+2. Vá em **SQL Editor → New query**.
+3. Abra `MIGRATION_V6_ULTIMATE.sql` desta pasta.
+4. Copie todo o conteúdo.
+5. Cole no SQL Editor e clique em **Run**.
+6. No final, confira se a verificação mostra `create_server_rpc_ok = true`.
+7. Aguarde alguns segundos para o cache da API do Supabase atualizar.
 
-- cria as novas tabelas da V4;
-- cria RLS e políticas;
-- cria cargos/canais padrão quando um servidor é criado;
-- cria funções seguras de convite;
-- cria os buckets `avatars` e `server-icons`;
-- ativa Realtime nas tabelas usadas pela interface;
-- remove as políticas públicas do chat antigo da V3.
+A migração é aditiva e foi escrita para não apagar servidores, usuários ou mensagens existentes.
 
-Ele **não dá DROP na tabela antiga `messages`**. Os dados antigos continuam no banco, mas a V4 passa a usar `channel_messages`.
+### Projeto Supabase totalmente novo
 
-### 2. Configurar autenticação por e-mail
+Em um projeto vazio, execute nesta ordem:
 
-A V5 não usa mais e-mails falsos. O cadastro pede um **e-mail real**, um **nome de usuário público** e uma senha. Isso evita o erro de endereço de e-mail inválido do Supabase.
+1. `supabase_v4.sql`
+2. `MIGRATION_V6_ULTIMATE.sql`
 
-Para testar rapidamente sem depender do envio de mensagens, abra o provedor **Email** em Authentication e deixe **Confirm email** desativado. Assim, a conta recebe uma sessão imediatamente após o cadastro.
+## Configuração de autenticação
 
-Se você quiser exigir confirmação de endereço no futuro, ative **Confirm email** e configure um SMTP apropriado para entregar os e-mails aos usuários.
+Durante seus testes, em **Authentication → Sign In / Providers → Email**, deixe a confirmação de e-mail desativada se você não configurou SMTP próprio. O provedor de e-mail interno do Supabase possui limites baixos de envio.
 
-O e-mail é usado somente para autenticação; no servidor e nas mensagens aparece o nome de usuário/perfil.
+Para a recuperação de senha funcionar no GitHub Pages, em **Authentication → URL Configuration**, adicione o endereço do site como Site URL/Redirect URL, por exemplo:
 
-### 3. Configuração do projeto
-
-`config.js` já contém o Project URL e a Publishable Key usados nas versões anteriores.
-
-Nunca coloque no frontend:
-
-- Secret key;
-- `service_role`;
-- senha do banco de dados.
+`https://dudulz2.github.io/tropa-da-lan-web/`
 
 ## Publicar no GitHub Pages
 
-Substitua no seu repositório os arquivos da versão antiga pelos arquivos desta pasta:
+Envie para a raiz do repositório:
 
 - `.nojekyll`
 - `index.html`
 - `styles.css`
 - `app.js`
 - `config.js`
-- `assets/logo.svg`
-- `README.md`
+- `logo.svg`
+- `logo-wordmark.svg`
+- `icon-192.png`
+- `icon-512.png`
+- `manifest.webmanifest`
+- `sw.js`
 
-O arquivo `supabase_v4.sql` pode ficar no repositório, mas ele não é executado pelo GitHub Pages. Ele deve ser executado manualmente no SQL Editor do Supabase.
+Os arquivos `.sql` e `.md` podem permanecer no repositório, mas não são necessários para o navegador executar o site.
 
-Depois faça o commit e aguarde o GitHub Pages concluir o deploy.
+Depois do deploy, use **Ctrl + F5**. Como a V6 possui service worker, se o navegador insistir em uma versão antiga, limpe os dados do site/cache uma vez e recarregue.
 
-Faça `Ctrl + F5` no PC para evitar cache da versão anterior.
+## Limitações que dependem de infraestrutura externa
 
-## Primeiro teste recomendado
+A V6 implementa o máximo que é razoável dentro da arquitetura atual, mas alguns recursos da lista de ideias exigem serviços adicionais e não foram simulados com botões falsos:
 
-1. Abra o site em uma janela normal.
-2. Crie a conta `teste1` com uma senha de pelo menos 6 caracteres.
-3. Crie um servidor.
-4. Gere um link de convite.
-5. Abra o link em uma janela anônima/outro navegador.
-6. Crie a conta `teste2`.
-7. Aceite o convite.
-8. Teste mensagens no `#geral`.
-9. Entre com as duas contas no canal `🔊 Geral`.
-10. Confira se os dois nomes aparecem abaixo do canal de voz.
-11. Teste áudio, câmera e compartilhamento de tela.
+- **TURN dedicado** para tornar chamadas confiáveis em praticamente qualquer NAT/firewall;
+- IA, resumo, transcrição e tradução;
+- bots executando 24/7;
+- integrações Twitch, YouTube, Spotify, Steam, GitHub etc.;
+- push notifications de verdade quando o navegador/app está totalmente fechado;
+- vídeo de grande escala/SFU para muitas pessoas simultaneamente;
+- gravação e processamento de mídia no servidor.
 
-## TURN e chamadas em redes diferentes
+Veja `ROADMAP_SERVICOS_EXTERNOS.md`.
 
-O arquivo `config.js` já possui servidores STUN. Isso permite conexão direta WebRTC em muitas redes.
+## Segurança e privacidade
 
-Para chamadas funcionarem de forma confiável em praticamente qualquer rede, ainda é recomendado adicionar um **servidor TURN** em `ICE_SERVERS`.
+- credenciais secretas nunca devem ser colocadas em `config.js`; use somente a Publishable Key do Supabase;
+- RLS continua ativo nas tabelas da V6;
+- criação de servidor, amizade, pins e moderação usam RPCs controladas no banco;
+- anexos de mensagens usam o bucket `message-files`. Nesta versão ele é público por URL para simplificar a hospedagem estática, então não envie arquivos sigilosos pelo Tropa da Lan até migrarmos anexos para URLs assinadas/bucket privado.
 
-Sem TURN, pode acontecer de:
+## Auditoria
 
-- chat funcionar normalmente;
-- os dois usuários aparecerem na call;
-- mas o áudio/vídeo não conseguir criar uma rota entre duas redes mais restritas.
-
-Isso é uma limitação de conectividade WebRTC/NAT, não do GitHub Pages.
-
-## Permissões de cargos disponíveis
-
-- Ver canais
-- Enviar mensagens
-- Conectar em voz
-- Falar
-- Criar convites
-- Gerenciar mensagens
-- Gerenciar canais
-- Gerenciar apelidos
-- Expulsar membros
-- Gerenciar cargos
-- Gerenciar servidor
-- Administrador
-
-O dono do servidor tem todas as permissões automaticamente.
-
-## Segurança
-
-- Senhas ficam no Supabase Auth; o frontend não grava senha em tabela própria.
-- A Publishable Key pode ficar no site porque o acesso aos dados é protegido por RLS.
-- Convites são gerados no banco por função segura.
-- Usuários não podem editar o `username` público nesta versão; podem alterar o nome de exibição.
-- O dono não pode ser removido pela política de membros.
-- O cargo `@everyone` não pode ser apagado diretamente.
-
-## Limitações atuais
-
-Para ficar ainda mais completo no futuro, ainda podem entrar:
-
-- mensagens privadas/DM;
-- categorias de canais;
-- permissões específicas por canal;
-- reações e respostas a mensagens;
-- anexos de arquivos/imagens;
-- notificações;
-- bots;
-- recuperação de senha por e-mail (próxima melhoria);
-- moderação avançada e logs;
-- TURN próprio para maior confiabilidade das chamadas.
-
-
-## Correção V4.2.1
-
-- Logo principal e ícones também ficam na raiz do projeto para evitar caminhos quebrados no GitHub Pages.
-- Cadastro mostra uma mensagem clara quando o Supabase retorna limite de e-mail/cadastro (HTTP 429).
-- O botão de cadastro entra em espera por 60 s após rate limit para evitar novas tentativas repetidas.
-- Para testes no plano gratuito, desative **Confirm email** em Supabase → Authentication → Providers → Email.
+Leia `AUDITORIA_V6.md` para ver os testes executados e as limitações conhecidas.

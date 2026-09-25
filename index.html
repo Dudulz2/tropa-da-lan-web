@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111318" />
+  <meta name="theme-color" content="#08101f" />
   <meta name="description" content="Tropa da Lan — comunidades, chat, voz, vídeo e compartilhamento de tela no navegador." />
-  <title>Tropa da Lan</title>
+  <title>Tropa da Lan — Comunidade, chat e voz</title>
   <link rel="icon" href="./logo.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
@@ -57,6 +57,7 @@
           <label>Senha
             <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Sua senha" required />
           </label>
+          <div class="auth-login-actions"><button id="forgotPasswordBtn" class="text-button" type="button">Esqueci minha senha</button></div>
           <button id="loginBtn" class="primary-button wide" type="submit">Entrar</button>
           <p class="auth-hint">O e-mail é usado apenas para autenticação. Dentro do app, as pessoas veem seu nome de usuário e seu perfil.</p>
         </form>
@@ -110,6 +111,8 @@
         <button id="quickInviteBtn" type="button">🔗 Convidar pessoas</button>
         <button id="quickCreateChannelBtn" type="button">＋ Criar canal</button>
         <button id="quickSettingsBtn" type="button">⚙ Configurações do servidor</button>
+        <button id="quickNicknameBtn" type="button">✎ Meu apelido no servidor</button>
+        <button id="quickEventsBtn" type="button">◷ Eventos e enquetes</button>
         <button id="quickLeaveServerBtn" class="danger-text" type="button">↪ Sair do servidor</button>
       </div>
 
@@ -137,7 +140,7 @@
           <span id="profileAvatar" class="avatar avatar-sm">TL</span>
           <span class="profile-meta"><strong id="profileName">Carregando…</strong><small id="profileUsername">@usuario</small></span>
         </button>
-        <button id="profileSettingsBtn" class="tiny-icon" type="button" title="Perfil">⚙</button>
+        <button id="profileSettingsBtn" class="tiny-icon" type="button" title="Configurações pessoais">⚙</button>
         <button id="logoutBtn" class="tiny-icon" type="button" title="Sair da conta">↪</button>
       </footer>
     </aside>
@@ -152,22 +155,46 @@
           </div>
         </div>
         <div class="topbar-center">
-          <label class="topbar-search" aria-label="Buscar">
+          <label class="topbar-search" aria-label="Buscar mensagens">
             <span>⌕</span>
-            <input type="text" placeholder="Buscar em #geral" disabled />
+            <input id="topbarSearchInput" type="search" placeholder="Buscar neste canal" autocomplete="off" />
+            <kbd>Ctrl K</kbd>
           </label>
         </div>
         <div class="topbar-actions">
           <span id="connectionText" class="connection-text">Conectando…</span>
-          <button class="topbar-icon desktop-only" type="button" title="Notificações">🔔</button>
-          <button class="topbar-icon desktop-only" type="button" title="Amigos">👥</button>
-          <button class="topbar-icon desktop-only" type="button" title="Configurações rápidas">⚙</button>
-          <button id="mobileMembersBtn" class="topbar-icon" type="button" title="Membros">👥</button>
+          <button id="pinnedMessagesBtn" class="topbar-icon desktop-only" type="button" title="Mensagens fixadas">⌖</button>
+          <button id="notificationsBtn" class="topbar-icon desktop-only" type="button" title="Notificações">♢</button>
+          <button id="friendsBtn" class="topbar-icon desktop-only" type="button" title="Amigos e mensagens">♙</button>
+          <button id="appearanceBtn" class="topbar-icon desktop-only" type="button" title="Aparência e preferências">⚙</button>
+          <button id="mobileMembersBtn" class="topbar-icon" type="button" title="Membros">♟</button>
         </div>
       </header>
 
       <section class="content-area">
         <div class="conversation-column">
+          <section id="homeHub" class="home-hub hidden">
+            <header class="home-hub-head">
+              <div><span class="eyebrow">CENTRAL SOCIAL</span><h2>Amigos e mensagens</h2><p>Converse em particular e veja quem está por perto.</p></div>
+              <button id="addFriendBtn" class="primary-button" type="button">Adicionar amigo</button>
+            </header>
+            <div class="home-hub-grid">
+              <aside class="social-sidebar">
+                <div class="social-block"><div class="social-title"><span>Solicitações</span><span id="friendRequestCount" class="pill">0</span></div><div id="friendRequestsList" class="social-list"></div></div>
+                <div class="social-block"><div class="social-title"><span>Amigos</span><span id="friendsCount" class="pill">0</span></div><div id="friendsList" class="social-list"></div></div>
+                <div class="social-block"><div class="social-title"><span>Conversas</span></div><div id="dmContactsList" class="social-list"></div></div>
+              </aside>
+              <section class="dm-pane">
+                <div id="dmEmpty" class="dm-empty"><div class="dm-empty-icon">✦</div><h3>Suas conversas privadas</h3><p>Escolha um amigo ou comece uma nova conversa.</p></div>
+                <div id="dmConversation" class="dm-conversation hidden">
+                  <header class="dm-head"><button id="dmBackBtn" class="mobile-only tiny-icon" type="button">←</button><span id="dmAvatar" class="avatar avatar-md">TL</span><div><strong id="dmName">Conversa</strong><small id="dmStatus">offline</small></div></header>
+                  <div id="dmMessages" class="dm-messages"></div>
+                  <form id="dmForm" class="composer dm-composer"><button id="dmAttachBtn" class="composer-icon" type="button" title="Anexar arquivo">＋</button><input id="dmInput" type="text" maxlength="2000" placeholder="Enviar mensagem privada" autocomplete="off" /><button class="send-button" type="submit">Enviar</button><input id="dmFileInput" type="file" hidden /></form>
+                </div>
+              </section>
+            </div>
+          </section>
+
           <section id="emptyState" class="empty-state">
             <img src="./logo.svg" alt="" />
             <h2>Bem-vindo ao Tropa da Lan</h2>
@@ -185,11 +212,19 @@
 
           <section id="messages" class="messages hidden" aria-live="polite"></section>
 
-          <form id="messageForm" class="composer hidden">
-            <button type="button" class="composer-icon" title="Anexos em uma próxima versão" disabled>＋</button>
-            <input id="messageInput" type="text" maxlength="2000" autocomplete="off" placeholder="Enviar mensagem" />
-            <button id="sendBtn" class="send-button" type="submit">Enviar</button>
-          </form>
+          <div id="composerWrap" class="composer-wrap hidden">
+            <div id="replyBar" class="reply-bar hidden"><div><small id="replyLabel">Respondendo</small><strong id="replyPreview">—</strong></div><button id="cancelReplyBtn" class="tiny-icon" type="button" aria-label="Cancelar resposta">✕</button></div>
+            <div id="editBar" class="reply-bar edit-bar hidden"><div><small>Editando mensagem</small><strong>Pressione Esc para cancelar</strong></div><button id="cancelEditBtn" class="tiny-icon" type="button">✕</button></div>
+            <div id="attachmentPreview" class="attachment-preview hidden"></div>
+            <form id="messageForm" class="composer">
+              <button id="attachBtn" type="button" class="composer-icon" title="Anexar arquivo">＋</button>
+              <input id="messageInput" type="text" maxlength="2000" autocomplete="off" placeholder="Enviar mensagem" />
+              <button id="quickPollBtn" class="composer-icon poll-icon" type="button" title="Criar enquete">▥</button>
+              <button id="sendBtn" class="send-button" type="submit">Enviar</button>
+              <input id="messageFileInput" type="file" accept="image/*,video/*,audio/*,.pdf,.txt,.zip" hidden />
+            </form>
+            <div id="typingIndicator" class="typing-indicator"></div>
+          </div>
         </div>
 
         <aside id="membersPanel" class="members-panel">
@@ -199,7 +234,7 @@
           </header>
           <label class="members-search" aria-label="Buscar membros">
             <span>⌕</span>
-            <input type="text" placeholder="Buscar membros" disabled />
+            <input id="membersSearchInput" type="search" placeholder="Buscar membros" autocomplete="off" />
           </label>
           <div id="membersList" class="members-list"></div>
         </aside>
@@ -211,14 +246,15 @@
   <dialog id="profileDialog" class="modal">
     <form id="profileForm" class="modal-card profile-editor">
       <header class="modal-head"><div><span class="eyebrow">MINHA CONTA</span><h2>Editar perfil</h2></div><button class="modal-x" type="button" data-close-dialog="profileDialog">✕</button></header>
-      <div class="profile-banner-preview"></div>
+      <div id="profileBannerPreview" class="profile-banner-preview"></div>
+      <div class="profile-banner-actions"><label class="secondary-button file-button">Alterar banner<input id="bannerFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden /></label></div>
       <div class="profile-avatar-editor">
         <span id="profileAvatarPreview" class="avatar avatar-xl">TL</span>
         <label class="secondary-button file-button">Trocar foto<input id="avatarFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden /></label>
       </div>
       <label>Nome de exibição<input id="displayNameInput" type="text" minlength="1" maxlength="32" required /></label>
       <label>Usuário<input id="profileUsernameInput" type="text" disabled /><small>O usuário de login não pode ser alterado nesta versão.</small></label>
-      <label>Status personalizado<input id="customStatusInput" type="text" maxlength="64" placeholder="O que você está fazendo?" /></label>
+      <div class="form-grid two"><label>Presença<select id="presenceModeInput"><option value="online">Online</option><option value="idle">Ausente</option><option value="dnd">Não perturbe</option><option value="invisible">Invisível</option></select></label><label>Status personalizado<input id="customStatusInput" type="text" maxlength="64" placeholder="O que você está fazendo?" /></label></div>
       <label>Sobre mim<textarea id="bioInput" maxlength="190" rows="4" placeholder="Conte um pouco sobre você"></textarea></label>
       <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="profileDialog">Cancelar</button><button id="saveProfileBtn" class="primary-button" type="submit">Salvar</button></div>
     </form>
@@ -280,6 +316,8 @@
         <button class="settings-tab active" data-settings-tab="overview" type="button">Visão geral</button>
         <button class="settings-tab" data-settings-tab="roles" type="button">Cargos</button>
         <button class="settings-tab" data-settings-tab="members" type="button">Membros</button>
+        <button class="settings-tab" data-settings-tab="events" type="button">Eventos</button>
+        <button class="settings-tab" data-settings-tab="moderation" type="button">Moderação</button>
         <div class="settings-spacer"></div>
         <button id="deleteServerBtn" class="settings-tab danger-text" type="button">Excluir servidor</button>
       </aside>
@@ -313,9 +351,41 @@
           <div class="settings-title-row"><div><h2>Membros</h2><p>Veja os membros e atribua cargos.</p></div><span id="settingsMemberCount" class="pill">0 membros</span></div>
           <div id="settingsMembersList" class="settings-members-list"></div>
         </div>
+
+        <div id="settingsEventsPane" class="settings-pane hidden">
+          <div class="settings-title-row"><div><h2>Eventos</h2><p>Organize partidas, reuniões e atividades da comunidade.</p></div><button id="newEventBtn" class="primary-button" type="button">Novo evento</button></div>
+          <div id="eventsList" class="events-list"></div>
+        </div>
+
+        <div id="settingsModerationPane" class="settings-pane hidden">
+          <div class="settings-title-row"><div><h2>Moderação</h2><p>Banimentos recentes e ações administrativas do servidor.</p></div></div>
+          <div class="moderation-grid"><div><span class="form-label">Banimentos</span><div id="bansList" class="moderation-list"></div></div><div><span class="form-label">Log de auditoria</span><div id="auditLogList" class="moderation-list"></div></div></div>
+        </div>
       </section>
     </div>
   </dialog>
+
+  <!-- RECUPERAR SENHA -->
+  <dialog id="forgotPasswordDialog" class="modal"><form id="forgotPasswordForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">CONTA</span><h2>Recuperar senha</h2></div><button class="modal-x" type="button" data-close-dialog="forgotPasswordDialog">✕</button></header><p class="modal-copy">Enviaremos um link de recuperação para seu e-mail. O envio depende do serviço de e-mail configurado no Supabase.</p><label>E-mail<input id="forgotEmailInput" type="email" required placeholder="voce@exemplo.com" /></label><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="forgotPasswordDialog">Cancelar</button><button class="primary-button" type="submit">Enviar link</button></div></form></dialog>
+
+  <dialog id="recoveryDialog" class="modal"><form id="recoveryForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">SEGURANÇA</span><h2>Definir nova senha</h2></div></header><label>Nova senha<input id="recoveryPasswordInput" type="password" minlength="6" maxlength="72" required /></label><label>Confirmar senha<input id="recoveryPassword2Input" type="password" minlength="6" maxlength="72" required /></label><button class="primary-button wide" type="submit">Atualizar senha</button></form></dialog>
+
+  <!-- ADICIONAR AMIGO -->
+  <dialog id="addFriendDialog" class="modal"><form id="addFriendForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">SOCIAL</span><h2>Adicionar amigo</h2></div><button class="modal-x" type="button" data-close-dialog="addFriendDialog">✕</button></header><p class="modal-copy">Digite o @usuário exatamente como aparece no perfil.</p><label>Nome de usuário<input id="friendUsernameInput" type="text" maxlength="20" placeholder="usuario" required /></label><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="addFriendDialog">Cancelar</button><button class="primary-button" type="submit">Enviar solicitação</button></div></form></dialog>
+
+  <!-- PREFERÊNCIAS -->
+  <dialog id="preferencesDialog" class="modal"><form id="preferencesForm" class="modal-card preferences-card"><header class="modal-head"><div><span class="eyebrow">PREFERÊNCIAS</span><h2>Aparência e experiência</h2></div><button class="modal-x" type="button" data-close-dialog="preferencesDialog">✕</button></header><div class="preferences-grid"><label>Cor de destaque<input id="accentColorInput" type="color" value="#1D8DFF" /></label><label>Tema<select id="themeModeInput"><option value="neon">Neon</option><option value="midnight">Midnight</option><option value="oled">OLED</option></select></label><label>Densidade<select id="densityInput"><option value="comfortable">Confortável</option><option value="compact">Compacta</option></select></label><label>Microfone<select id="audioInputSelect"><option value="">Padrão do sistema</option></select></label><label>Câmera<select id="videoInputSelect"><option value="">Padrão do sistema</option></select></label><div class="device-test-row"><button id="refreshDevicesBtn" class="secondary-button" type="button">Atualizar dispositivos</button><button id="testMicBtn" class="secondary-button" type="button">Testar microfone</button><span id="micMeter" class="mic-meter"><i></i></span></div><label class="switch-row"><span><b>Reduzir animações</b><small>Útil para desempenho e acessibilidade.</small></span><input id="reduceMotionInput" type="checkbox" /></label><label class="switch-row"><span><b>Notificações do navegador</b><small>Avisa quando uma mensagem chega com a aba em segundo plano.</small></span><input id="browserNotificationsInput" type="checkbox" /></label><label class="switch-row"><span><b>Sons</b><small>Sons discretos para novas mensagens e chamadas.</small></span><input id="soundsInput" type="checkbox" /></label></div><div class="account-tools"><button id="exportDataBtn" class="secondary-button" type="button">Exportar meus dados</button><button id="signOutAllBtn" class="secondary-button" type="button">Sair de todos os dispositivos</button></div><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="preferencesDialog">Cancelar</button><button class="primary-button" type="submit">Salvar preferências</button></div></form></dialog>
+
+  <!-- ENQUETE -->
+  <dialog id="pollDialog" class="modal"><form id="pollForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">ENQUETE</span><h2>Criar enquete</h2></div><button class="modal-x" type="button" data-close-dialog="pollDialog">✕</button></header><label>Pergunta<input id="pollQuestionInput" type="text" maxlength="180" required /></label><label>Opções<textarea id="pollOptionsInput" rows="5" maxlength="500" placeholder="Uma opção por linha
+Opção A
+Opção B" required></textarea><small>Entre 2 e 6 opções.</small></label><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="pollDialog">Cancelar</button><button class="primary-button" type="submit">Publicar enquete</button></div></form></dialog>
+
+  <!-- EVENTO -->
+  <dialog id="eventDialog" class="modal"><form id="eventForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">EVENTO</span><h2>Novo evento</h2></div><button class="modal-x" type="button" data-close-dialog="eventDialog">✕</button></header><label>Título<input id="eventTitleInput" type="text" maxlength="80" required /></label><label>Descrição<textarea id="eventDescriptionInput" rows="3" maxlength="500"></textarea></label><label>Data e hora<input id="eventStartsAtInput" type="datetime-local" required /></label><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="eventDialog">Cancelar</button><button class="primary-button" type="submit">Criar evento</button></div></form></dialog>
+
+  <!-- FIXADAS -->
+  <dialog id="pinnedDialog" class="modal"><div class="modal-card"><header class="modal-head"><div><span class="eyebrow">CANAL</span><h2>Mensagens fixadas</h2></div><button class="modal-x" type="button" data-close-dialog="pinnedDialog">✕</button></header><div id="pinnedList" class="pinned-list"></div></div></dialog>
 
   <div id="toast" class="toast hidden" role="status"></div>
 

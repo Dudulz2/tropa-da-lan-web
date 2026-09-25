@@ -15,19 +15,22 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const ui = {
   setupBanner: $("#setupBanner"), authScreen: $("#authScreen"), appShell: $("#appShell"),
   loginTab: $("#loginTab"), registerTab: $("#registerTab"), loginForm: $("#loginForm"), registerForm: $("#registerForm"),
-  loginEmail: $("#loginEmail"), loginPassword: $("#loginPassword"), loginBtn: $("#loginBtn"),
+  loginEmail: $("#loginEmail"), loginPassword: $("#loginPassword"), loginBtn: $("#loginBtn"), forgotPasswordBtn: $("#forgotPasswordBtn"),
   registerEmail: $("#registerEmail"), registerUsername: $("#registerUsername"), registerPassword: $("#registerPassword"), registerPassword2: $("#registerPassword2"), registerBtn: $("#registerBtn"),
   invitePreviewAuth: $("#invitePreviewAuth"),
   serversRail: $("#serversRail"), serverButtons: $("#serverButtons"), createServerBtn: $("#createServerBtn"), joinServerBtn: $("#joinServerBtn"),
   emptyCreateServerBtn: $("#emptyCreateServerBtn"), emptyJoinServerBtn: $("#emptyJoinServerBtn"), homeServerBtn: $("#homeServerBtn"),
   channelsPanel: $("#channelsPanel"), activeServerName: $("#activeServerName"), serverMenuBtn: $("#serverMenuBtn"), closeNavBtn: $("#closeNavBtn"),
-  serverQuickMenu: $("#serverQuickMenu"), quickInviteBtn: $("#quickInviteBtn"), quickCreateChannelBtn: $("#quickCreateChannelBtn"), quickSettingsBtn: $("#quickSettingsBtn"), quickLeaveServerBtn: $("#quickLeaveServerBtn"),
+  serverQuickMenu: $("#serverQuickMenu"), quickInviteBtn: $("#quickInviteBtn"), quickCreateChannelBtn: $("#quickCreateChannelBtn"), quickSettingsBtn: $("#quickSettingsBtn"), quickNicknameBtn: $("#quickNicknameBtn"), quickEventsBtn: $("#quickEventsBtn"), quickLeaveServerBtn: $("#quickLeaveServerBtn"),
   channelList: $("#channelList"), profileButton: $("#profileButton"), profileSettingsBtn: $("#profileSettingsBtn"), logoutBtn: $("#logoutBtn"),
   profileAvatar: $("#profileAvatar"), profileName: $("#profileName"), profileUsername: $("#profileUsername"),
   mobileMenuBtn: $("#mobileMenuBtn"), mobileMembersBtn: $("#mobileMembersBtn"), closeMembersBtn: $("#closeMembersBtn"), drawerBackdrop: $("#drawerBackdrop"),
   activeChannelIcon: $("#activeChannelIcon"), activeChannelName: $("#activeChannelName"), activeChannelTopic: $("#activeChannelTopic"), connectionText: $("#connectionText"),
-  emptyState: $("#emptyState"), messages: $("#messages"), messageForm: $("#messageForm"), messageInput: $("#messageInput"), sendBtn: $("#sendBtn"),
-  membersPanel: $("#membersPanel"), membersList: $("#membersList"),
+  topbarSearchInput: $("#topbarSearchInput"), pinnedMessagesBtn: $("#pinnedMessagesBtn"), notificationsBtn: $("#notificationsBtn"), friendsBtn: $("#friendsBtn"), appearanceBtn: $("#appearanceBtn"),
+  homeHub: $("#homeHub"), contentArea: $(".content-area"), friendRequestCount: $("#friendRequestCount"), friendRequestsList: $("#friendRequestsList"), friendsCount: $("#friendsCount"), friendsList: $("#friendsList"), dmContactsList: $("#dmContactsList"), addFriendBtn: $("#addFriendBtn"),
+  dmEmpty: $("#dmEmpty"), dmConversation: $("#dmConversation"), dmBackBtn: $("#dmBackBtn"), dmAvatar: $("#dmAvatar"), dmName: $("#dmName"), dmStatus: $("#dmStatus"), dmMessages: $("#dmMessages"), dmForm: $("#dmForm"), dmInput: $("#dmInput"), dmAttachBtn: $("#dmAttachBtn"), dmFileInput: $("#dmFileInput"),
+  emptyState: $("#emptyState"), messages: $("#messages"), composerWrap: $("#composerWrap"), messageForm: $("#messageForm"), messageInput: $("#messageInput"), sendBtn: $("#sendBtn"), attachBtn: $("#attachBtn"), messageFileInput: $("#messageFileInput"), attachmentPreview: $("#attachmentPreview"), replyBar: $("#replyBar"), replyLabel: $("#replyLabel"), replyPreview: $("#replyPreview"), cancelReplyBtn: $("#cancelReplyBtn"), editBar: $("#editBar"), cancelEditBtn: $("#cancelEditBtn"), typingIndicator: $("#typingIndicator"), quickPollBtn: $("#quickPollBtn"),
+  membersPanel: $("#membersPanel"), membersList: $("#membersList"), membersSearchInput: $("#membersSearchInput"),
   voiceDock: $("#voiceDock"), voiceIndicator: $("#voiceIndicator"), voiceStateText: $("#voiceStateText"), voiceRoomLabel: $("#voiceRoomLabel"),
   leaveVoiceBtn: $("#leaveVoiceBtn"), muteBtn: $("#muteBtn"), deafenBtn: $("#deafenBtn"), cameraBtn: $("#cameraBtn"), shareBtn: $("#shareBtn"),
   mediaStage: $("#mediaStage"), mediaStageTitle: $("#mediaStageTitle"), callStatusText: $("#callStatusText"), mediaGrid: $("#mediaGrid"), collapseMediaBtn: $("#collapseMediaBtn"),
@@ -40,7 +43,16 @@ const ui = {
   serverSettingsDialog: $("#serverSettingsDialog"), settingsServerName: $("#settingsServerName"), settingsOverviewPane: $("#settingsOverviewPane"), settingsRolesPane: $("#settingsRolesPane"), settingsMembersPane: $("#settingsMembersPane"),
   serverIconPreview: $("#serverIconPreview"), serverIconFileInput: $("#serverIconFileInput"), settingsServerNameInput: $("#settingsServerNameInput"), settingsServerDescription: $("#settingsServerDescription"), saveServerOverviewBtn: $("#saveServerOverviewBtn"), deleteServerBtn: $("#deleteServerBtn"),
   rolesList: $("#rolesList"), newRoleBtn: $("#newRoleBtn"), roleEditor: $("#roleEditor"), roleEditorTitle: $("#roleEditorTitle"), deleteRoleBtn: $("#deleteRoleBtn"), roleNameInput: $("#roleNameInput"), roleColorInput: $("#roleColorInput"), roleColorText: $("#roleColorText"), rolePermissions: $("#rolePermissions"),
-  settingsMemberCount: $("#settingsMemberCount"), settingsMembersList: $("#settingsMembersList"), toast: $("#toast")
+  settingsMemberCount: $("#settingsMemberCount"), settingsMembersList: $("#settingsMembersList"),
+  settingsEventsPane: $("#settingsEventsPane"), settingsModerationPane: $("#settingsModerationPane"), eventsList: $("#eventsList"), newEventBtn: $("#newEventBtn"), bansList: $("#bansList"), auditLogList: $("#auditLogList"),
+  forgotPasswordDialog: $("#forgotPasswordDialog"), forgotPasswordForm: $("#forgotPasswordForm"), forgotEmailInput: $("#forgotEmailInput"), recoveryDialog: $("#recoveryDialog"), recoveryForm: $("#recoveryForm"), recoveryPasswordInput: $("#recoveryPasswordInput"), recoveryPassword2Input: $("#recoveryPassword2Input"),
+  addFriendDialog: $("#addFriendDialog"), addFriendForm: $("#addFriendForm"), friendUsernameInput: $("#friendUsernameInput"),
+  preferencesDialog: $("#preferencesDialog"), preferencesForm: $("#preferencesForm"), accentColorInput: $("#accentColorInput"), themeModeInput: $("#themeModeInput"), densityInput: $("#densityInput"), audioInputSelect: $("#audioInputSelect"), videoInputSelect: $("#videoInputSelect"), refreshDevicesBtn: $("#refreshDevicesBtn"), testMicBtn: $("#testMicBtn"), micMeter: $("#micMeter"), exportDataBtn: $("#exportDataBtn"), signOutAllBtn: $("#signOutAllBtn"), reduceMotionInput: $("#reduceMotionInput"), browserNotificationsInput: $("#browserNotificationsInput"), soundsInput: $("#soundsInput"),
+  pollDialog: $("#pollDialog"), pollForm: $("#pollForm"), pollQuestionInput: $("#pollQuestionInput"), pollOptionsInput: $("#pollOptionsInput"),
+  eventDialog: $("#eventDialog"), eventForm: $("#eventForm"), eventTitleInput: $("#eventTitleInput"), eventDescriptionInput: $("#eventDescriptionInput"), eventStartsAtInput: $("#eventStartsAtInput"),
+  pinnedDialog: $("#pinnedDialog"), pinnedList: $("#pinnedList"),
+  profileBannerPreview: $("#profileBannerPreview"), bannerFileInput: $("#bannerFileInput"), presenceModeInput: $("#presenceModeInput"),
+  toast: $("#toast")
 };
 
 const PERMISSIONS = [
@@ -104,7 +116,28 @@ const state = {
   screenBusy: false,
   sendingMessage: false,
   selectedRoleId: null,
-  roleDraftPermissions: new Set()
+  roleDraftPermissions: new Set(),
+  messageMap: new Map(),
+  reactionMap: new Map(),
+  pollVotes: new Map(),
+  replyToMessageId: null,
+  editingMessageId: null,
+  pendingAttachment: null,
+  typingUsers: new Map(),
+  typingBroadcastTimer: null,
+  homeMode: false,
+  friendships: [],
+  socialProfiles: new Map(),
+  activeDmUserId: null,
+  dmChannel: null,
+  dmMessagesMap: new Map(),
+  dmContacts: [],
+  preferences: { theme_mode: 'neon', accent_color: '#1D8DFF', density: 'comfortable', reduce_motion: false, browser_notifications: false, sounds_enabled: true, audio_input_id: null, video_input_id: null },
+  selectedBannerFile: null,
+  events: [],
+  bans: [],
+  auditLog: [],
+  audioMeters: new Map()
 };
 
 let toastTimer = null;
@@ -145,6 +178,26 @@ function makeEl(tag, className = "", text = "") {
   if (className) node.className = className;
   if (text !== "") node.textContent = text;
   return node;
+}
+
+function appendRichText(node, value = "") {
+  const text = String(value || "");
+  const tokenRe = /(https?:\/\/[^\s<>]+|@[a-z0-9][a-z0-9._-]{1,18}[a-z0-9]|`[^`\n]{1,200}`)/gi;
+  let last = 0;
+  for (const match of text.matchAll(tokenRe)) {
+    const index = match.index ?? 0;
+    if (index > last) node.appendChild(document.createTextNode(text.slice(last, index)));
+    const token = match[0];
+    if (/^https?:\/\//i.test(token)) {
+      const a = makeEl("a", "message-link", token); a.href = token; a.target = "_blank"; a.rel = "noopener noreferrer"; node.appendChild(a);
+    } else if (token.startsWith("@")) {
+      node.appendChild(makeEl("span", "message-mention", token));
+    } else if (token.startsWith("`") && token.endsWith("`")) {
+      node.appendChild(makeEl("code", "message-inline-code", token.slice(1, -1)));
+    }
+    last = index + token.length;
+  }
+  if (last < text.length) node.appendChild(document.createTextNode(text.slice(last)));
 }
 
 function setAvatar(node, profileOrName, sizeClass) {
@@ -229,6 +282,131 @@ function safeLocalStorageGet(key) { try { return localStorage.getItem(key); } ca
 function safeLocalStorageSet(key, value) { try { localStorage.setItem(key, value); } catch (_) {} }
 function safeLocalStorageRemove(key) { try { localStorage.removeItem(key); } catch (_) {} }
 
+
+function hexToRgb(hex) {
+  const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex || ""));
+  return match ? { r: parseInt(match[1], 16), g: parseInt(match[2], 16), b: parseInt(match[3], 16) } : { r: 29, g: 141, b: 255 };
+}
+
+function applyPreferences() {
+  const pref = state.preferences || {};
+  const accent = /^#[0-9a-f]{6}$/i.test(pref.accent_color || "") ? pref.accent_color : "#1D8DFF";
+  const rgb = hexToRgb(accent);
+  document.documentElement.style.setProperty("--brand", accent);
+  document.documentElement.style.setProperty("--brand-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+  document.body.dataset.theme = pref.theme_mode || "neon";
+  document.body.dataset.density = pref.density || "comfortable";
+  document.body.classList.toggle("reduce-motion", Boolean(pref.reduce_motion));
+}
+
+async function loadPreferences() {
+  const local = safeLocalStorageGet("tropa_preferences");
+  if (local) {
+    try { state.preferences = { ...state.preferences, ...JSON.parse(local) }; } catch (_) {}
+  }
+  if (state.supabase && state.user) {
+    const { data, error } = await state.supabase.from("user_preferences").select("*").eq("user_id", state.user.id).maybeSingle();
+    if (!error && data) state.preferences = { ...state.preferences, ...data };
+  }
+  applyPreferences();
+}
+
+function fillPreferencesForm() {
+  ui.accentColorInput.value = state.preferences.accent_color || "#1D8DFF";
+  ui.themeModeInput.value = state.preferences.theme_mode || "neon";
+  ui.densityInput.value = state.preferences.density || "comfortable";
+  ui.reduceMotionInput.checked = Boolean(state.preferences.reduce_motion);
+  ui.browserNotificationsInput.checked = Boolean(state.preferences.browser_notifications);
+  ui.soundsInput.checked = state.preferences.sounds_enabled !== false;
+  ui.audioInputSelect.value = state.preferences.audio_input_id || "";
+  ui.videoInputSelect.value = state.preferences.video_input_id || "";
+}
+
+async function openPreferences() {
+  fillPreferencesForm();
+  openDialog(ui.preferencesDialog);
+  await refreshMediaDevices();
+}
+
+async function savePreferences() {
+  const next = {
+    user_id: state.user.id,
+    accent_color: ui.accentColorInput.value,
+    theme_mode: ui.themeModeInput.value,
+    density: ui.densityInput.value,
+    reduce_motion: ui.reduceMotionInput.checked,
+    browser_notifications: ui.browserNotificationsInput.checked,
+    sounds_enabled: ui.soundsInput.checked,
+    audio_input_id: ui.audioInputSelect.value || null,
+    video_input_id: ui.videoInputSelect.value || null
+  };
+  if (next.browser_notifications && "Notification" in window && Notification.permission === "default") {
+    const permission = await Notification.requestPermission();
+    next.browser_notifications = permission === "granted";
+    ui.browserNotificationsInput.checked = next.browser_notifications;
+  }
+  const { data, error } = await state.supabase.from("user_preferences").upsert(next, { onConflict: "user_id" }).select().single();
+  if (error) throw error;
+  state.preferences = { ...state.preferences, ...data };
+  safeLocalStorageSet("tropa_preferences", JSON.stringify(state.preferences));
+  applyPreferences();
+}
+
+async function refreshMediaDevices() {
+  if (!navigator.mediaDevices?.enumerateDevices) return;
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const audio = devices.filter((d) => d.kind === "audioinput");
+    const video = devices.filter((d) => d.kind === "videoinput");
+    const fill = (select, list, current, fallback) => {
+      const old = current || select.value || ""; select.replaceChildren(); const base = document.createElement("option"); base.value = ""; base.textContent = fallback; select.appendChild(base);
+      list.forEach((d, index) => { const option = document.createElement("option"); option.value = d.deviceId; option.textContent = d.label || `${fallback} ${index + 1}`; select.appendChild(option); });
+      select.value = [...select.options].some((o) => o.value === old) ? old : "";
+    };
+    fill(ui.audioInputSelect, audio, state.preferences.audio_input_id, "Microfone padrão");
+    fill(ui.videoInputSelect, video, state.preferences.video_input_id, "Câmera padrão");
+  } catch (error) { console.warn("Dispositivos", error); }
+}
+
+let micTestStop = null;
+async function testMicrophone() {
+  if (micTestStop) { micTestStop(); micTestStop = null; ui.testMicBtn.textContent = "Testar microfone"; return; }
+  try {
+    const deviceId = ui.audioInputSelect.value;
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: deviceId ? { deviceId: { exact: deviceId } } : true, video: false });
+    const ctx = new (window.AudioContext || window.webkitAudioContext)(); const source = ctx.createMediaStreamSource(stream); const analyser = ctx.createAnalyser(); analyser.fftSize = 256; source.connect(analyser); const data = new Uint8Array(analyser.frequencyBinCount); let raf = 0; let active = true;
+    const tick = () => { if (!active) return; analyser.getByteFrequencyData(data); let sum = 0; for (const v of data) sum += v; const pct = Math.min(100, Math.max(2, (sum / data.length) * 1.35)); ui.micMeter.querySelector("i").style.width = `${pct}%`; raf = requestAnimationFrame(tick); };
+    raf = requestAnimationFrame(tick); ui.testMicBtn.textContent = "Parar teste";
+    micTestStop = () => { active = false; cancelAnimationFrame(raf); stream.getTracks().forEach((t) => t.stop()); try { source.disconnect(); } catch (_) {} ctx.close().catch(() => {}); ui.micMeter.querySelector("i").style.width = "0%"; };
+  } catch (error) { toast(error?.name === "NotAllowedError" ? "Permita o uso do microfone." : "Não foi possível testar o microfone."); }
+}
+ui.refreshDevicesBtn?.addEventListener("click", async () => { try { const temp = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); temp.getTracks().forEach((t) => t.stop()); } catch (_) {} await refreshMediaDevices(); });
+ui.testMicBtn?.addEventListener("click", testMicrophone);
+ui.preferencesDialog?.addEventListener("close", () => { if (micTestStop) { micTestStop(); micTestStop = null; ui.testMicBtn.textContent = "Testar microfone"; } });
+
+function playSoftTone(type = "message") {
+  if (!state.preferences?.sounds_enabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const now = ctx.currentTime;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(type === "call" ? 560 : 720, now);
+    osc.frequency.exponentialRampToValueAtTime(type === "call" ? 420 : 620, now + .11);
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(.035, now + .01);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + .14);
+    osc.connect(gain); gain.connect(ctx.destination); osc.start(now); osc.stop(now + .15);
+    osc.addEventListener("ended", () => ctx.close().catch(() => {}));
+  } catch (_) {}
+}
+
+function notifyDesktop(title, body) {
+  if (!state.preferences?.browser_notifications || document.visibilityState === "visible" || !("Notification" in window) || Notification.permission !== "granted") return;
+  try { new Notification(title, { body, icon: "./icon-192.png", badge: "./icon-192.png" }); } catch (_) {}
+}
+
 // -----------------------------------------------------------------------------
 // UI base / dialogs
 // -----------------------------------------------------------------------------
@@ -254,19 +432,25 @@ window.addEventListener("resize", () => {
   if (!isMembersDrawer()) ui.membersPanel.classList.remove("open");
   syncBackdrop();
 });
-ui.homeServerBtn.addEventListener("click", () => {
-  closeDrawers();
-  ui.emptyState.classList.remove("hidden");
-  ui.messages.classList.add("hidden");
-  ui.messageForm.classList.add("hidden");
-  ui.activeChannelIcon.textContent = "⌂";
-  ui.activeChannelName.textContent = "Início";
-  ui.activeChannelTopic.textContent = state.activeServer ? `Você está em ${state.activeServer.name}` : "Tropa da Lan";
-});
+ui.homeServerBtn.addEventListener("click", () => showHomeHub());
 window.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     ui.serverQuickMenu.classList.add("hidden");
     closeDrawers();
+    if (state.editingMessageId) cancelMessageEdit();
+    else if (state.replyToMessageId) clearReply();
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    ui.topbarSearchInput?.focus();
+  }
+  if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "m" && state.voiceJoinedChannelId) {
+    event.preventDefault();
+    ui.muteBtn.click();
+  }
+  if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === "d" && state.voiceJoinedChannelId) {
+    event.preventDefault();
+    ui.deafenBtn.click();
   }
 });
 
@@ -279,6 +463,43 @@ document.addEventListener("click", (event) => {
     ui.serverQuickMenu.classList.add("hidden");
   }
 });
+
+ui.appearanceBtn?.addEventListener("click", openPreferences);
+ui.preferencesForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const button = ui.preferencesForm.querySelector('button[type="submit"]');
+  setBusy(button, true, "Salvando…");
+  try { await savePreferences(); closeDialog(ui.preferencesDialog); toast("Preferências salvas."); }
+  catch (error) { console.error(error); toast(`Não foi possível salvar as preferências: ${error.message || error}`); }
+  finally { setBusy(button, false); }
+});
+ui.exportDataBtn?.addEventListener("click", async () => {
+  if (!state.user) return;
+  setBusy(ui.exportDataBtn, true, "Preparando…");
+  try {
+    const [profileRes, membershipsRes, messagesRes, dmRes] = await Promise.all([
+      state.supabase.from("profiles").select("user_id,username,display_name,bio,custom_status,avatar_url,banner_url,presence_mode,created_at,updated_at").eq("user_id", state.user.id).maybeSingle(),
+      state.supabase.from("server_members").select("server_id,nickname,joined_at").eq("user_id", state.user.id),
+      state.supabase.from("channel_messages").select("id,channel_id,content,created_at,edited_at,kind,metadata").eq("user_id", state.user.id).order("created_at", { ascending: false }).limit(1000),
+      state.supabase.from("direct_messages").select("id,sender_id,recipient_id,content,created_at,edited_at").or(`sender_id.eq.${state.user.id},recipient_id.eq.${state.user.id}`).order("created_at", { ascending: false }).limit(1000)
+    ]);
+    const payload = { exported_at: new Date().toISOString(), account_email: state.user.email || null, profile: profileRes.data || null, memberships: membershipsRes.data || [], channel_messages: messagesRes.data || [], direct_messages: dmRes.data || [] };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `tropa-da-lan-dados-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); toast("Exportação criada.");
+  } catch (error) { console.error(error); toast("Não foi possível exportar seus dados."); }
+  finally { setBusy(ui.exportDataBtn, false); }
+});
+ui.signOutAllBtn?.addEventListener("click", async () => {
+  if (!confirm("Sair da sua conta em todos os dispositivos?")) return;
+  const { error } = await state.supabase.auth.signOut({ scope: "global" }); if (error) toast(error.message || "Não foi possível encerrar as sessões.");
+});
+
+ui.friendsBtn?.addEventListener("click", () => showHomeHub());
+ui.notificationsBtn?.addEventListener("click", async () => {
+  if (!("Notification" in window)) return toast("Este navegador não oferece notificações do sistema.");
+  const permission = await Notification.requestPermission();
+  toast(permission === "granted" ? "Notificações ativadas." : "Permissão de notificações não concedida.");
+});
+
 
 function switchAuthTab(mode) {
   const login = mode === "login";
@@ -345,6 +566,32 @@ ui.loginForm.addEventListener("submit", async (event) => {
     else if (/email.*confirm|not confirmed/i.test(msg)) toast("Confirme seu e-mail antes de entrar.", 5200);
     else toast(`Não foi possível entrar: ${msg || "erro desconhecido"}`, 5200);
   } finally { setBusy(ui.loginBtn, false); }
+});
+
+ui.forgotPasswordBtn?.addEventListener("click", () => {
+  ui.forgotEmailInput.value = normalizeEmail(ui.loginEmail.value || "");
+  openDialog(ui.forgotPasswordDialog);
+  setTimeout(() => ui.forgotEmailInput.focus(), 30);
+});
+ui.forgotPasswordForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const email = normalizeEmail(ui.forgotEmailInput.value); if (!validEmail(email)) return toast("Digite um e-mail válido.");
+  const submit = ui.forgotPasswordForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Enviando…");
+  try {
+    const redirectTo = `${location.origin}${location.pathname}`;
+    const { error } = await state.supabase.auth.resetPasswordForEmail(email, { redirectTo }); if (error) throw error;
+    closeDialog(ui.forgotPasswordDialog); toast("Se o e-mail estiver cadastrado, o link de recuperação será enviado.", 7000);
+  } catch (error) { console.error(error); toast(/rate limit/i.test(error?.message || "") ? "Limite de e-mails do Supabase atingido. Aguarde ou configure SMTP próprio." : (error.message || "Não foi possível enviar o e-mail."), 7000); }
+  finally { setBusy(submit, false); }
+});
+ui.recoveryForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); const password = ui.recoveryPasswordInput.value;
+  if (password.length < 6) return toast("A senha precisa ter pelo menos 6 caracteres.");
+  if (password !== ui.recoveryPassword2Input.value) return toast("As senhas não coincidem.");
+  const submit = ui.recoveryForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Atualizando…");
+  try { const { error } = await state.supabase.auth.updateUser({ password }); if (error) throw error; closeDialog(ui.recoveryDialog); toast("Senha atualizada com sucesso."); }
+  catch (error) { console.error(error); toast(error.message || "Não foi possível atualizar a senha."); }
+  finally { setBusy(submit, false); }
 });
 
 ui.registerForm.addEventListener("submit", async (event) => {
@@ -425,7 +672,7 @@ function showApp() {
 }
 
 async function loadCurrentProfile() {
-  const { data, error } = await state.supabase.from("profiles").select("user_id,username,display_name,bio,custom_status,avatar_url,created_at").eq("user_id", state.user.id).single();
+  const { data, error } = await state.supabase.from("profiles").select("user_id,username,display_name,bio,custom_status,avatar_url,banner_url,presence_mode,created_at").eq("user_id", state.user.id).single();
   if (error) throw error;
   state.profile = data;
   updateOwnProfileUI();
@@ -449,11 +696,15 @@ function openProfileEditor() {
   ui.profileUsernameInput.value = state.profile.username || "";
   ui.customStatusInput.value = state.profile.custom_status || "";
   ui.bioInput.value = state.profile.bio || "";
+  ui.presenceModeInput.value = state.profile.presence_mode || "online";
   ui.avatarFileInput.value = "";
+  ui.bannerFileInput.value = "";
+  state.selectedBannerFile = null;
+  ui.profileBannerPreview.style.backgroundImage = state.profile.banner_url ? `linear-gradient(rgba(0,0,0,.08),rgba(0,0,0,.20)), url("${state.profile.banner_url}")` : "";
   openDialog(ui.profileDialog);
 }
 ui.profileButton.addEventListener("click", openProfileEditor);
-ui.profileSettingsBtn.addEventListener("click", openProfileEditor);
+ui.profileSettingsBtn.addEventListener("click", openPreferences);
 
 async function uploadImage(bucket, folder, file) {
   if (!file) return null;
@@ -474,19 +725,32 @@ ui.avatarFileInput.addEventListener("change", () => {
   const img = document.createElement("img"); img.src = url; img.alt = "Prévia"; img.onload = () => URL.revokeObjectURL(url); ui.profileAvatarPreview.appendChild(img);
 });
 
+ui.bannerFileInput.addEventListener("change", () => {
+  const file = ui.bannerFileInput.files?.[0];
+  if (!file) return;
+  state.selectedBannerFile = file;
+  const url = URL.createObjectURL(file);
+  ui.profileBannerPreview.style.backgroundImage = `linear-gradient(rgba(0,0,0,.06),rgba(0,0,0,.18)), url("${url}")`;
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+});
+
 ui.profileForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (!state.profile) return;
   setBusy(ui.saveProfileBtn, true, "Salvando…");
   try {
     let avatarUrl = state.profile.avatar_url;
+    let bannerUrl = state.profile.banner_url;
     const file = ui.avatarFileInput.files?.[0];
     if (file) avatarUrl = await uploadImage("avatars", state.user.id, file);
+    if (state.selectedBannerFile) bannerUrl = await uploadImage("profile-banners", state.user.id, state.selectedBannerFile);
     const updates = {
       display_name: ui.displayNameInput.value.trim().slice(0, 32),
       custom_status: ui.customStatusInput.value.trim().slice(0, 64),
       bio: ui.bioInput.value.trim().slice(0, 190),
-      avatar_url: avatarUrl || null
+      avatar_url: avatarUrl || null,
+      banner_url: bannerUrl || null,
+      presence_mode: ui.presenceModeInput.value || "online"
     };
     if (!updates.display_name) throw new Error("O nome de exibição não pode ficar vazio.");
     const { data, error } = await state.supabase.from("profiles").update(updates).eq("user_id", state.user.id).select().single();
@@ -503,6 +767,168 @@ ui.profileForm.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error(error); toast(error.message || "Não foi possível salvar o perfil.");
   } finally { setBusy(ui.saveProfileBtn, false); }
+});
+
+// -----------------------------------------------------------------------------
+// Social hub / friends / direct messages
+// -----------------------------------------------------------------------------
+async function showHomeHub() {
+  if (!state.user) return;
+  state.homeMode = true;
+  closeDrawers();
+  ui.serverQuickMenu.classList.add("hidden");
+  ui.emptyState.classList.add("hidden");
+  ui.messages.classList.add("hidden");
+  ui.composerWrap.classList.add("hidden");
+  ui.homeHub.classList.remove("hidden");
+  ui.contentArea.classList.add("home-mode");
+  ui.mediaStage.classList.add("home-hidden");
+  ui.activeChannelIcon.textContent = "⌂";
+  ui.activeChannelName.textContent = "Início";
+  ui.activeChannelTopic.textContent = "Amigos, mensagens privadas e atividade";
+  ui.topbarSearchInput.value = "";
+  ui.topbarSearchInput.placeholder = "Buscar amigos";
+  await cleanupChatSubscription();
+  await loadSocialData();
+  await setupDmRealtime();
+}
+
+async function loadSocialData() {
+  if (!state.user) return;
+  const uid = state.user.id;
+  const { data, error } = await state.supabase.from("friendships").select("id,requester_id,addressee_id,status,created_at,updated_at").or(`requester_id.eq.${uid},addressee_id.eq.${uid}`).order("updated_at", { ascending: false });
+  if (error) { console.warn(error); toast("Execute MIGRATION_V6_ULTIMATE.sql para ativar amigos e mensagens privadas.", 7000); return; }
+  state.friendships = data || [];
+  const ids = [...new Set(state.friendships.flatMap((f) => [f.requester_id, f.addressee_id]).filter((id) => id && id !== uid))];
+  state.socialProfiles.clear();
+  if (ids.length) {
+    const { data: profiles, error: profileError } = await state.supabase.from("profiles").select("user_id,username,display_name,custom_status,avatar_url,banner_url,presence_mode").in("user_id", ids);
+    if (!profileError) for (const profile of profiles || []) state.socialProfiles.set(profile.user_id, profile);
+  }
+  renderSocialHub();
+}
+
+function socialOtherId(friendship) { return friendship.requester_id === state.user.id ? friendship.addressee_id : friendship.requester_id; }
+function acceptedFriends() { return state.friendships.filter((f) => f.status === "accepted"); }
+function incomingFriendRequests() { return state.friendships.filter((f) => f.status === "pending" && f.addressee_id === state.user.id); }
+function outgoingFriendRequests() { return state.friendships.filter((f) => f.status === "pending" && f.requester_id === state.user.id); }
+
+function socialUserRow(profile, subtitle, actions = []) {
+  const row = makeEl("div", "social-user-row");
+  const avatar = makeEl("span", "avatar avatar-md"); setAvatar(avatar, profile, "avatar-md");
+  const meta = makeEl("div", "social-user-meta"); meta.append(makeEl("strong", "", profile?.display_name || profile?.username || "Usuário"), makeEl("small", "", subtitle || `@${profile?.username || "usuario"}`));
+  const actionWrap = makeEl("div", "social-user-actions"); for (const action of actions) actionWrap.appendChild(action);
+  row.append(avatar, meta, actionWrap); return row;
+}
+
+function renderSocialHub() {
+  ui.friendRequestsList.replaceChildren(); ui.friendsList.replaceChildren(); ui.dmContactsList.replaceChildren();
+  const incoming = incomingFriendRequests(); const outgoing = outgoingFriendRequests(); const accepted = acceptedFriends();
+  ui.friendRequestCount.textContent = String(incoming.length);
+  ui.friendsCount.textContent = String(accepted.length);
+
+  if (!incoming.length && !outgoing.length) ui.friendRequestsList.appendChild(makeEl("div", "empty-mini", "Nenhuma solicitação pendente."));
+  for (const request of incoming) {
+    const profile = state.socialProfiles.get(request.requester_id); if (!profile) continue;
+    const accept = makeEl("button", "mini-action success", "✓"); accept.type = "button"; accept.title = "Aceitar"; accept.addEventListener("click", () => respondFriendRequest(request.id, true));
+    const decline = makeEl("button", "mini-action danger", "×"); decline.type = "button"; decline.title = "Recusar"; decline.addEventListener("click", () => respondFriendRequest(request.id, false));
+    ui.friendRequestsList.appendChild(socialUserRow(profile, "Quer adicionar você", [accept, decline]));
+  }
+  for (const request of outgoing) {
+    const profile = state.socialProfiles.get(request.addressee_id); if (!profile) continue;
+    const cancel = makeEl("button", "mini-action", "×"); cancel.type = "button"; cancel.title = "Cancelar"; cancel.addEventListener("click", () => removeFriendship(request.id));
+    ui.friendRequestsList.appendChild(socialUserRow(profile, "Solicitação enviada", [cancel]));
+  }
+
+  if (!accepted.length) ui.friendsList.appendChild(makeEl("div", "empty-mini", "Adicione amigos para conversar por DM."));
+  for (const relation of accepted) {
+    const otherId = socialOtherId(relation); const profile = state.socialProfiles.get(otherId); if (!profile) continue;
+    const msg = makeEl("button", "mini-action primary", "✉"); msg.type = "button"; msg.title = "Mensagem"; msg.addEventListener("click", () => openDm(otherId));
+    const remove = makeEl("button", "mini-action", "×"); remove.type = "button"; remove.title = "Remover amigo"; remove.addEventListener("click", () => removeFriendship(relation.id));
+    const subtitle = profile.custom_status || (profile.presence_mode === "dnd" ? "Não perturbe" : profile.presence_mode === "idle" ? "Ausente" : `@${profile.username}`);
+    ui.friendsList.appendChild(socialUserRow(profile, subtitle, [msg, remove]));
+    const contact = socialUserRow(profile, subtitle, []); contact.classList.add("clickable"); contact.addEventListener("click", () => openDm(otherId)); ui.dmContactsList.appendChild(contact);
+  }
+}
+
+ui.addFriendBtn.addEventListener("click", () => { ui.friendUsernameInput.value = ""; openDialog(ui.addFriendDialog); setTimeout(() => ui.friendUsernameInput.focus(), 30); });
+ui.addFriendForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const username = normalizeUsername(ui.friendUsernameInput.value); if (!validUsername(username)) return toast("Digite um @usuário válido.");
+  const submit = ui.addFriendForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Enviando…");
+  try {
+    const { error } = await state.supabase.rpc("send_friend_request", { p_username: username }); if (error) throw error;
+    closeDialog(ui.addFriendDialog); toast("Solicitação de amizade enviada."); await loadSocialData();
+  } catch (error) { console.error(error); toast(error.message || "Não foi possível enviar a solicitação."); }
+  finally { setBusy(submit, false); }
+});
+
+async function respondFriendRequest(id, accept) {
+  const { error } = await state.supabase.rpc("respond_friend_request", { p_request_id: id, p_accept: accept });
+  if (error) return toast(error.message || "Não foi possível responder à solicitação.");
+  toast(accept ? "Amizade aceita." : "Solicitação recusada."); await loadSocialData();
+}
+async function removeFriendship(id) {
+  if (!confirm("Remover esta amizade/solicitação?")) return;
+  const { error } = await state.supabase.from("friendships").delete().eq("id", id); if (error) return toast("Não foi possível remover.");
+  if (state.activeDmUserId && !acceptedFriends().some((f) => socialOtherId(f) === state.activeDmUserId)) closeDm();
+  await loadSocialData();
+}
+
+async function setupDmRealtime() {
+  if (state.dmChannel) return;
+  const ch = state.supabase.channel(`dm:${state.user.id}:${uuidish()}`)
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "direct_messages" }, ({ new: row }) => {
+      if (!row || ![row.sender_id, row.recipient_id].includes(state.user.id)) return;
+      if (state.activeDmUserId && [row.sender_id, row.recipient_id].includes(state.activeDmUserId)) { renderDmMessage(row); ui.dmMessages.scrollTop = ui.dmMessages.scrollHeight; }
+      if (row.sender_id !== state.user.id) { const p = state.socialProfiles.get(row.sender_id); playSoftTone("message"); notifyDesktop(p?.display_name || "Mensagem privada", row.content || "Novo anexo"); }
+    })
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "direct_messages" }, ({ new: row }) => { if (row && state.dmMessagesMap.has(String(row.id))) renderDmMessage(row, true); })
+    .on("postgres_changes", { event: "DELETE", schema: "public", table: "direct_messages" }, ({ old }) => { document.querySelector(`[data-dm-id="${old.id}"]`)?.remove(); state.dmMessagesMap.delete(String(old.id)); })
+    .on("postgres_changes", { event: "*", schema: "public", table: "friendships" }, () => { if (state.homeMode) loadSocialData(); });
+  ch.subscribe(); state.dmChannel = ch;
+}
+
+async function openDm(userId) {
+  const profile = state.socialProfiles.get(userId); if (!profile) return;
+  state.activeDmUserId = userId; state.dmMessagesMap.clear();
+  ui.dmEmpty.classList.add("hidden"); ui.dmConversation.classList.remove("hidden");
+  setAvatar(ui.dmAvatar, profile, "avatar-md"); ui.dmName.textContent = profile.display_name || profile.username; ui.dmStatus.textContent = profile.custom_status || `@${profile.username}`;
+  ui.dmMessages.replaceChildren(makeEl("div", "empty-mini", "Carregando…"));
+  const uid = state.user.id;
+  const { data, error } = await state.supabase.from("direct_messages").select("id,sender_id,recipient_id,content,attachments,created_at,edited_at,read_at").or(`and(sender_id.eq.${uid},recipient_id.eq.${userId}),and(sender_id.eq.${userId},recipient_id.eq.${uid})`).order("created_at", { ascending: true }).limit(150);
+  ui.dmMessages.replaceChildren();
+  if (error) return ui.dmMessages.appendChild(makeEl("div", "empty-mini", "Não foi possível carregar a conversa."));
+  for (const row of data || []) renderDmMessage(row);
+  ui.dmMessages.scrollTop = ui.dmMessages.scrollHeight; ui.dmInput.focus();
+}
+
+function closeDm() { state.activeDmUserId = null; ui.dmConversation.classList.add("hidden"); ui.dmEmpty.classList.remove("hidden"); ui.dmMessages.replaceChildren(); }
+ui.dmBackBtn.addEventListener("click", closeDm);
+
+function renderDmMessage(message, force = false) {
+  const key = String(message.id); let row = document.querySelector(`[data-dm-id="${key}"]`); if (row && !force) return;
+  state.dmMessagesMap.set(key, message);
+  const mine = message.sender_id === state.user.id; const profile = mine ? state.profile : state.socialProfiles.get(message.sender_id);
+  const node = makeEl("div", `dm-message${mine ? " mine" : ""}`); node.dataset.dmId = key;
+  const avatar = makeEl("span", "avatar avatar-sm"); setAvatar(avatar, profile, "avatar-sm");
+  const body = makeEl("div", "dm-message-body"); const head = makeEl("div", "dm-message-head"); head.append(makeEl("strong", "", mine ? "Você" : profile?.display_name || profile?.username || "Usuário"), makeEl("time", "", new Date(message.created_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })));
+  const dmText = makeEl("div", "dm-message-text"); appendRichText(dmText, message.content || ""); body.append(head, dmText); renderAttachments(body, message.attachments || []);
+  if (mine) { const del = makeEl("button", "message-action dm-delete", "×"); del.type = "button"; del.title = "Excluir"; del.addEventListener("click", async () => { const { error } = await state.supabase.from("direct_messages").delete().eq("id", message.id).eq("sender_id", state.user.id); if (error) toast("Não foi possível excluir."); }); node.append(avatar, body, del); } else node.append(avatar, body);
+  if (row) row.replaceWith(node); else ui.dmMessages.appendChild(node);
+}
+
+ui.dmAttachBtn.addEventListener("click", () => ui.dmFileInput.click());
+ui.dmForm.addEventListener("submit", async (event) => {
+  event.preventDefault(); if (!state.activeDmUserId) return;
+  const content = ui.dmInput.value.trim(); const file = ui.dmFileInput.files?.[0]; if (!content && !file) return;
+  const submit = ui.dmForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Enviando…");
+  try {
+    let attachments = []; if (file) attachments = [await uploadMessageFile(file, `dm-${state.activeDmUserId}`)];
+    const { error } = await state.supabase.from("direct_messages").insert({ sender_id: state.user.id, recipient_id: state.activeDmUserId, content, attachments }); if (error) throw error;
+    ui.dmInput.value = ""; ui.dmFileInput.value = "";
+  } catch (error) { console.error(error); toast(error.message || "Não foi possível enviar a DM."); }
+  finally { setBusy(submit, false); }
 });
 
 // -----------------------------------------------------------------------------
@@ -557,9 +983,11 @@ function clearActiveServer() {
   ui.activeServerName.textContent = "Selecione um servidor";
   ui.serverMenuBtn.disabled = true;
   ui.channelList.replaceChildren();
+  ui.homeHub.classList.add("hidden");
+  ui.contentArea.classList.remove("home-mode");
   ui.emptyState.classList.remove("hidden");
   ui.messages.classList.add("hidden");
-  ui.messageForm.classList.add("hidden");
+  ui.composerWrap.classList.add("hidden");
   ui.activeChannelName.textContent = "Tropa da Lan";
   ui.activeChannelTopic.textContent = "Crie um servidor ou use um convite para começar";
   ui.activeChannelIcon.textContent = "#";
@@ -567,7 +995,10 @@ function clearActiveServer() {
 }
 
 async function selectServer(serverId, initial = false) {
-  if (!serverId || (!initial && serverId === state.activeServerId)) { closeDrawers(); return; }
+  if (!serverId || (!initial && serverId === state.activeServerId && !state.homeMode)) { closeDrawers(); return; }
+  state.homeMode = false;
+  ui.homeHub.classList.add("hidden");
+  ui.contentArea.classList.remove("home-mode");
   const server = state.servers.find((s) => s.id === serverId);
   if (!server) return;
   const token = ++state.serverLoadToken;
@@ -598,7 +1029,7 @@ async function selectServer(serverId, initial = false) {
     const firstText = state.channels.find((c) => c.type === "text" && c.id === savedChannel) || state.channels.find((c) => c.type === "text");
     if (firstText) await selectTextChannel(firstText.id);
     else {
-      ui.messages.classList.add("hidden"); ui.messageForm.classList.add("hidden");
+      ui.messages.classList.add("hidden"); ui.composerWrap.classList.add("hidden");
       ui.activeChannelName.textContent = server.name; ui.activeChannelTopic.textContent = "Nenhum canal de texto";
     }
   } catch (error) {
@@ -626,7 +1057,7 @@ async function loadServerBundle() {
   const ids = state.serverMembers.map((m) => m.user_id);
   state.profiles.clear();
   if (ids.length) {
-    const { data, error } = await state.supabase.from("profiles").select("user_id,username,display_name,bio,custom_status,avatar_url,created_at").in("user_id", ids);
+    const { data, error } = await state.supabase.from("profiles").select("user_id,username,display_name,bio,custom_status,avatar_url,banner_url,presence_mode,created_at").in("user_id", ids);
     if (error) throw error;
     for (const p of data || []) state.profiles.set(p.user_id, p);
   }
@@ -644,6 +1075,7 @@ function renderServerQuickMenuPermissions() {
   ui.quickInviteBtn.classList.toggle("hidden", !canInvite);
   ui.quickCreateChannelBtn.classList.toggle("hidden", !canChannels);
   ui.quickSettingsBtn.classList.toggle("hidden", !canSettings && state.activeServer?.owner_id !== state.user?.id);
+  ui.quickEventsBtn?.classList.remove("hidden");
   ui.quickLeaveServerBtn.classList.toggle("hidden", state.activeServer?.owner_id === state.user?.id);
 }
 
@@ -668,7 +1100,7 @@ async function setupServerDataRealtime() {
   if (!state.activeServerId) return;
   const sid = state.activeServerId;
   const channel = state.supabase.channel(`server-db:${sid}:${uuidish()}`);
-  for (const table of ["channels", "server_members", "roles", "member_roles"]) {
+  for (const table of ["channels", "server_members", "roles", "member_roles", "server_events"]) {
     channel.on("postgres_changes", { event: "*", schema: "public", table }, (payload) => {
       const row = payload.new && Object.keys(payload.new).length ? payload.new : payload.old;
       if (!row?.server_id || row.server_id === sid) scheduleServerBundleRefresh();
@@ -694,7 +1126,7 @@ async function setupServerPresence() {
     ch.subscribe(async (status) => {
       if (status === "SUBSCRIBED") {
         clearTimeout(timer);
-        try { await ch.track(serverPresencePayload()); } catch (_) {}
+        try { if (state.profile?.presence_mode !== "invisible") await ch.track(serverPresencePayload()); } catch (_) {}
         resolve();
       } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") { clearTimeout(timer); reject(new Error(status)); }
     });
@@ -709,12 +1141,16 @@ function serverPresencePayload() {
     username: state.profile?.username || "usuario",
     avatar_url: state.profile?.avatar_url || null,
     custom_status: state.profile?.custom_status || "",
+    presence_mode: state.profile?.presence_mode || "online",
     at: new Date().toISOString()
   };
 }
 async function retrackServerPresence() {
   if (!state.serverPresence) return;
-  try { await state.serverPresence.track(serverPresencePayload()); } catch (_) {}
+  try {
+    if (state.profile?.presence_mode === "invisible") await state.serverPresence.untrack();
+    else await state.serverPresence.track(serverPresencePayload());
+  } catch (_) {}
 }
 
 async function cleanupActiveServerRealtime() {
@@ -746,7 +1182,12 @@ function userInAnyVoice(userId) {
 function renderMembers() {
   ui.membersList.replaceChildren();
   if (!state.activeServer) return;
-  const members = state.serverMembers.map((m) => ({ ...m, profile: state.profiles.get(m.user_id) })).filter((m) => m.profile);
+  const term = (ui.membersSearchInput?.value || "").trim().toLowerCase();
+  const members = state.serverMembers.map((m) => ({ ...m, profile: state.profiles.get(m.user_id) })).filter((m) => m.profile).filter((m) => {
+    if (!term) return true;
+    const hay = `${m.nickname || ""} ${m.profile.display_name || ""} ${m.profile.username || ""} ${m.profile.custom_status || ""}`.toLowerCase();
+    return hay.includes(term);
+  });
   members.sort((a, b) => {
     const ao = state.onlineUserIds.has(a.user_id) ? 0 : 1;
     const bo = state.onlineUserIds.has(b.user_id) ? 0 : 1;
@@ -768,19 +1209,58 @@ function renderMembers() {
       const row = makeEl("div", "member-row");
       const avatarWrap = makeEl("div", "member-avatar-wrap");
       const avatar = makeEl("span", "avatar avatar-md"); setAvatar(avatar, member.profile, "avatar-md");
-      const dot = makeEl("span", `presence-dot${state.onlineUserIds.has(member.user_id) ? " online" : ""}`);
+      const isOnline = state.onlineUserIds.has(member.user_id);
+      const mode = member.profile.presence_mode || "online";
+      const dot = makeEl("span", `presence-dot${isOnline ? ` online ${mode}` : ""}`);
       avatarWrap.append(avatar, dot);
       const meta = makeEl("div", "member-meta");
       const role = topRoleForUser(member.user_id);
       const name = makeEl("strong", "", member.nickname || member.profile.display_name);
       if (role && !role.is_default) name.style.color = role.color;
-      const statusText = member.profile.custom_status || (member.user_id === state.activeServer.owner_id ? "Dono do servidor" : role?.name || `@${member.profile.username}`);
+      const presenceLabel = isOnline ? (mode === "dnd" ? "Não perturbe" : mode === "idle" ? "Ausente" : "Online") : "Offline";
+      const statusText = member.profile.custom_status || (member.user_id === state.activeServer.owner_id ? "Dono do servidor" : role?.name || presenceLabel);
       meta.append(name, makeEl("small", "", statusText));
       row.append(avatarWrap, meta);
       if (userInAnyVoice(member.user_id)) row.appendChild(makeEl("span", "member-call-icon", "● voz"));
       ui.membersList.appendChild(row);
     }
   }
+}
+
+ui.membersSearchInput?.addEventListener("input", renderMembers);
+
+function channelAdminActions(channel) {
+  if (!hasPermission("MANAGE_CHANNELS")) return null;
+  const wrap = makeEl("div", "channel-admin-actions");
+  const edit = makeEl("button", "", "✎"); edit.type = "button"; edit.title = "Editar canal";
+  edit.addEventListener("click", async (event) => {
+    event.stopPropagation();
+    const nameInput = prompt("Novo nome do canal:", channel.name); if (nameInput === null) return;
+    const name = channel.type === "text" ? slugifyChannel(nameInput) : nameInput.trim().slice(0, 32); if (!name) return;
+    let topic = channel.topic || "";
+    if (channel.type === "text") { const t = prompt("Tópico do canal:", topic); if (t === null) return; topic = t.trim().slice(0, 180); }
+    const { error } = await state.supabase.from("channels").update({ name, topic }).eq("id", channel.id);
+    if (error) return toast(error.message || "Não foi possível editar o canal."); await loadServerBundle(); toast("Canal atualizado.");
+  });
+  const up = makeEl("button", "", "↑"); up.type = "button"; up.title = "Mover para cima"; up.addEventListener("click", (event) => { event.stopPropagation(); moveChannel(channel, -1); });
+  const down = makeEl("button", "", "↓"); down.type = "button"; down.title = "Mover para baixo"; down.addEventListener("click", (event) => { event.stopPropagation(); moveChannel(channel, 1); });
+  const del = makeEl("button", "danger-text", "×"); del.type = "button"; del.title = "Excluir canal"; del.addEventListener("click", async (event) => {
+    event.stopPropagation(); if (!confirm(`Excluir ${channel.type === "text" ? "#" : "🔊 "}${channel.name}?`)) return;
+    const { error } = await state.supabase.from("channels").delete().eq("id", channel.id); if (error) return toast(error.message || "Não foi possível excluir o canal.");
+    if (state.voiceJoinedChannelId === channel.id) await leaveVoice(); await loadServerBundle(); toast("Canal excluído.");
+  });
+  wrap.append(edit, up, down, del); return wrap;
+}
+
+async function moveChannel(channel, delta) {
+  const same = state.channels.filter((c) => c.type === channel.type).sort((a, b) => (a.position - b.position) || a.created_at.localeCompare(b.created_at));
+  const index = same.findIndex((c) => c.id === channel.id); const other = same[index + delta]; if (!other) return;
+  const aPos = Number(channel.position || index), bPos = Number(other.position || index + delta);
+  const [a, b] = await Promise.all([
+    state.supabase.from("channels").update({ position: bPos }).eq("id", channel.id),
+    state.supabase.from("channels").update({ position: aPos }).eq("id", other.id)
+  ]);
+  if (a.error || b.error) return toast("Não foi possível reorganizar os canais."); await loadServerBundle();
 }
 
 function renderChannels() {
@@ -804,7 +1284,7 @@ function renderChannels() {
     btn.type = "button"; btn.dataset.channelId = channel.id;
     btn.append(makeEl("span", "channel-symbol", "#"), makeEl("span", "channel-name", channel.name));
     btn.addEventListener("click", () => selectTextChannel(channel.id));
-    row.appendChild(btn); ui.channelList.appendChild(row);
+    row.appendChild(btn); const admin = channelAdminActions(channel); if (admin) row.appendChild(admin); ui.channelList.appendChild(row);
   }
   addCategory("CANAIS DE VOZ", hasPermission("MANAGE_CHANNELS"));
   for (const channel of voiceChannels) {
@@ -822,18 +1302,20 @@ function renderChannels() {
       item.append(avatar, makeEl("span", "", `${p.display_name || p.username || "Usuário"}${p.muted ? " 🔇" : ""}${p.screen ? " 🖥" : p.camera ? " 📷" : ""}`));
       mini.appendChild(item);
     }
-    row.appendChild(mini); ui.channelList.appendChild(row);
+    row.appendChild(mini); const admin = channelAdminActions(channel); if (admin) row.appendChild(admin); ui.channelList.appendChild(row);
   }
 }
 
 // -----------------------------------------------------------------------------
-// Text chat
+// Text chat — respostas, edição, anexos, reações, enquetes, busca e pins
 // -----------------------------------------------------------------------------
 async function cleanupChatSubscription() {
   if (state.chatChannel) {
     try { await state.supabase.removeChannel(state.chatChannel); } catch (_) {}
     state.chatChannel = null;
   }
+  state.typingUsers.clear();
+  renderTypingIndicator();
 }
 
 function activeTextChannel() { return state.channels.find((c) => c.id === state.activeTextChannelId) || null; }
@@ -841,19 +1323,28 @@ function activeTextChannel() { return state.channels.find((c) => c.id === state.
 async function selectTextChannel(channelId) {
   const channel = state.channels.find((c) => c.id === channelId && c.type === "text");
   if (!channel) return;
+  state.homeMode = false;
+  ui.homeHub.classList.add("hidden");
+  ui.contentArea.classList.remove("home-mode");
   state.activeTextChannelId = channelId;
   safeLocalStorageSet(`tropa_text_channel_${state.activeServerId}`, channelId);
   renderChannels();
   closeDrawers();
   ui.emptyState.classList.add("hidden");
   ui.messages.classList.remove("hidden");
-  ui.messageForm.classList.remove("hidden");
+  ui.composerWrap.classList.remove("hidden");
+  ui.mediaStage.classList.remove("home-hidden");
   ui.activeChannelIcon.textContent = "#";
   ui.activeChannelName.textContent = channel.name;
   ui.activeChannelTopic.textContent = channel.topic || `Canal #${channel.name}`;
   ui.messageInput.placeholder = `Conversar em #${channel.name}`;
+  ui.topbarSearchInput.placeholder = `Buscar em #${channel.name}`;
+  ui.topbarSearchInput.value = "";
   ui.messageInput.disabled = !hasPermission("SEND_MESSAGES");
   ui.sendBtn.disabled = !hasPermission("SEND_MESSAGES");
+  ui.attachBtn.disabled = !hasPermission("SEND_MESSAGES");
+  ui.quickPollBtn.disabled = !hasPermission("SEND_MESSAGES");
+  clearReply(); cancelMessageEdit(); clearPendingAttachment();
   const token = ++state.messageLoadToken;
   await cleanupChatSubscription();
   resetMessages(channel);
@@ -864,6 +1355,9 @@ async function selectTextChannel(channelId) {
 
 function resetMessages(channel) {
   state.renderedMessages.clear();
+  state.messageMap.clear();
+  state.reactionMap.clear();
+  state.pollVotes.clear();
   ui.messages.replaceChildren();
   const welcome = makeEl("div", "channel-welcome");
   welcome.append(makeEl("div", "welcome-symbol", "#"), makeEl("h2", "", `Bem-vindo a #${channel.name}`), makeEl("p", "", channel.topic || `Este é o começo do canal #${channel.name}.`));
@@ -871,66 +1365,310 @@ function resetMessages(channel) {
 }
 
 function profileForMessage(userId) {
-  return state.profiles.get(userId) || { display_name: "Usuário", username: "usuario", avatar_url: null };
+  return state.profiles.get(userId) || state.socialProfiles.get(userId) || { display_name: "Usuário", username: "usuario", avatar_url: null };
 }
 
-function renderMessage(message) {
+function messageReplySummary(message) {
+  if (!message?.reply_to) return null;
+  const original = state.messageMap.get(String(message.reply_to));
+  if (!original) return { author: "Mensagem anterior", content: "Mensagem não carregada" };
+  const p = profileForMessage(original.user_id);
+  return { author: p.display_name || p.username, content: original.content || (original.kind === "poll" ? "Enquete" : "Anexo") };
+}
+
+function attachmentKind(file) {
+  const type = String(file?.type || "");
+  if (type.startsWith("image/")) return "image";
+  if (type.startsWith("video/")) return "video";
+  if (type.startsWith("audio/")) return "audio";
+  return "file";
+}
+
+function renderAttachments(container, attachments = []) {
+  if (!Array.isArray(attachments) || !attachments.length) return;
+  const wrap = makeEl("div", "message-attachments");
+  for (const item of attachments) {
+    if (!item?.url) continue;
+    const kind = item.kind || "file";
+    if (kind === "image") {
+      const link = makeEl("a", "attachment-image-link"); link.href = item.url; link.target = "_blank"; link.rel = "noopener";
+      const img = document.createElement("img"); img.src = item.url; img.alt = item.name || "Imagem"; img.loading = "lazy"; link.appendChild(img); wrap.appendChild(link);
+    } else if (kind === "video") {
+      const video = document.createElement("video"); video.src = item.url; video.controls = true; video.preload = "metadata"; video.className = "attachment-media"; wrap.appendChild(video);
+    } else if (kind === "audio") {
+      const audio = document.createElement("audio"); audio.src = item.url; audio.controls = true; audio.preload = "metadata"; wrap.appendChild(audio);
+    } else {
+      const link = makeEl("a", "attachment-file"); link.href = item.url; link.target = "_blank"; link.rel = "noopener";
+      link.append(makeEl("span", "attachment-file-icon", "↧"), makeEl("span", "", item.name || "Arquivo")); wrap.appendChild(link);
+    }
+  }
+  container.appendChild(wrap);
+}
+
+function reactionEntries(messageId) {
+  const all = state.reactionMap.get(String(messageId)) || [];
+  const groups = new Map();
+  for (const row of all) {
+    if (!groups.has(row.emoji)) groups.set(row.emoji, []);
+    groups.get(row.emoji).push(row.user_id);
+  }
+  return groups;
+}
+
+function renderReactions(container, message) {
+  const groups = reactionEntries(message.id);
+  if (!groups.size) return;
+  const bar = makeEl("div", "reaction-bar");
+  for (const [emoji, users] of groups) {
+    const mine = users.includes(state.user.id);
+    const button = makeEl("button", `reaction-chip${mine ? " active" : ""}`, `${emoji} ${users.length}`);
+    button.type = "button";
+    button.title = mine ? "Remover reação" : "Reagir";
+    button.addEventListener("click", () => toggleReaction(message.id, emoji, mine));
+    bar.appendChild(button);
+  }
+  container.appendChild(bar);
+}
+
+function renderPoll(container, message) {
+  if (message.kind !== "poll") return false;
+  const options = Array.isArray(message.metadata?.options) ? message.metadata.options.slice(0, 6) : [];
+  const votes = state.pollVotes.get(String(message.id)) || [];
+  const myVote = votes.find((v) => v.user_id === state.user.id)?.option_index;
+  const poll = makeEl("div", "poll-card");
+  poll.appendChild(makeEl("strong", "poll-question", message.content || "Enquete"));
+  const total = votes.length;
+  options.forEach((option, index) => {
+    const count = votes.filter((v) => Number(v.option_index) === index).length;
+    const pct = total ? Math.round((count / total) * 100) : 0;
+    const btn = makeEl("button", `poll-option${Number(myVote) === index ? " selected" : ""}`);
+    btn.type = "button";
+    const label = makeEl("span", "poll-option-label", option);
+    const stat = makeEl("span", "poll-option-stat", `${count} • ${pct}%`);
+    const fill = makeEl("span", "poll-option-fill"); fill.style.width = `${pct}%`;
+    btn.append(fill, label, stat);
+    btn.addEventListener("click", () => votePoll(message.id, index));
+    poll.appendChild(btn);
+  });
+  poll.appendChild(makeEl("small", "poll-total", `${total} voto${total === 1 ? "" : "s"}`));
+  container.appendChild(poll);
+  return true;
+}
+
+function renderMessage(message, { force = false } = {}) {
+  if (!message?.id) return;
   const key = String(message.id);
-  if (state.renderedMessages.has(key)) return;
-  state.renderedMessages.add(key);
-  const profile = profileForMessage(message.user_id);
-  const article = makeEl("article", "message");
+  state.messageMap.set(key, message);
+  let article = document.querySelector(`[data-message-id="${key}"]`);
+  if (article && !force) return;
+  const old = article;
+  article = makeEl("article", `message${message.pinned ? " pinned-message" : ""}`);
   article.dataset.messageId = key;
+  const profile = profileForMessage(message.user_id);
   const avatar = makeEl("span", "avatar avatar-md"); setAvatar(avatar, profile, "avatar-md");
   const content = makeEl("div", "message-content");
+
+  const reply = messageReplySummary(message);
+  if (reply) {
+    const replyNode = makeEl("button", "message-reply-context"); replyNode.type = "button";
+    replyNode.append(makeEl("strong", "", reply.author), makeEl("span", "", reply.content.slice(0, 120)));
+    replyNode.addEventListener("click", () => document.querySelector(`[data-message-id="${message.reply_to}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" }));
+    content.appendChild(replyNode);
+  }
+
   const head = makeEl("div", "message-head");
   const author = makeEl("strong", "message-author", profile.display_name || profile.username);
   const role = topRoleForUser(message.user_id); if (role && !role.is_default) author.style.color = role.color;
   const time = makeEl("time", "message-time", new Date(message.created_at).toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }));
   head.append(author, time);
-  const body = makeEl("div", "message-body", message.content || "");
-  content.append(head, body);
-  article.append(avatar, content);
-  if (message.user_id === state.user.id || hasPermission("MANAGE_MESSAGES")) {
-    const actions = makeEl("div", "message-actions");
-    const del = makeEl("button", "message-action danger", "🗑"); del.type = "button"; del.title = "Excluir mensagem";
-    del.addEventListener("click", () => deleteMessage(message.id)); actions.appendChild(del); article.appendChild(actions);
+  if (message.edited_at) head.appendChild(makeEl("span", "message-edited", "editada"));
+  if (message.pinned) head.appendChild(makeEl("span", "message-pin-badge", "FIXADA"));
+  content.appendChild(head);
+
+  if (!renderPoll(content, message)) {
+    const body = makeEl("div", "message-body"); appendRichText(body, message.content || "");
+    content.appendChild(body);
   }
-  ui.messages.appendChild(article);
+  renderAttachments(content, message.attachments);
+  renderReactions(content, message);
+
+  article.append(avatar, content);
+  const actions = makeEl("div", "message-actions");
+  const replyBtn = makeEl("button", "message-action", "↩"); replyBtn.type = "button"; replyBtn.title = "Responder"; replyBtn.addEventListener("click", () => beginReply(message)); actions.appendChild(replyBtn);
+  const reactBtn = makeEl("button", "message-action", "♡"); reactBtn.type = "button"; reactBtn.title = "Reagir"; reactBtn.addEventListener("click", () => quickReactionMenu(message.id, reactBtn)); actions.appendChild(reactBtn);
+  if (message.user_id === state.user.id && message.kind === "text") {
+    const edit = makeEl("button", "message-action", "✎"); edit.type = "button"; edit.title = "Editar"; edit.addEventListener("click", () => beginMessageEdit(message)); actions.appendChild(edit);
+  }
+  if (hasPermission("MANAGE_MESSAGES")) {
+    const pin = makeEl("button", "message-action", message.pinned ? "⌖" : "⌾"); pin.type = "button"; pin.title = message.pinned ? "Desafixar" : "Fixar"; pin.addEventListener("click", () => setMessagePin(message.id, !message.pinned)); actions.appendChild(pin);
+  }
+  if (message.user_id === state.user.id || hasPermission("MANAGE_MESSAGES")) {
+    const del = makeEl("button", "message-action danger", "×"); del.type = "button"; del.title = "Excluir mensagem"; del.addEventListener("click", () => deleteMessage(message.id)); actions.appendChild(del);
+  }
+  article.appendChild(actions);
+
+  if (old) old.replaceWith(article); else ui.messages.appendChild(article);
+  state.renderedMessages.add(key);
 }
 
-async function loadMessages(channelId, token) {
-  const { data, error } = await state.supabase.from("channel_messages").select("id,channel_id,user_id,content,reply_to,created_at,edited_at").eq("channel_id", channelId).order("created_at", { ascending: false }).limit(100);
+async function loadMessageExtras(ids) {
+  if (!ids.length) return;
+  const [reactionsRes, votesRes] = await Promise.all([
+    state.supabase.from("message_reactions").select("message_id,user_id,emoji,created_at").in("message_id", ids),
+    state.supabase.from("poll_votes").select("message_id,user_id,option_index,created_at").in("message_id", ids)
+  ]);
+  if (!reactionsRes.error) {
+    state.reactionMap.clear();
+    for (const row of reactionsRes.data || []) {
+      const key = String(row.message_id); if (!state.reactionMap.has(key)) state.reactionMap.set(key, []); state.reactionMap.get(key).push(row);
+    }
+  }
+  if (!votesRes.error) {
+    state.pollVotes.clear();
+    for (const row of votesRes.data || []) {
+      const key = String(row.message_id); if (!state.pollVotes.has(key)) state.pollVotes.set(key, []); state.pollVotes.get(key).push(row);
+    }
+  }
+}
+
+async function refreshMessageExtras(messageId) {
+  const id = Number(messageId); if (!id) return;
+  const [reactionsRes, votesRes] = await Promise.all([
+    state.supabase.from("message_reactions").select("message_id,user_id,emoji,created_at").eq("message_id", id),
+    state.supabase.from("poll_votes").select("message_id,user_id,option_index,created_at").eq("message_id", id)
+  ]);
+  if (!reactionsRes.error) state.reactionMap.set(String(id), reactionsRes.data || []);
+  if (!votesRes.error) state.pollVotes.set(String(id), votesRes.data || []);
+  const message = state.messageMap.get(String(id)); if (message) renderMessage(message, { force: true });
+}
+
+async function loadMessages(channelId, token, searchTerm = "") {
+  let query = state.supabase.from("channel_messages")
+    .select("id,channel_id,user_id,content,reply_to,created_at,edited_at,attachments,kind,metadata,pinned,pinned_by,pinned_at")
+    .eq("channel_id", channelId)
+    .order("created_at", { ascending: false })
+    .limit(searchTerm ? 60 : 100);
+  if (searchTerm) query = query.ilike("content", `%${searchTerm.replace(/[%_]/g, "").trim()}%`);
+  const { data, error } = await query;
   if (error) { console.error(error); toast("Não consegui carregar as mensagens."); return; }
   if (token !== state.messageLoadToken || channelId !== state.activeTextChannelId) return;
-  [...(data || [])].reverse().forEach(renderMessage);
-  ui.messages.scrollTop = ui.messages.scrollHeight;
+  const rows = [...(data || [])].reverse();
+  await loadMessageExtras(rows.map((m) => m.id));
+  rows.forEach((row) => { state.messageMap.set(String(row.id), row); renderMessage(row, { force: true }); });
+  if (!searchTerm) ui.messages.scrollTop = ui.messages.scrollHeight;
+}
+
+function renderTypingIndicator() {
+  const now = Date.now();
+  for (const [id, item] of [...state.typingUsers.entries()]) if (now - item.at > 4500) state.typingUsers.delete(id);
+  const names = [...state.typingUsers.values()].filter((x) => x.user_id !== state.user?.id).map((x) => x.name);
+  ui.typingIndicator.textContent = names.length ? `${names.slice(0, 2).join(" e ")}${names.length > 2 ? ` +${names.length - 2}` : ""} está digitando…` : "";
+}
+
+async function sendTyping() {
+  if (!state.chatChannel || !state.activeTextChannelId || !state.user) return;
+  clearTimeout(state.typingBroadcastTimer);
+  try { await state.chatChannel.send({ type: "broadcast", event: "typing", payload: { user_id: state.user.id, name: state.profile?.display_name || state.profile?.username || "Usuário", at: Date.now() } }); } catch (_) {}
+  state.typingBroadcastTimer = setTimeout(() => {}, 2500);
 }
 
 function subscribeMessages(channelId, token) {
   const rt = state.supabase.channel(`messages:${channelId}:${uuidish()}`)
-    .on("postgres_changes", { event: "INSERT", schema: "public", table: "channel_messages", filter: `channel_id=eq.${channelId}` }, ({ new: row }) => {
+    .on("broadcast", { event: "typing" }, ({ payload }) => {
+      if (!payload?.user_id || payload.user_id === state.user.id) return;
+      state.typingUsers.set(payload.user_id, { ...payload, at: Date.now() }); renderTypingIndicator(); setTimeout(renderTypingIndicator, 4700);
+    })
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "channel_messages", filter: `channel_id=eq.${channelId}` }, async ({ new: row }) => {
       if (token !== state.messageLoadToken || channelId !== state.activeTextChannelId) return;
-      renderMessage(row); ui.messages.scrollTop = ui.messages.scrollHeight;
+      state.messageMap.set(String(row.id), row); renderMessage(row, { force: true }); ui.messages.scrollTop = ui.messages.scrollHeight;
+      if (row.user_id !== state.user.id) { const p = profileForMessage(row.user_id); playSoftTone("message"); notifyDesktop(`${p.display_name || p.username} em #${activeTextChannel()?.name || "canal"}`, row.content || "Novo conteúdo"); }
+    })
+    .on("postgres_changes", { event: "UPDATE", schema: "public", table: "channel_messages", filter: `channel_id=eq.${channelId}` }, ({ new: row }) => {
+      if (token !== state.messageLoadToken || channelId !== state.activeTextChannelId) return;
+      state.messageMap.set(String(row.id), row); renderMessage(row, { force: true });
     })
     .on("postgres_changes", { event: "DELETE", schema: "public", table: "channel_messages" }, ({ old }) => {
-      if (old?.channel_id && old.channel_id !== channelId) return;
-      document.querySelector(`[data-message-id="${old.id}"]`)?.remove(); state.renderedMessages.delete(String(old.id));
-    });
+      document.querySelector(`[data-message-id="${old.id}"]`)?.remove(); state.renderedMessages.delete(String(old.id)); state.messageMap.delete(String(old.id));
+    })
+    .on("postgres_changes", { event: "*", schema: "public", table: "message_reactions" }, ({ new: n, old: o }) => refreshMessageExtras(n?.message_id || o?.message_id))
+    .on("postgres_changes", { event: "*", schema: "public", table: "poll_votes" }, ({ new: n, old: o }) => refreshMessageExtras(n?.message_id || o?.message_id));
   rt.subscribe(); state.chatChannel = rt;
 }
+
+ui.messageInput.addEventListener("input", () => { sendTyping(); });
+
+function beginReply(message) {
+  state.replyToMessageId = message.id;
+  state.editingMessageId = null;
+  ui.editBar.classList.add("hidden");
+  const p = profileForMessage(message.user_id);
+  ui.replyLabel.textContent = `Respondendo a ${p.display_name || p.username}`;
+  ui.replyPreview.textContent = (message.content || (message.kind === "poll" ? "Enquete" : "Anexo")).slice(0, 130);
+  ui.replyBar.classList.remove("hidden");
+  ui.messageInput.focus();
+}
+function clearReply() { state.replyToMessageId = null; ui.replyBar.classList.add("hidden"); }
+ui.cancelReplyBtn.addEventListener("click", clearReply);
+
+function beginMessageEdit(message) {
+  state.editingMessageId = message.id;
+  state.replyToMessageId = null;
+  ui.replyBar.classList.add("hidden");
+  ui.editBar.classList.remove("hidden");
+  ui.messageInput.value = message.content || "";
+  ui.messageInput.focus(); ui.messageInput.setSelectionRange(ui.messageInput.value.length, ui.messageInput.value.length);
+}
+function cancelMessageEdit() {
+  if (!state.editingMessageId) return;
+  state.editingMessageId = null; ui.editBar.classList.add("hidden"); ui.messageInput.value = "";
+}
+ui.cancelEditBtn.addEventListener("click", cancelMessageEdit);
+
+async function uploadMessageFile(file, scope = "channel") {
+  if (!file) return null;
+  if (file.size > 25 * 1024 * 1024) throw new Error("O arquivo precisa ter até 25 MB.");
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-").slice(-120) || "arquivo";
+  const path = `${state.user.id}/${scope}/${Date.now()}-${uuidish().slice(0, 8)}-${safeName}`;
+  const { error } = await state.supabase.storage.from("message-files").upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type || undefined });
+  if (error) throw error;
+  const url = state.supabase.storage.from("message-files").getPublicUrl(path).data.publicUrl;
+  return { url, name: file.name, size: file.size, type: file.type || "application/octet-stream", kind: attachmentKind(file) };
+}
+
+function clearPendingAttachment() { state.pendingAttachment = null; ui.messageFileInput.value = ""; ui.attachmentPreview.classList.add("hidden"); ui.attachmentPreview.replaceChildren(); }
+ui.attachBtn.addEventListener("click", () => ui.messageFileInput.click());
+ui.messageFileInput.addEventListener("change", () => {
+  const file = ui.messageFileInput.files?.[0]; if (!file) return;
+  if (file.size > 25 * 1024 * 1024) { clearPendingAttachment(); return toast("O arquivo precisa ter até 25 MB."); }
+  state.pendingAttachment = file;
+  ui.attachmentPreview.replaceChildren();
+  const info = makeEl("div", "attachment-draft"); info.append(makeEl("strong", "", file.name), makeEl("small", "", `${(file.size / 1024 / 1024).toFixed(1)} MB`));
+  const remove = makeEl("button", "tiny-icon", "✕"); remove.type = "button"; remove.addEventListener("click", clearPendingAttachment);
+  ui.attachmentPreview.append(info, remove); ui.attachmentPreview.classList.remove("hidden");
+});
 
 ui.messageForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (state.sendingMessage || !state.activeTextChannelId) return;
-  const content = ui.messageInput.value.trim(); if (!content) return;
+  const content = ui.messageInput.value.trim();
+  if (!content && !state.pendingAttachment) return;
   if (content.length > 2000) return toast("Mensagem grande demais.");
   state.sendingMessage = true; ui.sendBtn.disabled = true;
   try {
-    const { error } = await state.supabase.from("channel_messages").insert({ channel_id: state.activeTextChannelId, user_id: state.user.id, content });
-    if (error) throw error;
-    ui.messageInput.value = "";
-  } catch (error) { console.error(error); toast("Não foi possível enviar a mensagem."); }
+    if (state.editingMessageId) {
+      if (!content) throw new Error("A mensagem não pode ficar vazia.");
+      const { error } = await state.supabase.from("channel_messages").update({ content, edited_at: new Date().toISOString() }).eq("id", state.editingMessageId).eq("user_id", state.user.id);
+      if (error) throw error;
+      cancelMessageEdit();
+    } else {
+      let attachments = [];
+      if (state.pendingAttachment) attachments = [await uploadMessageFile(state.pendingAttachment, `server-${state.activeServerId}`)];
+      const payload = { channel_id: state.activeTextChannelId, user_id: state.user.id, content: content || (attachments.length ? "Arquivo enviado" : ""), reply_to: state.replyToMessageId || null, attachments, kind: "text", metadata: {} };
+      const { error } = await state.supabase.from("channel_messages").insert(payload);
+      if (error) throw error;
+      ui.messageInput.value = ""; clearReply(); clearPendingAttachment();
+    }
+  } catch (error) { console.error(error); toast(error.message || "Não foi possível enviar a mensagem."); }
   finally { state.sendingMessage = false; ui.sendBtn.disabled = !hasPermission("SEND_MESSAGES"); ui.messageInput.focus(); }
 });
 
@@ -938,7 +1676,90 @@ async function deleteMessage(id) {
   if (!confirm("Excluir esta mensagem?")) return;
   const { error } = await state.supabase.from("channel_messages").delete().eq("id", id);
   if (error) toast("Não foi possível excluir a mensagem.");
-  else document.querySelector(`[data-message-id="${id}"]`)?.remove();
+  else { document.querySelector(`[data-message-id="${id}"]`)?.remove(); state.messageMap.delete(String(id)); }
+}
+
+async function toggleReaction(messageId, emoji, remove = false) {
+  const query = state.supabase.from("message_reactions");
+  const result = remove
+    ? await query.delete().eq("message_id", messageId).eq("user_id", state.user.id).eq("emoji", emoji)
+    : await query.upsert({ message_id: messageId, user_id: state.user.id, emoji }, { onConflict: "message_id,user_id,emoji" });
+  if (result.error) return toast("Não consegui atualizar a reação.");
+  await refreshMessageExtras(messageId);
+}
+
+function quickReactionMenu(messageId, anchor) {
+  document.querySelector(".quick-reaction-popover")?.remove();
+  const pop = makeEl("div", "quick-reaction-popover");
+  for (const emoji of ["👍", "❤️", "😂", "🔥", "🎮", "✅"]) {
+    const btn = makeEl("button", "", emoji); btn.type = "button"; btn.addEventListener("click", async () => { const mine = (state.reactionMap.get(String(messageId)) || []).some((r) => r.user_id === state.user.id && r.emoji === emoji); await toggleReaction(messageId, emoji, mine); pop.remove(); }); pop.appendChild(btn);
+  }
+  anchor.closest(".message")?.appendChild(pop);
+  setTimeout(() => document.addEventListener("click", function close(e) { if (!pop.contains(e.target) && e.target !== anchor) { pop.remove(); document.removeEventListener("click", close); } }), 0);
+}
+
+async function setMessagePin(messageId, pin) {
+  const { error } = await state.supabase.rpc("set_message_pin", { p_message_id: messageId, p_pin: pin });
+  if (error) return toast(error.message || "Não foi possível alterar a mensagem fixada.");
+  const message = state.messageMap.get(String(messageId)); if (message) { message.pinned = pin; message.pinned_at = pin ? new Date().toISOString() : null; renderMessage(message, { force: true }); }
+  toast(pin ? "Mensagem fixada." : "Mensagem desafixada.");
+}
+
+async function openPinnedMessages() {
+  if (!state.activeTextChannelId) return;
+  ui.pinnedList.replaceChildren(makeEl("div", "empty-mini", "Carregando…"));
+  openDialog(ui.pinnedDialog);
+  const { data, error } = await state.supabase.from("channel_messages").select("id,user_id,content,created_at,attachments,kind,metadata,pinned").eq("channel_id", state.activeTextChannelId).eq("pinned", true).order("pinned_at", { ascending: false });
+  ui.pinnedList.replaceChildren();
+  if (error) return ui.pinnedList.appendChild(makeEl("div", "empty-mini", "Não foi possível carregar."));
+  if (!data?.length) return ui.pinnedList.appendChild(makeEl("div", "empty-mini", "Nenhuma mensagem fixada neste canal."));
+  for (const row of data) {
+    const p = profileForMessage(row.user_id); const card = makeEl("button", "pinned-item"); card.type = "button";
+    card.append(makeEl("strong", "", p.display_name || p.username), makeEl("span", "", (row.content || "Conteúdo fixado").slice(0, 180)));
+    card.addEventListener("click", () => { closeDialog(ui.pinnedDialog); document.querySelector(`[data-message-id="${row.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" }); }); ui.pinnedList.appendChild(card);
+  }
+}
+ui.pinnedMessagesBtn.addEventListener("click", openPinnedMessages);
+
+let searchTimer = null;
+ui.topbarSearchInput.addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(async () => {
+    const term = ui.topbarSearchInput.value.trim().toLowerCase();
+    if (state.homeMode) {
+      for (const row of ui.homeHub.querySelectorAll(".social-user-row")) row.classList.toggle("hidden", term && !row.textContent.toLowerCase().includes(term));
+      return;
+    }
+    if (!state.activeTextChannelId) return;
+    const channel = activeTextChannel(); if (!channel) return;
+    resetMessages(channel);
+    const token = state.messageLoadToken;
+    await loadMessages(channel.id, token, term);
+    if (term) ui.messages.prepend(makeEl("div", "search-summary", `Resultados para “${term}”`));
+  }, 280);
+});
+
+ui.quickPollBtn.addEventListener("click", () => {
+  if (!state.activeTextChannelId || !hasPermission("SEND_MESSAGES")) return;
+  ui.pollQuestionInput.value = ""; ui.pollOptionsInput.value = ""; openDialog(ui.pollDialog); setTimeout(() => ui.pollQuestionInput.focus(), 30);
+});
+ui.pollForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const question = ui.pollQuestionInput.value.trim();
+  const options = ui.pollOptionsInput.value.split(/\n+/).map((x) => x.trim()).filter(Boolean).slice(0, 6);
+  if (!question || options.length < 2) return toast("Informe uma pergunta e pelo menos 2 opções.");
+  const submit = ui.pollForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Publicando…");
+  try {
+    const { error } = await state.supabase.from("channel_messages").insert({ channel_id: state.activeTextChannelId, user_id: state.user.id, content: question, kind: "poll", metadata: { options }, attachments: [] });
+    if (error) throw error; closeDialog(ui.pollDialog); toast("Enquete publicada.");
+  } catch (error) { console.error(error); toast(error.message || "Não foi possível publicar a enquete."); }
+  finally { setBusy(submit, false); }
+});
+
+async function votePoll(messageId, optionIndex) {
+  const { error } = await state.supabase.from("poll_votes").upsert({ message_id: messageId, user_id: state.user.id, option_index: optionIndex }, { onConflict: "message_id,user_id" });
+  if (error) return toast("Não foi possível registrar seu voto.");
+  await refreshMessageExtras(messageId);
 }
 
 // -----------------------------------------------------------------------------
@@ -960,7 +1781,17 @@ ui.serverForm.addEventListener("submit", async (event) => {
     await sleep(250);
     await loadServers(serverId);
     toast(`Servidor “${name}” criado.`);
-  } catch (error) { console.error(error); toast(`Não foi possível criar o servidor: ${error.message || "erro"}`, 6000); }
+  } catch (error) {
+    console.error(error);
+    const msg = String(error?.message || "erro");
+    const missingRpc = error?.code === "PGRST202" || /create_tropa_server|schema cache/i.test(msg);
+    toast(
+      missingRpc
+        ? "A função de criação de servidor ainda não foi instalada. Execute MIGRATION_V6_ULTIMATE.sql no Supabase e tente novamente."
+        : `Não foi possível criar o servidor: ${msg}`,
+      8000
+    );
+  }
   finally { setBusy(submit, false); }
 });
 
@@ -1070,12 +1901,27 @@ function openServerSettings() {
   openDialog(ui.serverSettingsDialog);
 }
 ui.quickSettingsBtn.addEventListener("click", openServerSettings);
+ui.quickNicknameBtn?.addEventListener("click", async () => {
+  if (!state.activeServer) return;
+  const member = state.serverMembers.find((m) => m.user_id === state.user.id);
+  const value = prompt("Seu apelido neste servidor (deixe vazio para usar o nome do perfil):", member?.nickname || "");
+  if (value === null) return;
+  const nickname = value.trim().slice(0, 32) || null;
+  const { error } = await state.supabase.from("server_members").update({ nickname }).eq("server_id", state.activeServer.id).eq("user_id", state.user.id);
+  if (error) return toast(error.message || "Não foi possível alterar seu apelido.");
+  ui.serverQuickMenu.classList.add("hidden"); await loadServerBundle(); await retrackServerPresence(); toast("Apelido atualizado.");
+});
+ui.quickEventsBtn?.addEventListener("click", () => { if (!state.activeServer) return; ui.serverQuickMenu.classList.add("hidden"); renderSettingsAll(); switchSettingsTab("events"); openDialog(ui.serverSettingsDialog); });
 $$('.settings-tab[data-settings-tab]').forEach((btn) => btn.addEventListener("click", () => switchSettingsTab(btn.dataset.settingsTab)));
 function switchSettingsTab(name) {
   $$('.settings-tab[data-settings-tab]').forEach((btn) => btn.classList.toggle("active", btn.dataset.settingsTab === name));
   ui.settingsOverviewPane.classList.toggle("hidden", name !== "overview");
   ui.settingsRolesPane.classList.toggle("hidden", name !== "roles");
   ui.settingsMembersPane.classList.toggle("hidden", name !== "members");
+  ui.settingsEventsPane.classList.toggle("hidden", name !== "events");
+  ui.settingsModerationPane.classList.toggle("hidden", name !== "moderation");
+  if (name === "events") loadEvents();
+  if (name === "moderation") loadModeration();
 }
 
 function renderSettingsAll() {
@@ -1213,8 +2059,106 @@ function renderSettingsMembers() {
         if (error) toast(error.message || "Não foi possível remover o membro."); else { await loadServerBundle(); toast("Membro removido."); }
       });
       roleBox.appendChild(kick);
+      const ban = makeEl("button", "role-chip danger-chip", "Banir"); ban.type = "button";
+      ban.addEventListener("click", async () => {
+        const reason = prompt(`Motivo do banimento de ${profile.display_name}:`, "") ?? null; if (reason === null) return;
+        ban.disabled = true;
+        const { error } = await state.supabase.rpc("ban_server_member", { p_server_id: state.activeServer.id, p_user_id: member.user_id, p_reason: reason.slice(0, 300) });
+        if (error) toast(error.message || "Não foi possível banir o membro."); else { await loadServerBundle(); toast("Membro banido."); }
+      });
+      roleBox.appendChild(ban);
     }
     row.append(main, roleBox); ui.settingsMembersList.appendChild(row);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Eventos e moderação
+// -----------------------------------------------------------------------------
+ui.newEventBtn?.addEventListener("click", () => {
+  if (!state.activeServer) return;
+  ui.eventForm.reset();
+  const d = new Date(Date.now() + 60 * 60 * 1000); d.setMinutes(Math.ceil(d.getMinutes() / 15) * 15, 0, 0);
+  ui.eventStartsAtInput.value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  openDialog(ui.eventDialog);
+});
+
+ui.eventForm?.addEventListener("submit", async (event) => {
+  event.preventDefault(); if (!state.activeServer) return;
+  const title = ui.eventTitleInput.value.trim(); const starts = new Date(ui.eventStartsAtInput.value);
+  if (!title || Number.isNaN(starts.getTime())) return toast("Preencha título e data do evento.");
+  const submit = ui.eventForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Criando…");
+  try {
+    const { error } = await state.supabase.from("server_events").insert({ server_id: state.activeServer.id, created_by: state.user.id, title, description: ui.eventDescriptionInput.value.trim().slice(0, 500), starts_at: starts.toISOString() });
+    if (error) throw error; closeDialog(ui.eventDialog); await loadEvents(); toast("Evento criado.");
+  } catch (error) { console.error(error); toast(error.message || "Não foi possível criar o evento."); }
+  finally { setBusy(submit, false); }
+});
+
+async function loadEvents() {
+  if (!state.activeServer || !ui.settingsEventsPane || ui.settingsEventsPane.classList.contains("hidden")) return;
+  ui.eventsList.replaceChildren(makeEl("div", "empty-mini", "Carregando eventos…"));
+  const { data, error } = await state.supabase.from("server_events").select("id,server_id,created_by,title,description,starts_at,created_at").eq("server_id", state.activeServer.id).order("starts_at", { ascending: true }).limit(100);
+  ui.eventsList.replaceChildren();
+  if (error) return ui.eventsList.appendChild(makeEl("div", "empty-mini", "Execute a migração V6 para ativar eventos."));
+  state.events = data || [];
+  if (!state.events.length) return ui.eventsList.appendChild(makeEl("div", "empty-mini", "Nenhum evento agendado."));
+  const ids = state.events.map((e) => e.id);
+  const { data: rsvps } = await state.supabase.from("event_rsvps").select("event_id,user_id,response").in("event_id", ids);
+  for (const item of state.events) {
+    const card = makeEl("article", "event-card");
+    const when = new Date(item.starts_at);
+    const head = makeEl("div", "event-card-head"); head.append(makeEl("div", "event-date", when.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })), makeEl("div", "event-title-wrap"));
+    const wrap = head.lastChild; wrap.append(makeEl("strong", "", item.title), makeEl("small", "", when.toLocaleString("pt-BR", { weekday: "short", hour: "2-digit", minute: "2-digit" })));
+    card.appendChild(head); if (item.description) card.appendChild(makeEl("p", "event-description", item.description));
+    const votes = (rsvps || []).filter((r) => r.event_id === item.id); const my = votes.find((r) => r.user_id === state.user.id)?.response;
+    const foot = makeEl("div", "event-actions");
+    const going = makeEl("button", `secondary-button small-action${my === "going" ? " active" : ""}`, `Vou (${votes.filter((r) => r.response === "going").length})`); going.type = "button"; going.addEventListener("click", () => setEventRsvp(item.id, "going"));
+    const maybe = makeEl("button", `secondary-button small-action${my === "maybe" ? " active" : ""}`, "Talvez"); maybe.type = "button"; maybe.addEventListener("click", () => setEventRsvp(item.id, "maybe"));
+    foot.append(going, maybe);
+    if (item.created_by === state.user.id || hasPermission("MANAGE_SERVER")) { const del = makeEl("button", "danger-button small-action", "Excluir"); del.type = "button"; del.addEventListener("click", () => deleteEvent(item.id)); foot.appendChild(del); }
+    card.appendChild(foot); ui.eventsList.appendChild(card);
+  }
+}
+
+async function setEventRsvp(eventId, response) {
+  const { error } = await state.supabase.from("event_rsvps").upsert({ event_id: eventId, user_id: state.user.id, response }, { onConflict: "event_id,user_id" });
+  if (error) return toast("Não foi possível confirmar presença."); await loadEvents();
+}
+async function deleteEvent(eventId) {
+  if (!confirm("Excluir este evento?")) return;
+  const { error } = await state.supabase.from("server_events").delete().eq("id", eventId); if (error) return toast("Não foi possível excluir o evento."); await loadEvents();
+}
+
+async function loadModeration() {
+  if (!state.activeServer || ui.settingsModerationPane.classList.contains("hidden")) return;
+  ui.bansList.replaceChildren(makeEl("div", "empty-mini", "Carregando…")); ui.auditLogList.replaceChildren(makeEl("div", "empty-mini", "Carregando…"));
+  if (!hasPermission("KICK_MEMBERS") && !hasPermission("MANAGE_SERVER")) {
+    ui.bansList.replaceChildren(makeEl("div", "empty-mini", "Você não tem permissão para ver a moderação.")); ui.auditLogList.replaceChildren(); return;
+  }
+  const [bansRes, auditRes] = await Promise.all([
+    state.supabase.from("server_bans").select("server_id,user_id,banned_by,reason,created_at").eq("server_id", state.activeServer.id).order("created_at", { ascending: false }),
+    state.supabase.from("server_audit_log").select("id,server_id,actor_id,action,target_user_id,metadata,created_at").eq("server_id", state.activeServer.id).order("created_at", { ascending: false }).limit(100)
+  ]);
+  ui.bansList.replaceChildren(); ui.auditLogList.replaceChildren();
+  if (bansRes.error) ui.bansList.appendChild(makeEl("div", "empty-mini", "Migração V6 necessária."));
+  else {
+    state.bans = bansRes.data || [];
+    const ids = [...new Set(state.bans.flatMap((b) => [b.user_id, b.banned_by]).filter(Boolean))];
+    if (ids.length) { const { data } = await state.supabase.from("profiles").select("user_id,username,display_name,avatar_url").in("user_id", ids); for (const p of data || []) state.socialProfiles.set(p.user_id, p); }
+    if (!state.bans.length) ui.bansList.appendChild(makeEl("div", "empty-mini", "Nenhum membro banido."));
+    for (const ban of state.bans) {
+      const p = state.socialProfiles.get(ban.user_id) || { display_name: "Usuário", username: "usuario" };
+      const row = socialUserRow(p, ban.reason || "Sem motivo", []); const unban = makeEl("button", "mini-action", "Desbanir"); unban.type = "button"; unban.addEventListener("click", async () => { const { error } = await state.supabase.rpc("unban_server_member", { p_server_id: state.activeServer.id, p_user_id: ban.user_id }); if (error) toast(error.message || "Erro ao desbanir."); else { toast("Membro desbanido."); loadModeration(); } }); row.querySelector(".social-user-actions").appendChild(unban); ui.bansList.appendChild(row);
+    }
+  }
+  if (auditRes.error) ui.auditLogList.appendChild(makeEl("div", "empty-mini", "Migração V6 necessária."));
+  else {
+    state.auditLog = auditRes.data || [];
+    if (!state.auditLog.length) ui.auditLogList.appendChild(makeEl("div", "empty-mini", "Sem ações registradas ainda."));
+    for (const log of state.auditLog) {
+      const row = makeEl("div", "audit-row"); row.append(makeEl("strong", "", log.action.replaceAll("_", " ")), makeEl("small", "", new Date(log.created_at).toLocaleString("pt-BR"))); if (log.metadata?.reason) row.appendChild(makeEl("span", "", log.metadata.reason)); ui.auditLogList.appendChild(row);
+    }
   }
 }
 
@@ -1312,7 +2256,9 @@ async function joinVoice(channelId) {
   const session = ++state.voiceSession; state.joiningVoice = true; updateVoiceDock("connecting", channel);
   let stream = null;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false });
+    const audioConstraint = { echoCancellation: true, noiseSuppression: true, autoGainControl: true };
+    if (state.preferences.audio_input_id) audioConstraint.deviceId = { exact: state.preferences.audio_input_id };
+    stream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraint, video: false });
     if (session !== state.voiceSession) { stream.getTracks().forEach((t) => t.stop()); return; }
     state.localStream = stream; state.voiceJoinedChannelId = channel.id; state.voiceJoinedChannelName = channel.name;
     const watcher = await ensureVoiceWatcher(channel); await Promise.race([watcher.ready, sleep(11000).then(() => { throw new Error("Tempo limite ao conectar à chamada"); })]);
@@ -1402,7 +2348,14 @@ function makeRemoteCard(peerId) {
   if (!card) {
     card = makeEl("div", "media-card audio-only"); card.id = `media-${peerId}`;
     const video = document.createElement("video"); video.autoplay = true; video.playsInline = true; video.muted = state.deafen;
-    card.append(video, makeEl("span", "media-label"), makeEl("span", "media-connection", "conectando"));
+    const controls = makeEl("div", "media-local-controls");
+    const volumeLabel = makeEl("label", "media-volume"); volumeLabel.title = "Volume individual";
+    volumeLabel.append(makeEl("span", "", "VOL"));
+    const volume = document.createElement("input"); volume.type = "range"; volume.min = "0"; volume.max = "1"; volume.step = "0.05"; volume.value = "1";
+    volume.addEventListener("input", () => { video.volume = Number(volume.value); });
+    volumeLabel.appendChild(volume); controls.appendChild(volumeLabel);
+    card.append(video, makeEl("span", "media-label"), makeEl("span", "media-connection", "conectando"), controls);
+    card.addEventListener("dblclick", () => { if (document.fullscreenElement) document.exitFullscreen?.(); else card.requestFullscreen?.(); });
     card.addEventListener("click", () => video.play().catch(() => {})); ui.mediaGrid.appendChild(card);
   }
   const p = peerPresence(peerId); const name = p?.display_name || p?.username || state.peerNames.get(peerId) || "Usuário"; card.dataset.initials = initials(name);
@@ -1410,9 +2363,29 @@ function makeRemoteCard(peerId) {
   const liveVideo = peer.remoteStream.getVideoTracks().some((t) => t.readyState === "live" && !t.muted);
   card.classList.toggle("audio-only", !liveVideo); card.classList.toggle("screen", Boolean(peer.remoteMedia?.screen));
   card.querySelector(".media-label").textContent = `${name}${peer.remoteMedia?.screen ? " • tela" : ""}${peer.remoteMedia?.muted ? " • mudo" : ""}`;
-  video.play().catch(() => {}); updatePeerCardStatus(peerId); ui.mediaStage.classList.remove("hidden");
+  video.play().catch(() => {}); startSpeakingMeter(peerId, peer.remoteStream, card); updatePeerCardStatus(peerId); ui.mediaStage.classList.remove("hidden");
 }
-function removeRemoteCard(peerId) { document.getElementById(`media-${peerId}`)?.remove(); updateCallStatus(); }
+function startSpeakingMeter(peerId, stream, card) {
+  if (state.audioMeters.has(peerId) || !stream?.getAudioTracks()?.length) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = ctx.createAnalyser(); analyser.fftSize = 256; analyser.smoothingTimeConstant = .72;
+    const source = ctx.createMediaStreamSource(stream); source.connect(analyser);
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    let raf = 0; let active = true;
+    const tick = () => {
+      if (!active || !document.body.contains(card)) return;
+      analyser.getByteFrequencyData(data);
+      let sum = 0; for (const v of data) sum += v; const avg = sum / data.length;
+      card.classList.toggle("speaking", avg > 13);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    state.audioMeters.set(peerId, { stop: () => { active = false; cancelAnimationFrame(raf); try { source.disconnect(); } catch (_) {} ctx.close().catch(() => {}); } });
+  } catch (_) {}
+}
+
+function removeRemoteCard(peerId) { state.audioMeters.get(peerId)?.stop?.(); state.audioMeters.delete(peerId); document.getElementById(`media-${peerId}`)?.remove(); updateCallStatus(); }
 function updatePeerCardStatus(peerId) {
   const peer = state.peers.get(peerId), card = document.getElementById(`media-${peerId}`); if (!peer || !card) return;
   const badge = card.querySelector(".media-connection"); const map = { new: "preparando", connecting: "conectando", connected: "conectado", disconnected: "reconectando", failed: "falha", closed: "desconectado" };
@@ -1541,7 +2514,9 @@ async function toggleCamera() {
     if (state.cameraTrack) {
       const old = state.cameraTrack; state.cameraTrack = null; await replaceVideoForPeers(null); if (old.readyState !== "ended") old.stop(); ensureLocalCard(); await retrackVoicePresence(); return;
     }
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 30 }, facingMode: "user" }, audio: false });
+    const videoConstraint = { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 30 }, facingMode: "user" };
+    if (state.preferences.video_input_id) { delete videoConstraint.facingMode; videoConstraint.deviceId = { exact: state.preferences.video_input_id }; }
+    const stream = await navigator.mediaDevices.getUserMedia({ video: videoConstraint, audio: false });
     const track = stream.getVideoTracks()[0]; if (!track) throw new Error("Nenhuma câmera disponível.");
     if (!state.voiceJoinedChannelId || session !== state.voiceSession || state.screenTrack) { stream.getTracks().forEach((t) => t.stop()); return; }
     state.cameraTrack = track; if ("contentHint" in track) track.contentHint = "motion";
@@ -1580,17 +2555,26 @@ async function toggleScreenShare() {
 async function cleanupAppSession() {
   ++state.serverLoadToken; ++state.messageLoadToken;
   try { await cleanupActiveServerRealtime(); } catch (_) {}
-  state.servers = []; state.activeServerId = null; state.activeServer = null; state.channels = []; state.serverMembers = []; state.roles = []; state.memberRoles = []; state.profiles.clear(); state.user = null; state.profile = null;
+  if (state.dmChannel && state.supabase) { try { await state.supabase.removeChannel(state.dmChannel); } catch (_) {} state.dmChannel = null; }
+  for (const meter of state.audioMeters.values()) meter.stop?.(); state.audioMeters.clear();
+  state.servers = []; state.activeServerId = null; state.activeServer = null; state.channels = []; state.serverMembers = []; state.roles = []; state.memberRoles = []; state.profiles.clear(); state.socialProfiles.clear(); state.friendships = []; state.activeDmUserId = null; state.user = null; state.profile = null; state.homeMode = false;
   clearActiveServer(); renderServerRail();
 }
 
 async function onSignedIn(user) {
   state.user = user; showApp(); connectionStatus("Carregando…");
   try {
-    await loadCurrentProfile(); await loadServers(); connectionStatus("Online", "online"); await handlePendingInviteAfterAuth();
+    await loadCurrentProfile();
+    await loadPreferences();
+    await loadServers();
+    connectionStatus("Online", "online");
+    await handlePendingInviteAfterAuth();
   } catch (error) {
     console.error(error); connectionStatus("Erro", "error");
-    toast("A estrutura V4 do banco ainda não está pronta. Execute supabase_v4.sql no Supabase e recarregue a página.", 9000);
+    const msg = String(error?.message || "");
+    toast(/user_preferences|friendships|direct_messages|message_reactions/i.test(msg)
+      ? "Execute MIGRATION_V6_ULTIMATE.sql no Supabase para ativar todos os recursos da V6."
+      : "A estrutura do banco ainda não está pronta. Confira supabase_v4.sql e MIGRATION_V6_ULTIMATE.sql.", 9000);
   }
 }
 
@@ -1600,7 +2584,8 @@ async function boot() {
     ui.setupBanner.classList.remove("hidden"); ui.authScreen.classList.remove("hidden");
     return;
   }
-  state.supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+  state.supabase = createClient(cfg.SUPABASE_URL, cfg.SUPABASE_PUBLISHABLE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("./sw.js").catch(() => {});
   if (state.pendingInviteToken) previewInvite(state.pendingInviteToken).catch(() => {});
 
   const { data: { session } } = await state.supabase.auth.getSession();
@@ -1608,6 +2593,7 @@ async function boot() {
 
   state.supabase.auth.onAuthStateChange((event, sessionNow) => {
     setTimeout(async () => {
+      if (event === "PASSWORD_RECOVERY" && sessionNow?.user) { state.user = sessionNow.user; showApp(); openDialog(ui.recoveryDialog); return; }
       if (event === "SIGNED_OUT" || !sessionNow?.user) { await cleanupAppSession(); showAuth(); return; }
       if (["SIGNED_IN", "USER_UPDATED", "TOKEN_REFRESHED", "INITIAL_SESSION"].includes(event)) {
         if (state.user?.id === sessionNow.user.id && state.profile) return;
