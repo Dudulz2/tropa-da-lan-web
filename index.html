@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111318" />
+  <meta name="description" content="Tropa da Lan — comunidades, chat, voz, vídeo e compartilhamento de tela no navegador." />
+  <title>Tropa da Lan</title>
+  <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="setupBanner" class="setup-banner hidden">
+    <strong>Configuração pendente.</strong>
+    <span>Confira <code>config.js</code> e execute <code>supabase_v4.sql</code> no Supabase.</span>
+  </div>
+
+  <!-- AUTENTICAÇÃO -->
+  <main id="authScreen" class="auth-screen hidden">
+    <section class="auth-hero" aria-hidden="true">
+      <div class="auth-brand-lockup"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
+      <div>
+        <span class="eyebrow">COMUNIDADE • VOZ • JOGOS</span>
+        <h1>Seu espaço para conversar, jogar e ficar em call.</h1>
+        <p>Servidores, canais, cargos, chat e voz direto no navegador.</p>
+      </div>
+      <div class="auth-feature-grid">
+        <div><b>💬</b><span>Chat em tempo real</span></div>
+        <div><b>🎙️</b><span>Voz e vídeo WebRTC</span></div>
+        <div><b>🖥️</b><span>Compartilhar tela</span></div>
+        <div><b>🛡️</b><span>Cargos e permissões</span></div>
+      </div>
+      <div class="auth-trust-strip">
+        <div><strong>Seguro</strong><span>com Supabase</span></div>
+        <div><strong>Grátis</strong><span>para testar</span></div>
+        <div><strong>Feito</strong><span>para a comunidade</span></div>
+      </div>
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-card">
+        <div class="auth-mobile-brand"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
+        <div id="invitePreviewAuth" class="invite-preview compact hidden"></div>
+
+        <div class="auth-tabs" role="tablist">
+          <button id="loginTab" class="auth-tab active" type="button">Entrar</button>
+          <button id="registerTab" class="auth-tab" type="button">Criar conta</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div class="auth-title"><h2>Bem-vindo de volta</h2><p>Entre com seu e-mail e sua senha.</p></div>
+          <label>E-mail
+            <input id="loginEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" required />
+          </label>
+          <label>Senha
+            <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" maxlength="72" placeholder="Sua senha" required />
+          </label>
+          <button id="loginBtn" class="primary-button wide" type="submit">Entrar</button>
+          <p class="auth-hint">O e-mail é usado apenas para autenticação. Dentro do app, as pessoas veem seu nome de usuário e seu perfil.</p>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <div class="auth-title"><h2>Crie sua conta</h2><p>Use um e-mail válido, escolha seu usuário e crie uma senha.</p></div>
+          <label>E-mail
+            <input id="registerEmail" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" required />
+          </label>
+          <label>Nome de usuário
+            <input id="registerUsername" type="text" autocomplete="username" minlength="3" maxlength="20" placeholder="3 a 20 caracteres" required />
+            <small>Letras minúsculas, números, ponto, hífen e underline.</small>
+          </label>
+          <label>Senha
+            <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" maxlength="72" placeholder="Mínimo de 6 caracteres" required />
+          </label>
+          <label>Confirmar senha
+            <input id="registerPassword2" type="password" autocomplete="new-password" minlength="6" maxlength="72" placeholder="Repita a senha" required />
+          </label>
+          <button id="registerBtn" class="primary-button wide" type="submit">Criar conta</button>
+          <p class="auth-hint">Para testar sem configurar envio de e-mails, deixe <b>Confirm email</b> desativado no Supabase. Se ativar, será preciso confirmar o endereço antes do primeiro login.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- APP -->
+  <button id="drawerBackdrop" class="drawer-backdrop hidden" type="button" aria-label="Fechar menus"></button>
+
+  <div id="appShell" class="app-shell hidden">
+    <aside class="servers-rail" id="serversRail" aria-label="Servidores">
+      <button class="server-home-button" id="homeServerBtn" type="button" title="Tropa da Lan">
+        <img src="./assets/logo.svg" alt="Tropa da Lan" />
+      </button>
+      <div class="rail-separator"></div>
+      <div id="serverButtons" class="server-buttons"></div>
+      <div class="rail-spacer"></div>
+      <button class="server-action-button" id="createServerBtn" type="button" title="Criar servidor">＋</button>
+      <button class="server-action-button secondary" id="joinServerBtn" type="button" title="Entrar por convite">⌁</button>
+    </aside>
+
+    <aside class="channels-panel" id="channelsPanel">
+      <header class="server-header">
+        <button id="serverMenuBtn" class="server-title-button" type="button" disabled>
+          <span id="activeServerName">Selecione um servidor</span><span class="chevron">⌄</span>
+        </button>
+        <button id="closeNavBtn" class="mobile-close" type="button" aria-label="Fechar menu">✕</button>
+      </header>
+
+      <div id="serverQuickMenu" class="server-quick-menu hidden">
+        <button id="quickInviteBtn" type="button">🔗 Convidar pessoas</button>
+        <button id="quickCreateChannelBtn" type="button">＋ Criar canal</button>
+        <button id="quickSettingsBtn" type="button">⚙ Configurações do servidor</button>
+        <button id="quickLeaveServerBtn" class="danger-text" type="button">↪ Sair do servidor</button>
+      </div>
+
+      <nav id="channelList" class="channel-list" aria-label="Canais"></nav>
+
+      <section id="voiceDock" class="voice-dock hidden">
+        <div class="voice-dock-head">
+          <div class="voice-signal"><span id="voiceIndicator"></span></div>
+          <div class="voice-dock-meta">
+            <strong id="voiceStateText">Voz conectada</strong>
+            <small id="voiceRoomLabel">—</small>
+          </div>
+          <button id="leaveVoiceBtn" class="tiny-icon danger" type="button" title="Desconectar">☎</button>
+        </div>
+        <div class="voice-dock-actions">
+          <button id="muteBtn" class="dock-action" type="button" title="Silenciar microfone">🎙️</button>
+          <button id="deafenBtn" class="dock-action" type="button" title="Ensurdecer">🎧</button>
+          <button id="cameraBtn" class="dock-action" type="button" title="Ligar câmera">📷</button>
+          <button id="shareBtn" class="dock-action" type="button" title="Compartilhar tela">🖥️</button>
+        </div>
+      </section>
+
+      <footer class="profile-bar">
+        <button id="profileButton" class="profile-identity" type="button" title="Editar perfil">
+          <span id="profileAvatar" class="avatar avatar-sm">TL</span>
+          <span class="profile-meta"><strong id="profileName">Carregando…</strong><small id="profileUsername">@usuario</small></span>
+        </button>
+        <button id="profileSettingsBtn" class="tiny-icon" type="button" title="Perfil">⚙</button>
+        <button id="logoutBtn" class="tiny-icon" type="button" title="Sair da conta">↪</button>
+      </footer>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="mobileMenuBtn" class="mobile-menu" type="button" aria-label="Abrir servidores e canais">☰</button>
+          <div class="channel-heading">
+            <span id="activeChannelIcon">#</span>
+            <div><strong id="activeChannelName">Tropa da Lan</strong><small id="activeChannelTopic">Escolha um servidor para começar</small></div>
+          </div>
+        </div>
+        <div class="topbar-center">
+          <label class="topbar-search" aria-label="Buscar">
+            <span>⌕</span>
+            <input type="text" placeholder="Buscar em #geral" disabled />
+          </label>
+        </div>
+        <div class="topbar-actions">
+          <span id="connectionText" class="connection-text">Conectando…</span>
+          <button class="topbar-icon desktop-only" type="button" title="Notificações">🔔</button>
+          <button class="topbar-icon desktop-only" type="button" title="Amigos">👥</button>
+          <button class="topbar-icon desktop-only" type="button" title="Configurações rápidas">⚙</button>
+          <button id="mobileMembersBtn" class="topbar-icon" type="button" title="Membros">👥</button>
+        </div>
+      </header>
+
+      <section class="content-area">
+        <div class="conversation-column">
+          <section id="emptyState" class="empty-state">
+            <img src="./assets/logo.svg" alt="" />
+            <h2>Bem-vindo ao Tropa da Lan</h2>
+            <p>Crie um servidor ou entre em um convite para começar.</p>
+            <div class="empty-actions"><button id="emptyCreateServerBtn" class="primary-button" type="button">Criar servidor</button><button id="emptyJoinServerBtn" class="secondary-button" type="button">Usar convite</button></div>
+          </section>
+
+          <section id="mediaStage" class="media-stage hidden" aria-label="Chamada">
+            <div class="media-stage-head">
+              <div><strong id="mediaStageTitle">Canal de voz</strong><small id="callStatusText">Aguardando participantes…</small></div>
+              <div class="media-stage-actions"><span class="secure-badge">WebRTC</span><button id="collapseMediaBtn" class="tiny-icon" type="button" title="Minimizar">—</button></div>
+            </div>
+            <div id="mediaGrid" class="media-grid"></div>
+          </section>
+
+          <section id="messages" class="messages hidden" aria-live="polite"></section>
+
+          <form id="messageForm" class="composer hidden">
+            <button type="button" class="composer-icon" title="Anexos em uma próxima versão" disabled>＋</button>
+            <input id="messageInput" type="text" maxlength="2000" autocomplete="off" placeholder="Enviar mensagem" />
+            <button id="sendBtn" class="send-button" type="submit">Enviar</button>
+          </form>
+        </div>
+
+        <aside id="membersPanel" class="members-panel">
+          <header class="members-top">
+            <strong>Membros</strong>
+            <button id="closeMembersBtn" class="mobile-close" type="button">✕</button>
+          </header>
+          <label class="members-search" aria-label="Buscar membros">
+            <span>⌕</span>
+            <input type="text" placeholder="Buscar membros" disabled />
+          </label>
+          <div id="membersList" class="members-list"></div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <!-- EDITAR PERFIL -->
+  <dialog id="profileDialog" class="modal">
+    <form id="profileForm" class="modal-card profile-editor">
+      <header class="modal-head"><div><span class="eyebrow">MINHA CONTA</span><h2>Editar perfil</h2></div><button class="modal-x" type="button" data-close-dialog="profileDialog">✕</button></header>
+      <div class="profile-banner-preview"></div>
+      <div class="profile-avatar-editor">
+        <span id="profileAvatarPreview" class="avatar avatar-xl">TL</span>
+        <label class="secondary-button file-button">Trocar foto<input id="avatarFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden /></label>
+      </div>
+      <label>Nome de exibição<input id="displayNameInput" type="text" minlength="1" maxlength="32" required /></label>
+      <label>Usuário<input id="profileUsernameInput" type="text" disabled /><small>O usuário de login não pode ser alterado nesta versão.</small></label>
+      <label>Status personalizado<input id="customStatusInput" type="text" maxlength="64" placeholder="O que você está fazendo?" /></label>
+      <label>Sobre mim<textarea id="bioInput" maxlength="190" rows="4" placeholder="Conte um pouco sobre você"></textarea></label>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="profileDialog">Cancelar</button><button id="saveProfileBtn" class="primary-button" type="submit">Salvar</button></div>
+    </form>
+  </dialog>
+
+  <!-- CRIAR SERVIDOR -->
+  <dialog id="serverDialog" class="modal">
+    <form id="serverForm" class="modal-card small-modal">
+      <header class="modal-head"><div><span class="eyebrow">NOVO ESPAÇO</span><h2>Crie seu servidor</h2></div><button class="modal-x" type="button" data-close-dialog="serverDialog">✕</button></header>
+      <p class="modal-copy">Dê um nome para sua comunidade. Os canais <b>#geral</b> e <b>🔊 Geral</b> são criados automaticamente.</p>
+      <label>Nome do servidor<input id="serverNameInput" type="text" minlength="2" maxlength="40" placeholder="Ex.: Tropa dos Amigos" required /></label>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="serverDialog">Cancelar</button><button class="primary-button" type="submit">Criar</button></div>
+    </form>
+  </dialog>
+
+  <!-- ENTRAR POR CONVITE -->
+  <dialog id="joinServerDialog" class="modal">
+    <form id="joinServerForm" class="modal-card small-modal">
+      <header class="modal-head"><div><span class="eyebrow">CONVITE</span><h2>Entrar em um servidor</h2></div><button class="modal-x" type="button" data-close-dialog="joinServerDialog">✕</button></header>
+      <label>Link ou código de convite<input id="joinInviteInput" type="text" placeholder="Cole o link ou o código" required /></label>
+      <div id="joinInvitePreview" class="invite-preview hidden"></div>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="joinServerDialog">Cancelar</button><button id="acceptInviteBtn" class="primary-button" type="submit">Entrar</button></div>
+    </form>
+  </dialog>
+
+  <!-- CONVITE -->
+  <dialog id="inviteDialog" class="modal">
+    <div class="modal-card small-modal">
+      <header class="modal-head"><div><span class="eyebrow">CONVIDAR</span><h2 id="inviteDialogTitle">Convide seus amigos</h2></div><button class="modal-x" type="button" data-close-dialog="inviteDialog">✕</button></header>
+      <p class="modal-copy">Crie um link para este servidor. O link pode expirar automaticamente.</p>
+      <div class="form-grid two">
+        <label>Validade<select id="inviteExpiry"><option value="1">1 hora</option><option value="24">1 dia</option><option value="168" selected>7 dias</option><option value="720">30 dias</option><option value="never">Nunca</option></select></label>
+        <label>Máx. de usos<select id="inviteMaxUses"><option value="none" selected>Sem limite</option><option value="1">1 uso</option><option value="5">5 usos</option><option value="10">10 usos</option><option value="25">25 usos</option></select></label>
+      </div>
+      <button id="generateInviteBtn" class="primary-button wide" type="button">Gerar link de convite</button>
+      <div id="inviteResult" class="copy-field hidden"><input id="inviteLinkOutput" readonly /><button id="copyInviteBtn" type="button">Copiar</button></div>
+    </div>
+  </dialog>
+
+  <!-- CRIAR CANAL -->
+  <dialog id="channelDialog" class="modal">
+    <form id="channelForm" class="modal-card small-modal">
+      <header class="modal-head"><div><span class="eyebrow">CANAL</span><h2>Criar canal</h2></div><button class="modal-x" type="button" data-close-dialog="channelDialog">✕</button></header>
+      <div class="channel-type-picker">
+        <label class="type-card"><input type="radio" name="channelType" value="text" checked /><span class="type-icon">#</span><span><b>Texto</b><small>Mensagens e conversas</small></span></label>
+        <label class="type-card"><input type="radio" name="channelType" value="voice" /><span class="type-icon">🔊</span><span><b>Voz</b><small>Áudio, vídeo e tela</small></span></label>
+      </div>
+      <label>Nome do canal<input id="channelNameInput" type="text" minlength="1" maxlength="32" placeholder="novo-canal" required /></label>
+      <label id="channelTopicLabel">Tópico (opcional)<input id="channelTopicInput" type="text" maxlength="180" placeholder="Sobre o que é este canal?" /></label>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="channelDialog">Cancelar</button><button class="primary-button" type="submit">Criar canal</button></div>
+    </form>
+  </dialog>
+
+  <!-- CONFIGURAÇÕES DO SERVIDOR -->
+  <dialog id="serverSettingsDialog" class="modal settings-modal">
+    <div class="settings-shell">
+      <aside class="settings-nav">
+        <div><span class="eyebrow">SERVIDOR</span><strong id="settingsServerName">Servidor</strong></div>
+        <button class="settings-tab active" data-settings-tab="overview" type="button">Visão geral</button>
+        <button class="settings-tab" data-settings-tab="roles" type="button">Cargos</button>
+        <button class="settings-tab" data-settings-tab="members" type="button">Membros</button>
+        <div class="settings-spacer"></div>
+        <button id="deleteServerBtn" class="settings-tab danger-text" type="button">Excluir servidor</button>
+      </aside>
+      <section class="settings-content">
+        <button class="settings-close" type="button" data-close-dialog="serverSettingsDialog">✕<small>ESC</small></button>
+
+        <div id="settingsOverviewPane" class="settings-pane">
+          <h2>Visão geral do servidor</h2>
+          <div class="server-overview-grid">
+            <div class="server-icon-editor"><span id="serverIconPreview" class="server-icon-preview">TL</span><label class="secondary-button file-button">Alterar ícone<input id="serverIconFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden /></label></div>
+            <div class="settings-fields"><label>Nome do servidor<input id="settingsServerNameInput" type="text" minlength="2" maxlength="40" /></label><label>Descrição<textarea id="settingsServerDescription" rows="4" maxlength="180"></textarea></label></div>
+          </div>
+          <button id="saveServerOverviewBtn" class="primary-button" type="button">Salvar alterações</button>
+        </div>
+
+        <div id="settingsRolesPane" class="settings-pane hidden">
+          <div class="settings-title-row"><div><h2>Cargos</h2><p>Defina cores e permissões para organizar sua comunidade.</p></div><button id="newRoleBtn" class="primary-button" type="button">Criar cargo</button></div>
+          <div class="roles-workspace">
+            <div id="rolesList" class="roles-list"></div>
+            <form id="roleEditor" class="role-editor hidden">
+              <div class="role-editor-head"><div><span class="eyebrow">EDITAR CARGO</span><h3 id="roleEditorTitle">Cargo</h3></div><button id="deleteRoleBtn" class="danger-button" type="button">Excluir</button></div>
+              <label>Nome do cargo<input id="roleNameInput" type="text" maxlength="32" /></label>
+              <label>Cor do cargo<div class="color-field"><input id="roleColorInput" type="color" value="#99a1b3" /><input id="roleColorText" type="text" maxlength="7" value="#99A1B3" /></div></label>
+              <div><span class="form-label">Permissões</span><div id="rolePermissions" class="permission-list"></div></div>
+              <button class="primary-button" type="submit">Salvar cargo</button>
+            </form>
+          </div>
+        </div>
+
+        <div id="settingsMembersPane" class="settings-pane hidden">
+          <div class="settings-title-row"><div><h2>Membros</h2><p>Veja os membros e atribua cargos.</p></div><span id="settingsMemberCount" class="pill">0 membros</span></div>
+          <div id="settingsMembersList" class="settings-members-list"></div>
+        </div>
+      </section>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast hidden" role="status"></div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+  <div class="ambient-glow ambient-glow-a"></div>
+  <div class="ambient-glow ambient-glow-b"></div>
+</body>
+</html>
