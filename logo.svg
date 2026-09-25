@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Tropa da Lan</title>
+  <desc id="desc">Símbolo azul com as letras TL e um controle de videogame</desc>
+  <defs>
+    <linearGradient id="bg" x1="28" y1="24" x2="228" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1DA1FF"/>
+      <stop offset="0.5" stop-color="#3478FF"/>
+      <stop offset="1" stop-color="#7A5CFF"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="64" y1="62" x2="192" y2="198" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DDE8FF"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#050914" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <rect x="12" y="12" width="232" height="232" rx="64" fill="#0B0F18"/>
+  <path d="M128 24c56.3 0 102 45.7 102 102s-45.7 102-102 102S26 182.3 26 126 71.7 24 128 24Z" fill="none" stroke="url(#bg)" stroke-width="12"/>
+  <path d="M70 67h116l-12 26h-34v72h-30V93H70V67Z" fill="url(#shine)"/>
+  <path d="M67 141c7.1-15.6 20.4-24 37-24h48c16.6 0 29.9 8.4 37 24l13 29.1c5.4 12.1-4.5 25.9-17.7 24.7-5.2-.5-9.8-3.2-12.7-7.5l-12.5-18.3H96.9l-12.5 18.3c-2.9 4.3-7.5 7-12.7 7.5-13.2 1.2-23.1-12.6-17.7-24.7L67 141Z" fill="url(#bg)" stroke="#A7D8FF" stroke-opacity=".22" stroke-width="3"/>
+  <path d="M89 145v24M77 157h24" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="164" cy="151" r="6" fill="#fff"/>
+  <circle cx="179" cy="166" r="6" fill="#fff"/>
+  <path d="M111 184h34" stroke="#0B0F18" stroke-opacity=".42" stroke-width="5" stroke-linecap="round"/>
+</svg>
