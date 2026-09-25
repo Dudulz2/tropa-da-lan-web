@@ -18,7 +18,7 @@
   </div>
 
   <!-- AUTENTICAÇÃO -->
-  <main id="authScreen" class="auth-screen hidden">
+  <main id="authScreen" class="auth-screen">
     <section class="auth-hero" aria-hidden="true">
       <div class="auth-brand-lockup"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
       <div>
@@ -31,11 +31,6 @@
         <div><b>🎙️</b><span>Voz e vídeo WebRTC</span></div>
         <div><b>🖥️</b><span>Compartilhar tela</span></div>
         <div><b>🛡️</b><span>Cargos e permissões</span></div>
-      </div>
-      <div class="auth-trust-strip">
-        <div><strong>Seguro</strong><span>com Supabase</span></div>
-        <div><strong>Grátis</strong><span>para testar</span></div>
-        <div><strong>Feito</strong><span>para a comunidade</span></div>
       </div>
     </section>
 
@@ -151,17 +146,8 @@
             <div><strong id="activeChannelName">Tropa da Lan</strong><small id="activeChannelTopic">Escolha um servidor para começar</small></div>
           </div>
         </div>
-        <div class="topbar-center">
-          <label class="topbar-search" aria-label="Buscar">
-            <span>⌕</span>
-            <input type="text" placeholder="Buscar em #geral" disabled />
-          </label>
-        </div>
         <div class="topbar-actions">
           <span id="connectionText" class="connection-text">Conectando…</span>
-          <button class="topbar-icon desktop-only" type="button" title="Notificações">🔔</button>
-          <button class="topbar-icon desktop-only" type="button" title="Amigos">👥</button>
-          <button class="topbar-icon desktop-only" type="button" title="Configurações rápidas">⚙</button>
           <button id="mobileMembersBtn" class="topbar-icon" type="button" title="Membros">👥</button>
         </div>
       </header>
@@ -193,14 +179,7 @@
         </div>
 
         <aside id="membersPanel" class="members-panel">
-          <header class="members-top">
-            <strong>Membros</strong>
-            <button id="closeMembersBtn" class="mobile-close" type="button">✕</button>
-          </header>
-          <label class="members-search" aria-label="Buscar membros">
-            <span>⌕</span>
-            <input type="text" placeholder="Buscar membros" disabled />
-          </label>
+          <header class="members-top"><strong>Membros</strong><button id="closeMembersBtn" class="mobile-close" type="button">✕</button></header>
           <div id="membersList" class="members-list"></div>
         </aside>
       </section>
@@ -321,7 +300,5 @@
 
   <script src="./config.js"></script>
   <script type="module" src="./app.js"></script>
-  <div class="ambient-glow ambient-glow-a"></div>
-  <div class="ambient-glow ambient-glow-b"></div>
 </body>
 </html>
