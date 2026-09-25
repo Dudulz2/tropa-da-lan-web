@@ -1,0 +1,51 @@
+{
+  "name": "Tropa da Lan",
+  "short_name": "Tropa da Lan",
+  "description": "Comunidades, chat, amigos, voz, vídeo e compartilhamento de tela.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#060912",
+  "theme_color": "#08101f",
+  "categories": [
+    "social",
+    "games",
+    "communication"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Abrir Tropa da Lan",
+      "short_name": "Abrir",
+      "url": "./",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "id": "./",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "prefer_related_applications": false,
+  "lang": "pt-BR",
+  "dir": "ltr"
+}
