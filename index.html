@@ -9,7 +9,7 @@
   <link rel="icon" href="./logo.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=7.0.4" />
+  <link rel="stylesheet" href="./styles.css?v=7.0.5" />
 </head>
 <body>
   <div id="startupGate" class="startup-gate" role="status" aria-live="polite">
@@ -170,19 +170,17 @@
           <button id="deafenBtn" class="dock-action" type="button" title="Ensurdecer">🎧</button>
           <button id="cameraBtn" class="dock-action" type="button" title="Ligar câmera">📷</button>
           <button id="shareBtn" class="dock-action" type="button" title="Compartilhar tela">🖥️</button>
-          <button id="voiceReconnectBtn" class="dock-action" type="button" title="Reconectar áudio">↻</button>
-          <button id="voiceDiagnosticsBtn" class="dock-action" type="button" title="Diagnóstico da chamada">◉</button>
         </div>
-        <div class="voice-mic-picker" aria-label="Dispositivos da chamada">
-          <span>MIC</span>
-          <select id="voiceMicSelect" aria-label="Microfone da chamada"><option value="">Padrão do sistema</option></select>
-          <span>SAÍDA</span>
-          <select id="voiceOutputSelect" aria-label="Saída de áudio da chamada"><option value="">Saída padrão</option></select>
-        </div>
-        <div class="voice-pro-controls">
-          <label class="voice-inline"><input id="pushToTalkToggle" type="checkbox" /> Push-to-talk <kbd id="pttKeyLabel">Space</kbd></label>
-          <label class="voice-inline">Sensibilidade <input id="micSensitivityRange" type="range" min="5" max="95" value="45" /><span id="micSensitivityValue">45</span></label>
-        </div>
+        <details class="voice-advanced" id="voiceAdvancedPanel">
+          <summary><span>Áudio e transmissão</span><span class="voice-advanced-chevron">⌄</span></summary>
+          <div class="voice-advanced-body">
+            <label class="voice-control-row"><span>Microfone</span><select id="voiceMicSelect" aria-label="Microfone da chamada"><option value="">Padrão do sistema</option></select></label>
+            <label class="voice-control-row"><span>Saída</span><select id="voiceOutputSelect" aria-label="Saída de áudio da chamada"><option value="">Saída padrão</option></select></label>
+            <label class="voice-control-row compact"><span>Push-to-talk</span><span class="voice-switch-pack"><input id="pushToTalkToggle" type="checkbox" /><kbd id="pttKeyLabel">Space</kbd></span></label>
+            <label class="voice-control-row sensitivity"><span>Sensibilidade</span><span class="voice-range-pack"><input id="micSensitivityRange" type="range" min="5" max="95" value="45" /><b id="micSensitivityValue">45</b></span></label>
+            <div class="voice-advanced-actions"><button id="voiceReconnectBtn" class="secondary-button compact" type="button">↻ Reconectar</button><button id="voiceDiagnosticsBtn" class="secondary-button compact" type="button">◉ Diagnóstico</button></div>
+          </div>
+        </details>
       </section>
 
       <footer class="profile-bar">
@@ -255,7 +253,7 @@
           <section id="mediaStage" class="media-stage hidden" aria-label="Chamada">
             <div class="media-stage-head">
               <div><strong id="mediaStageTitle">Canal de voz</strong><small id="callStatusText">Aguardando participantes…</small></div>
-              <div class="media-stage-actions"><label class="media-quality-select">Qualidade<select id="streamQualitySelect"><option value="720p">720p</option><option value="1080p" selected>1080p</option><option value="1440p">1440p</option></select></label><label class="media-quality-select">FPS<select id="streamFpsSelect"><option value="15">15</option><option value="30" selected>30</option><option value="60">60</option></select></label><span id="callQualityBadge" class="secure-badge">WebRTC</span><button id="expandMediaBtn" class="tiny-icon" type="button" title="Expandir chamada">⛶</button><button id="collapseMediaBtn" class="tiny-icon" type="button" title="Minimizar">—</button></div>
+              <div class="media-stage-actions"><div class="stream-quick-controls"><select id="streamQualitySelect" title="Qualidade da transmissão" aria-label="Qualidade da transmissão"><option value="720p">720p</option><option value="1080p" selected>1080p</option><option value="1440p">1440p</option></select><select id="streamFpsSelect" title="FPS da transmissão" aria-label="FPS da transmissão"><option value="15">15 FPS</option><option value="30" selected>30 FPS</option><option value="60">60 FPS</option></select></div><span id="streamActualInfo" class="stream-actual-info hidden">—</span><span id="callQualityBadge" class="secure-badge">WebRTC</span><button id="expandMediaBtn" class="tiny-icon" type="button" title="Expandir chamada">⛶</button><button id="collapseMediaBtn" class="tiny-icon" type="button" title="Minimizar">—</button></div>
             </div>
             <div id="mediaGrid" class="media-grid"></div>
           </section>
@@ -444,7 +442,7 @@
 <label>Tecla do push-to-talk<input id="pushToTalkKeyInput" type="text" maxlength="20" value="Space" placeholder="Space" /></label>
 <label>Sensibilidade de voz <span id="voiceSensitivityValue">45</span>%<input id="voiceSensitivityInput" type="range" min="5" max="95" value="45" /></label>
 <label class="switch-row"><span><b>Modo de baixa largura de banda</b><small>Reduz vídeo e prioriza estabilidade do áudio.</small></span><input id="lowBandwidthInput" type="checkbox" /></label>
-<div class="device-test-row"><button id="refreshDevicesBtn" class="secondary-button" type="button">Atualizar dispositivos</button><button id="testMicBtn" class="secondary-button" type="button">Testar microfone</button><span id="micMeter" class="mic-meter"><i></i></span><small id="micDeviceStatus" class="mic-device-status">Qualidade de voz otimizada: Opus / 48 kHz quando suportado.</small></div><label class="switch-row"><span><b>Reduzir animações</b><small>Útil para desempenho e acessibilidade.</small></span><input id="reduceMotionInput" type="checkbox" /></label><label class="switch-row"><span><b>Notificações do navegador</b><small>Avisa quando uma mensagem chega com a aba em segundo plano.</small></span><input id="browserNotificationsInput" type="checkbox" /></label><label class="switch-row"><span><b>Sons</b><small>Sons discretos para novas mensagens e chamadas.</small></span><input id="soundsInput" type="checkbox" /></label></div><div class="account-tools"><button id="openDiagnosticsFromPrefsBtn" class="secondary-button" type="button">Diagnóstico</button><button id="installAppBtn" class="secondary-button hidden" type="button">Instalar aplicativo</button><button id="checkUpdateBtn" class="secondary-button" type="button">Verificar atualização</button><button id="reportProblemBtn" class="secondary-button" type="button">Relatar problema</button><button id="exportDataBtn" class="secondary-button" type="button">Exportar meus dados</button><button id="signOutAllBtn" class="secondary-button" type="button">Sair de todos os dispositivos</button></div><div class="version-panel"><strong>Tropa da Lan V7.0.4</strong><small>Chamadas, canais, mobile e diagnóstico aprimorados.</small></div><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="preferencesDialog">Cancelar</button><button class="primary-button" type="submit">Salvar preferências</button></div></form></dialog>
+<div class="device-test-row"><button id="refreshDevicesBtn" class="secondary-button" type="button">Atualizar dispositivos</button><button id="testMicBtn" class="secondary-button" type="button">Testar microfone</button><span id="micMeter" class="mic-meter"><i></i></span><small id="micDeviceStatus" class="mic-device-status">Qualidade de voz otimizada: Opus / 48 kHz quando suportado.</small></div><label class="switch-row"><span><b>Reduzir animações</b><small>Útil para desempenho e acessibilidade.</small></span><input id="reduceMotionInput" type="checkbox" /></label><label class="switch-row"><span><b>Notificações do navegador</b><small>Avisa quando uma mensagem chega com a aba em segundo plano.</small></span><input id="browserNotificationsInput" type="checkbox" /></label><label class="switch-row"><span><b>Sons</b><small>Sons discretos para novas mensagens e chamadas.</small></span><input id="soundsInput" type="checkbox" /></label></div><div class="account-tools"><button id="openDiagnosticsFromPrefsBtn" class="secondary-button" type="button">Diagnóstico</button><button id="installAppBtn" class="secondary-button hidden" type="button">Instalar aplicativo</button><button id="checkUpdateBtn" class="secondary-button" type="button">Verificar atualização</button><button id="reportProblemBtn" class="secondary-button" type="button">Relatar problema</button><button id="exportDataBtn" class="secondary-button" type="button">Exportar meus dados</button><button id="signOutAllBtn" class="secondary-button" type="button">Sair de todos os dispositivos</button></div><div class="version-panel"><strong>Tropa da Lan V7.0.5</strong><small>Chamadas, canais, mobile e diagnóstico aprimorados.</small></div><div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="preferencesDialog">Cancelar</button><button class="primary-button" type="submit">Salvar preferências</button></div></form></dialog>
 
   <!-- ENQUETE -->
   <dialog id="pollDialog" class="modal"><form id="pollForm" class="modal-card small-modal"><header class="modal-head"><div><span class="eyebrow">ENQUETE</span><h2>Criar enquete</h2></div><button class="modal-x" type="button" data-close-dialog="pollDialog">✕</button></header><label>Pergunta<input id="pollQuestionInput" type="text" maxlength="180" required /></label><label>Opções<textarea id="pollOptionsInput" rows="5" maxlength="500" placeholder="Uma opção por linha
@@ -500,8 +498,8 @@ Opção B" required></textarea><small>Entre 2 e 6 opções.</small></label><div 
   <div id="toast" class="toast hidden" role="status"></div>
 
   <script src="./config.js"></script>
-  <script type="module" src="./app.js?v=7.0.4"></script>
-  <script type="module" src="./v7.js?v=7.0.4"></script>
+  <script type="module" src="./app.js?v=7.0.5"></script>
+  <script type="module" src="./v7.js?v=7.0.5"></script>
   <div class="ambient-glow ambient-glow-a"></div>
   <div class="ambient-glow ambient-glow-b"></div>
 </body>

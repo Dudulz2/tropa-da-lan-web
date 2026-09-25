@@ -1,3 +1,9 @@
+
+## V7.0.5
+- Interface de chamada minimalista.
+- Controles avançados recolhíveis.
+- Qualidade e FPS da transmissão aplicados dinamicamente ao WebRTC.
+- Bitrate e resolução alvo ajustados conforme seleção.
 # Changelog — V7.0.1
 
 - Diagnóstico de chamadas WebRTC.

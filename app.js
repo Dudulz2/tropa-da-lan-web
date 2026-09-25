@@ -15,7 +15,7 @@ try {
 }
 
 const cfg = window.TROPA_CONFIG || {};
-const APP_VERSION = "7.0.4";
+const APP_VERSION = "7.0.5";
 const isConfigured = Boolean(
   cfg.SUPABASE_URL &&
   cfg.SUPABASE_PUBLISHABLE_KEY &&
@@ -3062,7 +3062,7 @@ function createPeer(peerId) {
   const audio = micTrack();
   if (audio) peer.audioSender = pc.addTrack(audio, state.localStream);
   else peer.audioSender = pc.addTransceiver("audio", { direction: "recvonly" }).sender;
-  const videoTx = pc.addTransceiver("video", { direction: "sendrecv" }); peer.videoSender = videoTx.sender; if (currentVideoTrack()) peer.videoSender.replaceTrack(currentVideoTrack()).catch(console.warn);
+  const videoTx = pc.addTransceiver("video", { direction: "sendrecv" }); peer.videoSender = videoTx.sender; if (currentVideoTrack()) peer.videoSender.replaceTrack(currentVideoTrack()).then(() => { if (state.screenTrack) tuneScreenSender(peer.videoSender, state.screenTrack).catch?.(() => {}); }).catch(console.warn);
   pc.onicecandidate = ({ candidate }) => { if (candidate) sendSignal(peerId, { candidate: candidate.toJSON ? candidate.toJSON() : candidate }); };
   pc.ontrack = (event) => { const track = event.track; if (!remoteStream.getTracks().some((t) => t.id === track.id)) remoteStream.addTrack(track); const refresh = () => makeRemoteCard(peerId); track.addEventListener("unmute", refresh); track.addEventListener("mute", refresh); track.addEventListener("ended", refresh); makeRemoteCard(peerId); };
   pc.onnegotiationneeded = () => negotiatePeer(peerId);
@@ -3149,6 +3149,7 @@ async function stopScreenShare(stopTrack = true, expected = null) {
   const old = state.screenTrack; if (!old || (expected && old !== expected)) return; state.screenTrack = null; old.onended = null;
   if (state.voiceJoinedChannelId) await replaceVideoForPeers(state.cameraTrack || null); if (stopTrack && old.readyState !== "ended") try { old.stop(); } catch (_) {}
   if (state.voiceJoinedChannelId) { ensureLocalCard(); if (![...state.peers.values()].some((peer) => peer.remoteMedia?.screen)) toggleMediaExpanded(false); await retrackVoicePresence(); }
+  updateStreamActualInfo();
 }
 function getScreenShareVideoConstraints() {
   const quality = state.preferences.screen_quality || "1080p";
@@ -3159,9 +3160,82 @@ function getScreenShareVideoConstraints() {
   let [width, height] = sizes[quality] || sizes["1080p"];
   let frameRate = fps;
   if (low) { width = Math.min(width, 1280); height = Math.min(height, 720); frameRate = Math.min(frameRate, 15); }
-  if (mode === "quality") frameRate = Math.min(frameRate, 30);
-  if (mode === "fluidity") frameRate = Math.max(frameRate, 30);
   return { width: { ideal: width }, height: { ideal: height }, frameRate: { ideal: frameRate, max: frameRate } };
+}
+
+function screenTargetProfile() {
+  const quality = state.preferences.screen_quality || "1080p";
+  const fps = Math.max(5, Math.min(60, Number(state.preferences.screen_fps || 30)));
+  const mode = state.preferences.stream_mode || "balanced";
+  const low = Boolean(state.preferences.low_bandwidth);
+  const sizes = { "720p": [1280, 720], "1080p": [1920, 1080], "1440p": [2560, 1440] };
+  let [width, height] = sizes[quality] || sizes["1080p"];
+  let targetFps = fps;
+  if (low) { width = Math.min(width, 1280); height = Math.min(height, 720); targetFps = Math.min(targetFps, 15); }
+  const bitrateTable = {
+    "720p": { 15: 2500000, 30: 4500000, 60: 7000000 },
+    "1080p": { 15: 4500000, 30: 8000000, 60: 12000000 },
+    "1440p": { 15: 7000000, 30: 14000000, 60: 20000000 }
+  };
+  const fpsBucket = targetFps <= 15 ? 15 : targetFps <= 30 ? 30 : 60;
+  const bitrate = bitrateTable[quality]?.[fpsBucket] || 8000000;
+  return { quality, width, height, fps: targetFps, mode, bitrate };
+}
+
+async function tuneScreenSender(sender, track = state.screenTrack) {
+  if (!sender || !track || !sender.getParameters || !sender.setParameters) return null;
+  const target = screenTargetProfile();
+  try {
+    const settings = track.getSettings?.() || {};
+    const sourceWidth = Number(settings.width || target.width);
+    const sourceHeight = Number(settings.height || target.height);
+    const scale = Math.max(1, sourceWidth / target.width, sourceHeight / target.height);
+    const params = sender.getParameters();
+    if (!params.encodings?.length) params.encodings = [{}];
+    const enc = params.encodings[0];
+    enc.maxFramerate = target.fps;
+    enc.maxBitrate = target.bitrate;
+    enc.scaleResolutionDownBy = Number(scale.toFixed(3));
+    if ("priority" in enc) enc.priority = target.mode === "quality" ? "high" : "medium";
+    if ("networkPriority" in enc) enc.networkPriority = target.mode === "quality" ? "high" : "medium";
+    params.degradationPreference = target.mode === "quality" ? "maintain-resolution" : target.mode === "fluidity" ? "maintain-framerate" : "balanced";
+    await sender.setParameters(params);
+    return { sourceWidth, sourceHeight, scale, ...target };
+  } catch (error) {
+    console.debug("Ajuste dinâmico da transmissão não suportado", error);
+    return null;
+  }
+}
+
+function updateStreamActualInfo(profile = null) {
+  const el = document.getElementById("streamActualInfo");
+  if (!el) return;
+  if (!state.screenTrack) { el.classList.add("hidden"); el.textContent = "—"; return; }
+  const target = profile || screenTargetProfile();
+  const settings = state.screenTrack.getSettings?.() || {};
+  const sourceW = Number(settings.width || target.width);
+  const sourceH = Number(settings.height || target.height);
+  const scale = Math.max(1, sourceW / target.width, sourceH / target.height);
+  const outW = Math.round(sourceW / scale);
+  const outH = Math.round(sourceH / scale);
+  el.textContent = `Alvo ${outW}×${outH} • ${target.fps} FPS`;
+  el.classList.remove("hidden");
+}
+
+async function applyScreenShareSettings({ silent = false } = {}) {
+  const track = state.screenTrack;
+  if (!track) { updateStreamActualInfo(); return false; }
+  const target = screenTargetProfile();
+  try {
+    await track.applyConstraints?.({ frameRate: { ideal: target.fps, max: target.fps } });
+  } catch (error) {
+    console.debug("O navegador ignorou a alteração de FPS na captura", error);
+  }
+  const results = await Promise.allSettled([...state.peers.values()].map((peer) => tuneScreenSender(peer.videoSender, track)));
+  const first = results.find((r) => r.status === "fulfilled" && r.value)?.value || target;
+  updateStreamActualInfo(first);
+  if (!silent) toast(`Transmissão ajustada para ${target.quality} • ${target.fps} FPS.`, 2400);
+  return true;
 }
 
 async function toggleScreenShare() {
@@ -3175,8 +3249,8 @@ async function toggleScreenShare() {
     if (!state.voiceJoinedChannelId || session !== state.voiceSession) { stream.getTracks().forEach((t) => t.stop()); return; }
     state.screenTrack = track; if ("contentHint" in track) track.contentHint = state.preferences.stream_mode === "fluidity" ? "motion" : "detail";
     track.onended = () => { if (state.screenTrack !== track) return; state.screenBusy = true; stopScreenShare(false, track).catch(console.warn).finally(() => { if (session === state.voiceSession) { state.screenBusy = false; updateVoiceDock(state.voiceJoinedChannelId ? "joined" : "idle"); } }); };
-    await replaceVideoForPeers(track); ensureLocalCard(); toggleMediaExpanded(true); await retrackVoicePresence();
-    toast("Compartilhamento iniciado. Sua prévia local foi ocultada para evitar o efeito espelho.", 3200);
+    await replaceVideoForPeers(track); ensureLocalCard(); toggleMediaExpanded(true); await applyScreenShareSettings({ silent: true }); await retrackVoicePresence();
+    toast(`Compartilhamento iniciado em ${state.preferences.screen_quality || "1080p"} • ${state.preferences.screen_fps || 30} FPS.`, 3200);
   } catch (error) { if (!["NotAllowedError", "AbortError"].includes(error?.name)) { console.error(error); toast("Não foi possível iniciar o compartilhamento de tela."); } }
   finally { if (session === state.voiceSession) { state.screenBusy = false; updateVoiceDock(state.voiceJoinedChannelId ? "joined" : "idle"); } }
 }
@@ -3260,7 +3334,7 @@ window.TROPA_RUNTIME = {
   hasPermission, selectServer, selectTextChannel, showHomeHub, loadServers, loadServerBundle, closeDrawers, openDm, loadSocialData,
   renderChannels, renderMembers, profileForMessage, renderMessage, loadMessageExtras,
   joinVoice, leaveVoice, switchMicrophone, refreshMediaDevices, acquireMicrophone, micTrack,
-  applyAudioOutputToAll, toggleMediaExpanded, activeTextChannel, updateVoiceDock,
+  applyAudioOutputToAll, toggleMediaExpanded, applyScreenShareSettings, activeTextChannel, updateVoiceDock,
   retrackVoicePresence, broadcastMediaState, clearPendingAttachment, uploadMessageFile,
   notifyDesktop, playSoftTone
 };

@@ -4,7 +4,7 @@ const rt = window.TROPA_RUNTIME || await new Promise((resolve, reject) => {
   window.addEventListener("tropa-runtime-ready", (event) => { clearTimeout(timer); resolve(event.detail); }, { once: true });
 });
 
-const { state, ui, toast, openDialog, closeDialog, makeEl } = rt;
+const { state, ui, toast, openDialog, closeDialog, makeEl, applyScreenShareSettings } = rt;
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 
@@ -481,13 +481,19 @@ quickSensitivity?.addEventListener("change", async () => {
   if (ui.voiceSensitivityValue) ui.voiceSensitivityValue.textContent = String(value);
 });
 quickStreamQuality?.addEventListener("change", async () => {
-  await persistQuickPreference({ screen_quality: quickStreamQuality.value });
+  await persistQuickPreference({ screen_quality: quickStreamQuality.value, low_bandwidth: false });
   if (ui.screenQualityInput) ui.screenQualityInput.value = quickStreamQuality.value;
+  if (ui.lowBandwidthInput) ui.lowBandwidthInput.checked = false;
+  if (state.screenTrack) await applyScreenShareSettings?.();
+  else toast(`${quickStreamQuality.value} será usado na próxima transmissão.`, 1800);
 });
 quickStreamFps?.addEventListener("change", async () => {
   const value = Number(quickStreamFps.value || 30);
-  await persistQuickPreference({ screen_fps: value });
+  await persistQuickPreference({ screen_fps: value, low_bandwidth: false });
   if (ui.screenFpsInput) ui.screenFpsInput.value = String(value);
+  if (ui.lowBandwidthInput) ui.lowBandwidthInput.checked = false;
+  if (state.screenTrack) await applyScreenShareSettings?.();
+  else toast(`${value} FPS será usado na próxima transmissão.`, 1800);
 });
 setInterval(syncQuickCallControls, 1200);
 
