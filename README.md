@@ -1,8 +1,16 @@
-# Tropa da Lan Web — V4.1
+# Tropa da Lan Web — V4.2.1
 
 Versão web com estrutura de comunidade inspirada em aplicativos modernos de chat por servidores, sem copiar marca, logo ou recursos proprietários de terceiros.
 
 ## O que entrou nesta versão
+
+### Melhorias visuais V5
+- visual mais profissional e refinado;
+- botões refeitos com acabamento premium;
+- formulários, modais e painéis com estilo mais moderno;
+- hierarquia visual, espaçamento e sombras melhorados;
+- aparência mais consistente em desktop, tablet e celular.
+
 
 - Login e cadastro com **e-mail + senha** usando Supabase Auth, mantendo um nome de usuário público separado.
 - Perfil persistente com:
@@ -59,7 +67,7 @@ Ele **não dá DROP na tabela antiga `messages`**. Os dados antigos continuam no
 
 ### 2. Configurar autenticação por e-mail
 
-A V4.1 não usa mais e-mails falsos. O cadastro pede um **e-mail real**, um **nome de usuário público** e uma senha. Isso evita o erro de endereço de e-mail inválido do Supabase.
+A V5 não usa mais e-mails falsos. O cadastro pede um **e-mail real**, um **nome de usuário público** e uma senha. Isso evita o erro de endereço de e-mail inválido do Supabase.
 
 Para testar rapidamente sem depender do envio de mensagens, abra o provedor **Email** em Authentication e deixe **Confirm email** desativado. Assim, a conta recebe uma sessão imediatamente após o cadastro.
 
@@ -163,3 +171,11 @@ Para ficar ainda mais completo no futuro, ainda podem entrar:
 - recuperação de senha por e-mail (próxima melhoria);
 - moderação avançada e logs;
 - TURN próprio para maior confiabilidade das chamadas.
+
+
+## Correção V4.2.1
+
+- Logo principal e ícones também ficam na raiz do projeto para evitar caminhos quebrados no GitHub Pages.
+- Cadastro mostra uma mensagem clara quando o Supabase retorna limite de e-mail/cadastro (HTTP 429).
+- O botão de cadastro entra em espera por 60 s após rate limit para evitar novas tentativas repetidas.
+- Para testes no plano gratuito, desative **Confirm email** em Supabase → Authentication → Providers → Email.

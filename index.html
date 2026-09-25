@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#111318" />
   <meta name="description" content="Tropa da Lan — comunidades, chat, voz, vídeo e compartilhamento de tela no navegador." />
   <title>Tropa da Lan</title>
-  <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <link rel="icon" href="./logo.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
@@ -20,7 +20,7 @@
   <!-- AUTENTICAÇÃO -->
   <main id="authScreen" class="auth-screen hidden">
     <section class="auth-hero" aria-hidden="true">
-      <div class="auth-brand-lockup"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
+      <div class="auth-brand-lockup"><img src="./logo-wordmark.svg" alt="Tropa da Lan" /></div>
       <div>
         <span class="eyebrow">COMUNIDADE • VOZ • JOGOS</span>
         <h1>Seu espaço para conversar, jogar e ficar em call.</h1>
@@ -41,7 +41,7 @@
 
     <section class="auth-panel">
       <div class="auth-card">
-        <div class="auth-mobile-brand"><img src="./assets/logo-wordmark.svg" alt="Tropa da Lan" /></div>
+        <div class="auth-mobile-brand"><img src="./logo-wordmark.svg" alt="Tropa da Lan" /></div>
         <div id="invitePreviewAuth" class="invite-preview compact hidden"></div>
 
         <div class="auth-tabs" role="tablist">
@@ -89,7 +89,7 @@
   <div id="appShell" class="app-shell hidden">
     <aside class="servers-rail" id="serversRail" aria-label="Servidores">
       <button class="server-home-button" id="homeServerBtn" type="button" title="Tropa da Lan">
-        <img src="./assets/logo.svg" alt="Tropa da Lan" />
+        <img src="./logo.svg" alt="Tropa da Lan" />
       </button>
       <div class="rail-separator"></div>
       <div id="serverButtons" class="server-buttons"></div>
@@ -169,7 +169,7 @@
       <section class="content-area">
         <div class="conversation-column">
           <section id="emptyState" class="empty-state">
-            <img src="./assets/logo.svg" alt="" />
+            <img src="./logo.svg" alt="" />
             <h2>Bem-vindo ao Tropa da Lan</h2>
             <p>Crie um servidor ou entre em um convite para começar.</p>
             <div class="empty-actions"><button id="emptyCreateServerBtn" class="primary-button" type="button">Criar servidor</button><button id="emptyJoinServerBtn" class="secondary-button" type="button">Usar convite</button></div>
@@ -237,7 +237,7 @@
   <!-- ENTRAR POR CONVITE -->
   <dialog id="joinServerDialog" class="modal">
     <form id="joinServerForm" class="modal-card small-modal">
-      <header class="modal-head"><div><span class="eyebrow">CONVITE</span><h2>Entrar em um servidor</h2></div><button class="modal-x" type="button" data-close-dialog="joinServerDialog">✕</button></header>
+      <header class="modal-head"><div><span class="eyebrow">CONVITE</span><h2>Entrar por convite</h2></div><button class="modal-x" type="button" data-close-dialog="joinServerDialog">✕</button></header>
       <label>Link ou código de convite<input id="joinInviteInput" type="text" placeholder="Cole o link ou o código" required /></label>
       <div id="joinInvitePreview" class="invite-preview hidden"></div>
       <div class="modal-actions"><button class="secondary-button" type="button" data-close-dialog="joinServerDialog">Cancelar</button><button id="acceptInviteBtn" class="primary-button" type="submit">Entrar</button></div>

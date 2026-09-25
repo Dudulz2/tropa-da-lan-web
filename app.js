@@ -378,12 +378,34 @@ ui.registerForm.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error(error);
     const msg = String(error?.message || "");
+    const status = Number(error?.status || error?.statusCode || 0);
     if (/already|registered/i.test(msg)) toast("Já existe uma conta com esse e-mail.");
     else if (/database error saving new user/i.test(msg)) toast("Não foi possível criar o perfil. O nome de usuário pode já estar em uso. Tente outro.", 6500);
     else if (/email.*invalid|invalid.*email/i.test(msg)) toast("O Supabase recusou esse e-mail. Confira o endereço e tente novamente.", 6500);
-    else toast(`Não foi possível criar a conta: ${msg || "erro desconhecido"}`, 6000);
-  } finally { setBusy(ui.registerBtn, false); }
+    else if (status === 429 || /rate limit|too many requests|email rate/i.test(msg)) {
+      toast("Limite temporário de cadastro/e-mail do Supabase atingido. No painel do Supabase, desative Confirm email para testes ou aguarde o limite liberar.", 9000);
+      startRegisterCooldown(60);
+    } else toast(`Não foi possível criar a conta: ${msg || "erro desconhecido"}`, 6000);
+  } finally { if (!ui.registerBtn.dataset.cooldown) setBusy(ui.registerBtn, false); }
 });
+
+function startRegisterCooldown(seconds = 60) {
+  let remaining = Math.max(1, Number(seconds) || 60);
+  ui.registerBtn.dataset.cooldown = "1";
+  ui.registerBtn.disabled = true;
+  ui.registerBtn.textContent = `Aguarde ${remaining}s`;
+  const timer = setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      clearInterval(timer);
+      delete ui.registerBtn.dataset.cooldown;
+      ui.registerBtn.disabled = false;
+      ui.registerBtn.textContent = "Criar conta";
+      return;
+    }
+    ui.registerBtn.textContent = `Aguarde ${remaining}s`;
+  }, 1000);
+}
 
 ui.logoutBtn.addEventListener("click", async () => {
   if (!state.supabase) return;
@@ -931,11 +953,12 @@ ui.serverForm.addEventListener("submit", async (event) => {
   const name = ui.serverNameInput.value.trim(); if (name.length < 2) return;
   const submit = ui.serverForm.querySelector('button[type="submit"]'); setBusy(submit, true, "Criando…");
   try {
-    const { data, error } = await state.supabase.from("servers").insert({ owner_id: state.user.id, name }).select().single();
+    const { data: serverId, error } = await state.supabase.rpc("create_tropa_server", { p_name: name });
     if (error) throw error;
+    if (!serverId) throw new Error("O servidor foi criado, mas o ID não foi retornado.");
     closeDialog(ui.serverDialog);
     await sleep(250);
-    await loadServers(data.id);
+    await loadServers(serverId);
     toast(`Servidor “${name}” criado.`);
   } catch (error) { console.error(error); toast(`Não foi possível criar o servidor: ${error.message || "erro"}`, 6000); }
   finally { setBusy(submit, false); }
