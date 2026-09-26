@@ -1,0 +1,25 @@
+Tropa da Lan V7.5.0 — Camera + Screen Share Overhaul
+
+Principais ajustes:
+- Compartilhamento de tela passa a capturar a geometria nativa da tela/janela selecionada.
+- Removidos limites de largura/altura no getDisplayMedia que podiam deformar ou cortar telas 16:10, ultrawide e retrato.
+- Redução de resolução continua sendo feita no RTCRtpSender, preservando a proporção original.
+- Cards de transmissão detectam automaticamente a proporção real do vídeo (videoWidth/videoHeight / track settings).
+- Layout de transmissão usa --stream-aspect dinâmico em vez de forçar 16:9.
+- Modo preencher tela mantém object-fit: contain em todas as situações e centraliza a imagem.
+- Compartilhamentos verticais recebem tratamento próprio no mobile.
+- Câmera destacada/tela cheia usa enquadramento completo (contain) para evitar corte de rosto/cenário.
+- Cards normais de câmera continuam com visual tipo Discord (cover), mas usam proporção real quando necessário.
+- Câmera salva ausente agora cai automaticamente para a câmera padrão.
+- Indicador da transmissão mostra também a resolução da fonte capturada.
+
+Validações locais:
+- app.js analisado como ES module: OK
+- v7.js: OK
+- sw.js: OK
+- HTML sem IDs duplicados
+- CSS com chaves balanceadas
+- Versão/cache atualizados para V7.5.0
+
+Observação:
+O teste visual automatizado em navegador headless não foi executado porque o ambiente de desenvolvimento não possui o binário Chromium do Playwright instalado. As validações estruturais, sintáticas e de regras CSS foram concluídas.
