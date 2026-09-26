@@ -1,0 +1,64 @@
+TROPA DA LAN — AUDITORIA V7.4.0 STABLE
+Data: 26/09/2026
+
+ESCOPO REVISADO
+- Inicialização, autenticação e troca de sessão
+- Estrutura HTML e referências de elementos
+- CSS desktop/mobile e safe-area
+- Call WebRTC, presença, reconexão, microfone, câmera e áudio
+- Compartilhamento de tela e modos de visualização
+- Duplicidade de usuário em call
+- Chat, carregamento/realtime, DMs e troca rápida de telas/servidores
+- Preferências, qualidade/FPS de transmissão
+- PWA, Service Worker, atualização e cache
+- Manifesto, ícones e arquivos locais
+
+CORREÇÕES APLICADAS NESTA AUDITORIA
+1. Corrigido erro de JavaScript ao usar Esc em modos de mídia.
+2. Corrigido conflito entre call minimizada e call em tela cheia.
+3. Corrigida sincronização visual do botão minimizar/restaurar.
+4. Isolado o modo "preencher transmissão" do layout normal da call.
+5. Corrigidos conflitos de CSS do modo transmissão cheia no mobile.
+6. Corrigida sobreposição entre pill da call, composer, barra inferior e prompt de instalação.
+7. Ocultado volume em cards compactos de participantes durante transmissão no mobile.
+8. Corrigido ciclo de realtime de não lidos ao trocar/sair da conta.
+9. Corrigido limite real de 1440p para no máximo 30 FPS em todos os controles.
+10. Reforçada recuperação de watchers de voz após timeout/erro/fechamento.
+11. Reforçada deduplicação de presença por conta/cliente.
+12. Corrigida metadata de presença para câmera/tela/mudo não ficarem presos em estado antigo.
+13. Mantida somente a sessão de voz mais antiga quando a mesma conta entra duplicada.
+14. Corrigido estado de transmissão para participantes que entram depois do compartilhamento começar.
+15. Corrigida corrida ao trocar rapidamente de conversa privada (DM).
+16. Corrigida corrida ao trocar rapidamente de servidor.
+17. Carregamento do bundle do servidor agora é aplicado de forma atômica ao servidor correto.
+18. Corrigida limpeza de presença do servidor em timeout/erro.
+19. Service Worker não apaga caches que não pertencem ao Tropa da Lan.
+20. Navegação em cache só salva respostas HTTP válidas.
+21. Proteção contra recarregamento PWA repetido no controllerchange.
+22. Ajustado enquadramento central de avatares e cards de mídia.
+
+VALIDAÇÕES ESTÁTICAS CONCLUÍDAS
+- app.js: sintaxe válida como ES module.
+- v7.js: sintaxe válida como ES module.
+- sw.js e config.js: sintaxe válida.
+- CSS: parser PostCSS sem erro de sintaxe.
+- HTML: nenhum ID duplicado.
+- HTML: nenhum botão estático sem type.
+- HTML: nenhum form aninhado.
+- Labels com atributo for apontam para controles existentes.
+- Todos os seletores estáticos do objeto ui existem no HTML.
+- Referências de IDs ausentes restantes são elementos criados dinamicamente em runtime.
+- Manifesto PWA: JSON válido.
+- Recursos locais referenciados: todos encontrados.
+- icon-192.png: 192x192 real.
+- icon-512.png: 512x512 real.
+- Varredura TypeScript/checkJs: nenhum nome de função/variável indefinido (TS2304) após as correções.
+
+DEPENDÊNCIAS EXTERNAS / LIMITES REAIS
+- O frontend depende do Supabase e das tabelas/RLS/RPCs já instalados no projeto.
+- A configuração atual possui STUN, mas não possui TURN. Em redes corporativas, CGNAT/NAT simétrico ou firewalls que bloqueiem P2P, uma chamada WebRTC pode não conseguir rota entre os participantes. Para cobertura máxima de rede, configure um servidor TURN em config.js.
+- Compartilhamento de tela no celular depende de navigator.mediaDevices.getDisplayMedia ser suportado pelo navegador/SO. O app já desativa a ação quando a API não existe.
+- Permissões de microfone, câmera, notificações e reprodução de áudio dependem das permissões do navegador/dispositivo.
+
+RESULTADO
+Build V7.4.0 STABLE AUDITED sem defeitos conhecidos de sintaxe, referências estáticas, estado visual principal ou transições de call encontrados pela auditoria local. Testes reais entre dispositivos/redes continuam dependendo dos serviços externos e permissões listados acima.
