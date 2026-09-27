@@ -1,0 +1,37 @@
+TROPA DA LAN — V9.0.0
+======================
+
+Esta versão foi criada sobre a V8.1.0, preservando a V8.0.0 FINAL e a V8.1.0 como backups anteriores.
+
+PRINCIPAIS MELHORIAS
+- Layout mobile passa a usar o Visual Viewport real do navegador.
+- Teclado virtual não deve mais cobrir a navegação, a call ou o campo de mensagem.
+- Call usa Wake Lock quando suportado, reduzindo o risco da tela apagar durante uso no celular.
+- Logout/troca de conta desmonta completamente call, WebRTC, presença e recursos de mídia.
+- Preferências locais são separadas por usuário.
+- Contadores de não lidas também são separados por usuário.
+- Troca de câmera pode acontecer durante a call sem precisar desligar/religar manualmente.
+- Push-to-talk, modo de banda reduzida e modo de transmissão são reaplicados imediatamente ao salvar.
+- Compartilhamento continua usando enquadramento sem crop, inclusive 16:10, ultrawide e vertical.
+- PiP da própria câmera sincroniza quando a câmera é ligada/desligada durante uma transmissão cheia.
+- Monitor redundante de getStats foi removido para reduzir trabalho duplicado.
+- Service Worker V9 usa cache próprio e pré-cache tolerante a falha isolada de arquivo.
+- Auto-check de interface detecta deploy/cache inconsistente antes de iniciar o aplicativo.
+
+ATUALIZAR NO GITHUB PAGES
+1. Mantenha a pasta .git do seu projeto.
+2. Substitua os arquivos antigos pelos arquivos desta pasta.
+3. O index.html deve continuar na raiz do repositório publicado.
+4. Envie as alterações:
+   git add .
+   git commit -m "Atualiza Tropa da Lan para V9.0.0"
+   git push
+5. Depois da publicação, feche/reabra o PWA ou faça uma recarga forçada para trocar o Service Worker/cache antigo.
+
+BACKUPS RECOMENDADOS
+- V8.0.0 FINAL: mantenha guardada como base estável antiga.
+- V8.1.0: mantenha guardada como versão anterior.
+- V9.0.0: nova versão principal.
+
+LIMITAÇÃO DE INFRAESTRUTURA
+O projeto ainda depende de conexão P2P/STUN. Algumas redes corporativas, CGNATs e firewalls restritivos podem exigir um servidor TURN. Isso não é um defeito do layout ou do JavaScript da V9; é uma limitação de conectividade WebRTC sem relay TURN.

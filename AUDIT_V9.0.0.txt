@@ -1,0 +1,83 @@
+TROPA DA LAN — AUDITORIA V9.0.0
+================================
+
+BASE
+- Evolução direta da V8.1.0.
+- V8.0.0 FINAL e V8.1.0 não foram sobrescritas.
+
+CORREÇÕES DE ESTABILIDADE
+1. Cleanup de logout agora encerra call, streams, peers, presença, watchers e Wake Lock.
+2. Estado de preferências volta ao padrão na troca de conta, evitando herança entre usuários.
+3. Preferências localStorage passaram a ser isoladas por user_id.
+4. Migração do antigo localStorage global é feita uma única vez e depois removida.
+5. Não lidos locais passaram a incluir user_id na chave.
+6. Persistência rápida de preferências usa upsert, evitando update silencioso quando a linha ainda não existe.
+7. Troca de câmera ao vivo adicionada para calls ativas.
+8. Push-to-talk é reaplicado imediatamente ao salvar preferências.
+9. Modo de baixa largura de banda e modo de transmissão reaplicam os parâmetros dos senders ativos.
+10. PiP da câmera em transmissão cheia acompanha liga/desliga da câmera.
+11. Monitor duplicado de qualidade WebRTC/getStats removido.
+12. Wake Lock é adquirido/reliberado conforme call e visibilidade da aba.
+13. Visual Viewport corrige altura real em Android/iOS/PWA e barras dinâmicas do navegador.
+14. Modo de teclado mobile esconde navegação/call-pill temporariamente para não cobrir o composer.
+15. Layout horizontal mobile compacta controles e preserva área útil de mídia.
+16. Runtime self-check acusa deploy incompleto/cache inconsistente antes do boot.
+17. Service Worker V9 tem namespace próprio e pré-cache com tolerância por arquivo.
+
+MÍDIA
+- Compartilhamento usa object-fit: contain em todos os modos importantes.
+- Proporção real da fonte continua preservada por --stream-aspect.
+- Câmera em foco/tela cheia mostra o frame completo.
+- Tiles normais de câmera continuam usando comportamento tipo Discord (cover).
+- Recuperação de rede, ICE restart, devicechange e áudio/câmera continuam presentes da V8.1.
+- Proteção adaptativa de bitrate continua ativa no modo equilibrado.
+
+VALIDAÇÕES AUTOMÁTICAS EXECUTADAS
+- app.js como ES Module: PASS
+- v7.js como ES Module: PASS
+- sw.js: PASS
+- config.js: PASS
+- HTML IDs únicos: PASS
+- Sem forms aninhados: PASS
+- Todos os botões com type explícito: PASS
+- Referências locais de CSS/JS/imagens: PASS
+- Referências DOM literais app.js: PASS
+- Referências DOM literais v7.js: PASS
+- CSS tinycss2: PASS
+- Chaves CSS balanceadas: PASS
+- Manifest JSON: PASS
+- icon-192.png = 192x192: PASS
+- icon-512.png = 512x512: PASS
+- Ícones do manifesto existem: PASS
+- APP_VERSION = 9.0.0: PASS
+- Assets HTML versionados v=9.0.0: PASS
+- Service Worker tropa-v9-shell-900: PASS
+- Visual Viewport presente: PASS
+- Detecção de teclado mobile presente: PASS
+- Wake Lock presente e liberado ao sair: PASS
+- Cleanup encerra call: PASS
+- Preferências isoladas por conta: PASS
+- Migração da preferência global: PASS
+- Persistência user_preferences via upsert: PASS
+- Não lidos isolados por usuário: PASS
+- Troca de câmera ao vivo: PASS
+- PTT aplicado ao salvar: PASS
+- Qualidade de mídia reaplicada ao salvar: PASS
+- Runtime self-check: PASS
+- Recuperação de rede: PASS
+- Recuperação de câmera: PASS
+- Screen share preserva proporção: PASS
+- Screen share sem crop: PASS
+- PiP sincronizado: PASS
+- Proteção adaptativa: PASS
+- Diagnóstico WebRTC: PASS
+- Cache install tolerante: PASS
+- Segundo polling redundante de getStats removido: PASS
+- Sem escrita direta no antigo tropa_preferences: PASS
+- Sem update frágil em user_preferences: PASS
+- Sem referência ativa a V8.1.0 no código/HTML executável: PASS
+
+RESULTADO DA VARREDURA ESTRUTURAL: 40/40 PASS
+
+IMPORTANTE
+Esta auditoria valida estrutura, sintaxe, referências, estado e caminhos de código que podem ser verificados localmente. Uma garantia absoluta de ausência de bugs só seria possível com testes reais de ponta a ponta usando dois ou mais dispositivos, Supabase em produção, permissões reais de câmera/microfone e diferentes redes/NATs. A V9 foi endurecida para reduzir falhas nesses cenários, mas TURN ainda é recomendado para máxima confiabilidade WebRTC.
